@@ -1,0 +1,33 @@
+﻿
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] -Evalon</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Blog.styles.css" asp-append-version="true" />
+</head>
+<body class="bg-dark">
+    
+        <div id="main">
+            <main role="main" class="pb-3">
+                <div id="main" class="text-center pt-5 mt-5">
+
+                    <h1 class="display-4">Witaj na Evalon</h1>
+                    <h3 class="display-6">Mam nadzieję że zabawisz tu na jakiś czas, no i oczywiście miło go spędzisz!</h3>
+                    <p>Wybierz przycisk <i>REJESTRACJA</i>, aby dołączyć do nas lub <i>ZALOGUJ</i> jeśli juz jesteś z nami</p>
+                    <center><p>Miłej zabawy</p></center>
+
+                </div>
+                @RenderBody()
+            </main>
+        </div>
+   
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

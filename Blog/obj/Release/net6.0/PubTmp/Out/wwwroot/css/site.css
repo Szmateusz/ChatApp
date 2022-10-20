@@ -1,0 +1,197 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    color:darkgrey;
+    margin-bottom: 60px;
+}
+
+.navbar {
+    background-color:darkgrey !important ;
+    
+    
+}
+
+.navbar-nav {
+    margin-left:900px;
+    font-weight:700;
+
+}
+
+
+#sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    height: 550px;
+    width: 15%;
+    float: left;
+    margin-left: 0px;
+    margin-top: 10%;
+}
+#messagesBox{
+    margin-left:150px;
+    padding:20px;
+    border:1px solid grey;
+}
+
+#main {
+    width: 70%;
+    float: left;
+}
+
+
+
+#sidebar ul li{
+    font-size:20px;
+    height:50px;
+    padding:10px 2px 50px 20px;
+    margin:10px 0px 10px 0px;
+    
+
+}
+#sidebar ul li:hover {
+        background-color: #4b4f4c;
+}
+
+.nav-hover:hover {
+    background-color: #4b4f4c !important;
+}
+
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+@import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
+
+body {
+    font-family: 'Shadows Into Light', cursive;
+    font-size: 1.4em;
+}
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+
+/* Chat containers */
+#chat .container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 30px;
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    font-family: "Open Sans", serif;
+}
+
+#chat .sender {
+    font-size: 0.8em;
+    font-weight: bold;
+    font-family: 'Shadows Into Light', cursive;
+}
+
+/* Darker chat container */
+#chat .darker {
+    border-color: #fff;
+    background-color: #007bff;
+}
+
+/* Clear floats */
+#chat .container::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Style images */
+#chat .container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+
+    /* Style the right image */
+    #chat .container img.right {
+        float: right;
+        margin-left: 20px;
+        margin-right: 0;
+    }
+
+/* Style time text */
+#chat .time-right {
+    float: right;
+    color: #aaa;
+}
+
+/* Style time text */
+#chat .time-left {
+    float: left;
+    color: #999;
+}

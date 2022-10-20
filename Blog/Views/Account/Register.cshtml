@@ -1,0 +1,29 @@
+﻿@model Blog.Models.Register
+
+@{
+    
+    ViewData["Title"] = "Rejestracja";
+    Layout = "_Layout-login";
+}
+
+<div id="divlogin">
+    <ul class="list-unstyled components">
+        <li>
+            <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Index">Powrót</a>
+        </li>
+        <li>
+            <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="LogIn">Zaloguj</a>
+        </li>
+    </ul>
+</div>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    @Html.ValidationSummary();
+    <span>Login: </span> @Html.TextBoxFor(x => x.UserName)
+
+    <span>Hasło: </span> @Html.PasswordFor(x => x.Password)
+
+
+    <input type="submit" value="Zarejestruj" />
+}

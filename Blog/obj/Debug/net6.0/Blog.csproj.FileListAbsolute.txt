@@ -1,0 +1,11 @@
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.csproj.AssemblyReference.cache
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.GeneratedMSBuildEditorConfig.editorconfig
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.AssemblyInfoInputs.cache
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.AssemblyInfo.cs
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.csproj.CoreCompileInputs.cache
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.MvcApplicationPartsAssemblyInfo.cache
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.RazorAssemblyInfo.cache
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.RazorAssemblyInfo.cs
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.dll
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\refint\Blog.dll
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\Blog.pdb

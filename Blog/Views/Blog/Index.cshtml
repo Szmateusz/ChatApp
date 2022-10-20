@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Blog.Models.Message>
+@{
+	var userName = User.Identity.Name;
+	var RoomId = ViewData["currentRoom"];
+
+}
+
+<div id="messagesBox"><h1>Pokój rozmów </h1>
+<hr class="" />
+
+
+		<div class="row customScroll" id="box">
+			<div class="col-md-12" id="chat">
+				@if(Model!=null)
+				{
+					
+					@foreach(var message in Model.OrderBy(m=>m.When))
+					{
+						
+					   string containerClass, timePosition, textAlign, contcolor, offset;
+
+					   if(userName == message.UserName)
+						{
+							containerClass = "container darker";
+							timePosition = "time-right text-light time";
+							textAlign = "text-right text-white";
+							contcolor = "bg-primary";
+							offset = "col-md-6 offset-md-6";
+
+						}
+						else
+						{
+							containerClass = "container ";
+							timePosition = "time-left time";
+							textAlign = "text-left";
+							contcolor = "bg-light";
+							offset = "";
+
+						}
+
+						<div class="row">
+							<div class="@offset">
+								<div class="@containerClass @contcolor">
+
+									<p class="sender @textAlign">@message.UserName</p>
+									<p class="@textAlign">@message.Text</p>
+								<span class="@timePosition">@message.When.ToString("dd/MM/yyyy HH/mm")</span>
+
+								</div>
+
+							</div>
+
+						</div>
+
+					}
+					<hr />
+					<center>Nowe Wiadomości</center>
+					
+				}
+			</div>
+			
+</div>
+	<div class="col-md-12">
+		
+		<form asp-action="Create"
+			  data-ajax-begin="clearInputField" data-ajax-complete=""
+			  data-ajax-failure="alert('Pole nie może być puste')" data-ajax-success="sendMessage"
+			  data-ajax="true" data-ajax-method="POST">
+
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<input name="Text" class="form-control" id="messageText" />
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Wyślij" id="submitButton" class="btn-primary" />
+			</div>
+			<input type="hidden" value="@userName" name="username" />
+		</form>
+	</div>
+
+@if(User.Identity.IsAuthenticated)
+{
+	<script>
+		const userName = "@ViewBag.CurrentUserName";
+	</script>
+}
+
+	@section scripts{
+		
+
+		<script src="~/lib/microsoft-signalr/signalr.js"></script>
+		
+		<script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
+		
+		<script src="~/js/czat.js"></script>
+		<script src="~/js/connect.js"></script>
+		
+	}
+
