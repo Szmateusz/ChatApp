@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>E:\opublikowane</_PublishTargetUrl>
+    <History>True|2022-10-23T13:23:22.0784303Z;True|2022-10-22T23:12:21.0776245+02:00;True|2022-10-22T22:36:02.6094519+02:00;False|2022-10-22T22:34:10.4098177+02:00;False|2022-10-22T22:32:51.9555344+02:00;True|2022-10-22T22:24:58.0996719+02:00;True|2022-10-22T21:37:37.1791094+02:00;</History>
+    <LastFailureDetails />
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="Database">
+      <Value>Server=localhost\SQLEXPRESS01%3bInitial Catalog=DbBlog%3bIntegrated Security=True%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

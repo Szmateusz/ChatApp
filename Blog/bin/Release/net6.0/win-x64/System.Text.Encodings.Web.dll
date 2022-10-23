@@ -1,0 +1,4078 @@
+
+/*++
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Module Name:
+
+    winhttp.h
+
+Abstract:
+
+    Contains manifests, macros, types and prototypes for Windows HTTP Services
+
+--*/
+
+#if !defined(_WINHTTPX_)
+#define _WINHTTPX_
+
+#include <winapifamily.h>
+
+#pragma region Desktop Family or OneCore Family
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+
+
+/*
+ * Set up Structure Packing to be 4 bytes for all winhttp structures
+ */
+
+#if defined(_WIN64)
+#include <pshpack8.h>
+#else
+#include <pshpack4.h>
+#endif
+
+
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+
+#if !defined(_WINHTTP_INTERNAL_)
+#define WINHTTPAPI DECLSPEC_IMPORT
+#else
+#define WINHTTPAPI
+
+#endif
+
+#define BOOLAPI WINHTTPAPI BOOL WINAPI
+//
+// types
+//
+
+typedef LPVOID HINTERNET;
+typedef HINTERNET * LPHINTERNET;
+
+typedef WORD INTERNET_PORT;
+typedef INTERNET_PORT * LPINTERNET_PORT;
+
+//
+// manifests
+//
+
+#define INTERNET_DEFAULT_PORT           0           // use the protocol-specific default
+#define INTERNET_DEFAULT_HTTP_PORT      80          //    "     "  HTTP   "
+#define INTERNET_DEFAULT_HTTPS_PORT     443         //    "     "  HTTPS  "
+
+// flags for WinHttpOpen():
+#define WINHTTP_FLAG_ASYNC              0x10000000  // this session is asynchronous (where supported)
+
+// flags for WinHttpOpenRequest():
+#define WINHTTP_FLAG_SECURE                0x00800000  // use SSL if applicable (HTTPS)
+#define WINHTTP_FLAG_ESCAPE_PERCENT        0x00000004  // if escaping enabled, escape percent as well
+#define WINHTTP_FLAG_NULL_CODEPAGE         0x00000008  // assume all symbols are ASCII, use fast convertion
+#define WINHTTP_FLAG_BYPASS_PROXY_CACHE    0x00000100 // add "pragma: no-cache" request header
+#define WINHTTP_FLAG_REFRESH               WINHTTP_FLAG_BYPASS_PROXY_CACHE
+#define WINHTTP_FLAG_ESCAPE_DISABLE        0x00000040  // disable escaping
+#define WINHTTP_FLAG_ESCAPE_DISABLE_QUERY  0x00000080  // if escaping enabled escape path part, but do not escape query
+
+
+#define SECURITY_FLAG_IGNORE_UNKNOWN_CA         0x00000100
+#define SECURITY_FLAG_IGNORE_CERT_DATE_INVALID  0x00002000 // expired X509 Cert.
+#define SECURITY_FLAG_IGNORE_CERT_CN_INVALID    0x00001000 // bad common name in X509 Cert.
+#define SECURITY_FLAG_IGNORE_CERT_WRONG_USAGE   0x00000200
+
+
+//
+// WINHTTP_ASYNC_RESULT - this structure is returned to the application via
+// the callback with WINHTTP_CALLBACK_STATUS_REQUEST_COMPLETE. It is not sufficient to
+// just return the result of the async operation. If the API failed then the
+// app cannot call GetLastError() because the thread context will be incorrect.
+// Both the value returned by the async API and any resultant error code are
+// made available. The app need not check dwError if dwResult indicates that
+// the API succeeded (in this case dwError will be ERROR_SUCCESS)
+//
+
+typedef struct
+{
+    DWORD_PTR dwResult;  // indicates which async API has encountered an error
+    DWORD dwError;       // the error code if the API failed
+}
+WINHTTP_ASYNC_RESULT, * LPWINHTTP_ASYNC_RESULT;
+
+
+//
+// HTTP_VERSION_INFO - query or set global HTTP version (1.0 or 1.1)
+//
+
+typedef struct
+{
+    DWORD dwMajorVersion;
+    DWORD dwMinorVersion;
+}
+HTTP_VERSION_INFO, * LPHTTP_VERSION_INFO;
+
+
+//
+// INTERNET_SCHEME - URL scheme type
+//
+
+typedef int INTERNET_SCHEME, * LPINTERNET_SCHEME;
+
+#define INTERNET_SCHEME_HTTP        (1)
+#define INTERNET_SCHEME_HTTPS       (2)
+#define INTERNET_SCHEME_FTP         (3)
+#define INTERNET_SCHEME_SOCKS       (4)
+
+
+//
+// URL_COMPONENTS - the constituent parts of an URL. Used in WinHttpCrackUrl()
+// and WinHttpCreateUrl()
+//
+// For WinHttpCrackUrl(), if a pointer field and its corresponding length field
+// are both 0 then that component is not returned. If the pointer field is NULL
+// but the length field is not zero, then both the pointer and length fields are
+// returned if both pointer and corresponding length fields are non-zero then
+// the pointer field points to a buffer where the component is copied. The
+// component may be un-escaped, depending on dwFlags
+//
+// For WinHttpCreateUrl(), the pointer fields should be NULL if the component
+// is not required. If the corresponding length field is zero then the pointer
+// field is the address of a zero-terminated string. If the length field is not
+// zero then it is the string length of the corresponding pointer field
+//
+
+#pragma warning( disable : 4121 )   // disable alignment warning
+
+typedef struct
+{
+    DWORD   dwStructSize;       // size of this structure. Used in version check
+    LPWSTR  lpszScheme;         // pointer to scheme name
+    DWORD   dwSchemeLength;     // length of scheme name
+    INTERNET_SCHEME nScheme;    // enumerated scheme type (if known)
+    LPWSTR  lpszHostName;       // pointer to host name
+    DWORD   dwHostNameLength;   // length of host name
+    INTERNET_PORT nPort;        // converted port number
+    LPWSTR  lpszUserName;       // pointer to user name
+    DWORD   dwUserNameLength;   // length of user name
+    LPWSTR  lpszPassword;       // pointer to password
+    DWORD   dwPasswordLength;   // length of password
+    LPWSTR  lpszUrlPath;        // pointer to URL-path
+    DWORD   dwUrlPathLength;    // length of URL-path
+    LPWSTR  lpszExtraInfo;      // pointer to extra information (e.g. ?foo or #foo)
+    DWORD   dwExtraInfoLength;  // length of extra information
+}
+URL_COMPONENTS, * LPURL_COMPONENTS;
+
+typedef URL_COMPONENTS URL_COMPONENTSW;
+typedef LPURL_COMPONENTS LPURL_COMPONENTSW;
+
+#pragma warning( default : 4121 )   // restore alignment warning
+
+//
+// WINHTTP_PROXY_INFO - structure supplied with WINHTTP_OPTION_PROXY to get/
+// set proxy information on a WinHttpOpen() handle
+//
+
+typedef struct
+{
+    DWORD  dwAccessType;      // see WINHTTP_ACCESS_* types below
+    LPWSTR lpszProxy;         // proxy server list
+    LPWSTR lpszProxyBypass;   // proxy bypass list
+}
+WINHTTP_PROXY_INFO, * LPWINHTTP_PROXY_INFO;
+
+typedef WINHTTP_PROXY_INFO WINHTTP_PROXY_INFOW;
+typedef LPWINHTTP_PROXY_INFO LPWINHTTP_PROXY_INFOW;
+
+
+typedef struct
+{
+    DWORD   dwFlags;
+    DWORD   dwAutoDetectFlags;
+    LPCWSTR lpszAutoConfigUrl;
+    LPVOID  lpvReserved;
+    DWORD   dwReserved;
+    BOOL    fAutoLogonIfChallenged;
+}
+WINHTTP_AUTOPROXY_OPTIONS;
+
+
+
+#define WINHTTP_AUTOPROXY_AUTO_DETECT           0x00000001
+#define WINHTTP_AUTOPROXY_CONFIG_URL            0x00000002
+#define WINHTTP_AUTOPROXY_HOST_KEEPCASE         0x00000004
+#define WINHTTP_AUTOPROXY_HOST_LOWERCASE        0x00000008
+#define WINHTTP_AUTOPROXY_ALLOW_AUTOCONFIG      0x00000100
+#define WINHTTP_AUTOPROXY_ALLOW_STATIC          0x00000200
+#define WINHTTP_AUTOPROXY_ALLOW_CM              0x00000400
+#define WINHTTP_AUTOPROXY_RUN_INPROCESS         0x00010000
+#define WINHTTP_AUTOPROXY_RUN_OUTPROCESS_ONLY   0x00020000
+#define WINHTTP_AUTOPROXY_NO_DIRECTACCESS       0x00040000
+#define WINHTTP_AUTOPROXY_NO_CACHE_CLIENT       0x00080000
+#define WINHTTP_AUTOPROXY_NO_CACHE_SVC          0x00100000
+
+
+#define WINHTTP_AUTOPROXY_SORT_RESULTS          0x00400000
+
+
+//
+// Flags for dwAutoDetectFlags
+//
+#define WINHTTP_AUTO_DETECT_TYPE_DHCP           0x00000001
+#define WINHTTP_AUTO_DETECT_TYPE_DNS_A          0x00000002
+
+//
+// WINHTTP_PROXY_RESULT - structure containing parsed proxy result,
+// see WinHttpGetProxyForUrlEx and WinHttpGetProxyResult, use WinHttpFreeProxyResult to free its members.
+//
+
+typedef struct _WINHTTP_PROXY_RESULT_ENTRY
+{
+    BOOL            fProxy;                // Is this a proxy or DIRECT?
+    BOOL            fBypass;               // If DIRECT, is it bypassing a proxy (intranet) or is all traffic DIRECT (internet)
+    INTERNET_SCHEME ProxyScheme;           // The scheme of the proxy, SOCKS, HTTP (CERN Proxy), HTTPS (SSL through Proxy)
+    PWSTR           pwszProxy;             // Hostname of the proxy.
+    INTERNET_PORT   ProxyPort;             // Port of the proxy.
+} WINHTTP_PROXY_RESULT_ENTRY;
+
+typedef struct _WINHTTP_PROXY_RESULT
+{
+    DWORD cEntries;
+    WINHTTP_PROXY_RESULT_ENTRY *pEntries;
+} WINHTTP_PROXY_RESULT;
+
+typedef struct _WINHTTP_PROXY_RESULT_EX
+{
+    DWORD cEntries;
+    WINHTTP_PROXY_RESULT_ENTRY *pEntries;
+    HANDLE hProxyDetectionHandle;
+    DWORD dwProxyInterfaceAffinity;
+} WINHTTP_PROXY_RESULT_EX;
+
+#define NETWORKING_KEY_BUFSIZE 128
+
+typedef struct _WinHttpProxyNetworkKey
+{
+    unsigned char pbBuffer[NETWORKING_KEY_BUFSIZE];
+} WINHTTP_PROXY_NETWORKING_KEY, *PWINHTTP_PROXY_NETWORKING_KEY;
+
+typedef struct _WINHTTP_PROXY_SETTINGS
+{
+    DWORD dwStructSize;
+    DWORD dwFlags;
+    DWORD dwCurrentSettingsVersion;
+    PWSTR pwszConnectionName;
+    PWSTR pwszProxy;
+    PWSTR pwszProxyBypass;
+    PWSTR pwszAutoconfigUrl;
+    PWSTR pwszAutoconfigSecondaryUrl;
+    DWORD dwAutoDiscoveryFlags;
+    PWSTR pwszLastKnownGoodAutoConfigUrl;
+    DWORD dwAutoconfigReloadDelayMins;
+    FILETIME ftLastKnownDetectTime;
+    DWORD dwDetectedInterfaceIpCount;
+    PDWORD pdwDetectedInterfaceIp;
+    DWORD cNetworkKeys;
+    PWINHTTP_PROXY_NETWORKING_KEY pNetworkKeys;
+} WINHTTP_PROXY_SETTINGS, *PWINHTTP_PROXY_SETTINGS;
+
+//
+// WINHTTP_CERTIFICATE_INFO lpBuffer - contains the certificate returned from
+// the server
+//
+
+typedef struct
+{
+    //
+    // ftExpiry - date the certificate expires.
+    //
+
+    FILETIME ftExpiry;
+
+    //
+    // ftStart - date the certificate becomes valid.
+    //
+
+    FILETIME ftStart;
+
+    //
+    // lpszSubjectInfo - the name of organization, site, and server
+    //   the cert. was issued for.
+    //
+
+    LPWSTR lpszSubjectInfo;
+
+    //
+    // lpszIssuerInfo - the name of orgainzation, site, and server
+    //   the cert was issues by.
+    //
+
+    LPWSTR lpszIssuerInfo;
+
+    //
+    // lpszProtocolName - the name of the protocol used to provide the secure
+    //   connection.
+    //
+
+    LPWSTR lpszProtocolName;
+
+    //
+    // lpszSignatureAlgName - the name of the algorithm used for signing
+    //  the certificate.
+    //
+
+    LPWSTR lpszSignatureAlgName;
+
+    //
+    // lpszEncryptionAlgName - the name of the algorithm used for
+    //  doing encryption over the secure channel (SSL) connection.
+    //
+
+    LPWSTR lpszEncryptionAlgName;
+
+    //
+    // dwKeySize - size of the key.
+    //
+
+    DWORD dwKeySize;
+
+}
+WINHTTP_CERTIFICATE_INFO;
+
+#ifdef _WS2DEF_
+
+typedef struct
+{
+    DWORD cbSize;
+    SOCKADDR_STORAGE LocalAddress;  // local ip, local port
+    SOCKADDR_STORAGE RemoteAddress; // remote ip, remote port
+
+}WINHTTP_CONNECTION_INFO;
+
+#endif
+
+//
+// constants for WinHttpTimeFromSystemTime
+//
+
+#define WINHTTP_TIME_FORMAT_BUFSIZE   62
+
+//
+// options manifests for WinHttp{Query|Set}Option
+//
+
+#define WINHTTP_FIRST_OPTION                         WINHTTP_OPTION_CALLBACK
+
+#define WINHTTP_OPTION_CALLBACK                        1
+#define WINHTTP_OPTION_RESOLVE_TIMEOUT                 2
+#define WINHTTP_OPTION_CONNECT_TIMEOUT                 3
+#define WINHTTP_OPTION_CONNECT_RETRIES                 4
+#define WINHTTP_OPTION_SEND_TIMEOUT                    5
+#define WINHTTP_OPTION_RECEIVE_TIMEOUT                 6
+#define WINHTTP_OPTION_RECEIVE_RESPONSE_TIMEOUT        7
+#define WINHTTP_OPTION_HANDLE_TYPE                     9
+#define WINHTTP_OPTION_READ_BUFFER_SIZE               12
+#define WINHTTP_OPTION_WRITE_BUFFER_SIZE              13
+#define WINHTTP_OPTION_PARENT_HANDLE                  21
+#define WINHTTP_OPTION_EXTENDED_ERROR                 24
+#define WINHTTP_OPTION_SECURITY_FLAGS                 31
+#define WINHTTP_OPTION_SECURITY_CERTIFICATE_STRUCT    32
+#define WINHTTP_OPTION_URL                            34
+#define WINHTTP_OPTION_SECURITY_KEY_BITNESS           36
+#define WINHTTP_OPTION_PROXY                          38
+#define WINHTTP_OPTION_PROXY_RESULT_ENTRY             39
+
+
+#define WINHTTP_OPTION_USER_AGENT                     41
+#define WINHTTP_OPTION_CONTEXT_VALUE                  45
+#define WINHTTP_OPTION_CLIENT_CERT_CONTEXT            47
+#define WINHTTP_OPTION_REQUEST_PRIORITY               58
+#define WINHTTP_OPTION_HTTP_VERSION                   59
+#define WINHTTP_OPTION_DISABLE_FEATURE                63
+
+#define WINHTTP_OPTION_CODEPAGE                       68
+#define WINHTTP_OPTION_MAX_CONNS_PER_SERVER           73
+#define WINHTTP_OPTION_MAX_CONNS_PER_1_0_SERVER       74
+#define WINHTTP_OPTION_AUTOLOGON_POLICY               77
+#define WINHTTP_OPTION_SERVER_CERT_CONTEXT            78
+#define WINHTTP_OPTION_ENABLE_FEATURE                 79
+#define WINHTTP_OPTION_WORKER_THREAD_COUNT            80
+#define WINHTTP_OPTION_PASSPORT_COBRANDING_TEXT       81
+#define WINHTTP_OPTION_PASSPORT_COBRANDING_URL        82
+#define WINHTTP_OPTION_CONFIGURE_PASSPORT_AUTH        83
+#define WINHTTP_OPTION_SECURE_PROTOCOLS               84
+#define WINHTTP_OPTION_ENABLETRACING                  85
+#define WINHTTP_OPTION_PASSPORT_SIGN_OUT              86
+#define WINHTTP_OPTION_PASSPORT_RETURN_URL            87
+#define WINHTTP_OPTION_REDIRECT_POLICY                88
+#define WINHTTP_OPTION_MAX_HTTP_AUTOMATIC_REDIRECTS   89
+#define WINHTTP_OPTION_MAX_HTTP_STATUS_CONTINUE       90
+#define WINHTTP_OPTION_MAX_RESPONSE_HEADER_SIZE       91
+#define WINHTTP_OPTION_MAX_RESPONSE_DRAIN_SIZE        92
+#define WINHTTP_OPTION_CONNECTION_INFO                93
+#define WINHTTP_OPTION_CLIENT_CERT_ISSUER_LIST        94
+#define WINHTTP_OPTION_SPN                            96
+
+#define WINHTTP_OPTION_GLOBAL_PROXY_CREDS             97
+#define WINHTTP_OPTION_GLOBAL_SERVER_CREDS            98
+
+#define WINHTTP_OPTION_UNLOAD_NOTIFY_EVENT            99
+#define WINHTTP_OPTION_REJECT_USERPWD_IN_URL          100
+#define WINHTTP_OPTION_USE_GLOBAL_SERVER_CREDENTIALS  101
+
+
+#define WINHTTP_OPTION_RECEIVE_PROXY_CONNECT_RESPONSE 103
+#define WINHTTP_OPTION_IS_PROXY_CONNECT_RESPONSE      104
+
+
+#define WINHTTP_OPTION_SERVER_SPN_USED                106
+#define WINHTTP_OPTION_PROXY_SPN_USED                 107
+
+#define WINHTTP_OPTION_SERVER_CBT                     108
+
+
+#define WINHTTP_OPTION_UNSAFE_HEADER_PARSING          110
+#define WINHTTP_OPTION_ASSURED_NON_BLOCKING_CALLBACKS 111
+
+
+#define WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET          114
+#define WINHTTP_OPTION_WEB_SOCKET_CLOSE_TIMEOUT       115
+#define WINHTTP_OPTION_WEB_SOCKET_KEEPALIVE_INTERVAL  116
+
+
+#define WINHTTP_OPTION_DECOMPRESSION                  118
+
+
+#define WINHTTP_OPTION_WEB_SOCKET_RECEIVE_BUFFER_SIZE 122
+#define WINHTTP_OPTION_WEB_SOCKET_SEND_BUFFER_SIZE    123
+
+
+#define WINHTTP_OPTION_CONNECTION_FILTER              131
+
+
+#define WINHTTP_OPTION_ENABLE_HTTP_PROTOCOL           133
+#define WINHTTP_OPTION_HTTP_PROTOCOL_USED             134
+
+
+#define WINHTTP_OPTION_KDC_PROXY_SETTINGS             136
+
+#define WINHTTP_LAST_OPTION                           WINHTTP_OPTION_KDC_PROXY_SETTINGS
+
+#define WINHTTP_OPTION_USERNAME                      0x1000
+#define WINHTTP_OPTION_PASSWORD                      0x1001
+#define WINHTTP_OPTION_PROXY_USERNAME                0x1002
+#define WINHTTP_OPTION_PROXY_PASSWORD                0x1003
+
+
+// manifest value for WINHTTP_OPTION_MAX_CONNS_PER_SERVER and WINHTTP_OPTION_MAX_CONNS_PER_1_0_SERVER
+#define WINHTTP_CONNS_PER_SERVER_UNLIMITED    0xFFFFFFFF
+
+//
+// Values for WINHTTP_OPTION_DECOMPRESSION
+//
+
+#define WINHTTP_DECOMPRESSION_FLAG_GZIP     0x00000001
+#define WINHTTP_DECOMPRESSION_FLAG_DEFLATE  0x00000002
+
+#define WINHTTP_DECOMPRESSION_FLAG_ALL ( \
+    WINHTTP_DECOMPRESSION_FLAG_GZIP    | \
+    WINHTTP_DECOMPRESSION_FLAG_DEFLATE)
+
+//
+// Values for WINHTTP_OPTION_ENABLE_HTTP_PROTOCOL / WINHTTP_OPTION_HTTP_PROTOCOL_USED
+//
+
+#define WINHTTP_PROTOCOL_FLAG_HTTP2 0x1
+#define WINHTTP_PROTOCOL_MASK (WINHTTP_PROTOCOL_FLAG_HTTP2)
+
+
+// values for WINHTTP_OPTION_AUTOLOGON_POLICY
+#define WINHTTP_AUTOLOGON_SECURITY_LEVEL_MEDIUM   0
+#define WINHTTP_AUTOLOGON_SECURITY_LEVEL_LOW      1
+#define WINHTTP_AUTOLOGON_SECURITY_LEVEL_HIGH     2
+
+#define WINHTTP_AUTOLOGON_SECURITY_LEVEL_DEFAULT        WINHTTP_AUTOLOGON_SECURITY_LEVEL_MEDIUM
+
+// values for WINHTTP_OPTION_REDIRECT_POLICY
+#define WINHTTP_OPTION_REDIRECT_POLICY_NEVER                        0
+#define WINHTTP_OPTION_REDIRECT_POLICY_DISALLOW_HTTPS_TO_HTTP       1
+#define WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS                       2
+
+#define WINHTTP_OPTION_REDIRECT_POLICY_LAST            WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS
+#define WINHTTP_OPTION_REDIRECT_POLICY_DEFAULT         WINHTTP_OPTION_REDIRECT_POLICY_DISALLOW_HTTPS_TO_HTTP
+
+#define WINHTTP_DISABLE_PASSPORT_AUTH    0x00000000
+#define WINHTTP_ENABLE_PASSPORT_AUTH     0x10000000
+#define WINHTTP_DISABLE_PASSPORT_KEYRING 0x20000000
+#define WINHTTP_ENABLE_PASSPORT_KEYRING  0x40000000
+
+
+// values for WINHTTP_OPTION_DISABLE_FEATURE
+#define WINHTTP_DISABLE_COOKIES                   0x00000001
+#define WINHTTP_DISABLE_REDIRECTS                 0x00000002
+#define WINHTTP_DISABLE_AUTHENTICATION            0x00000004
+#define WINHTTP_DISABLE_KEEP_ALIVE                0x00000008
+
+// values for WINHTTP_OPTION_ENABLE_FEATURE
+#define WINHTTP_ENABLE_SSL_REVOCATION             0x00000001
+#define WINHTTP_ENABLE_SSL_REVERT_IMPERSONATION   0x00000002
+
+// values for WINHTTP_OPTION_SPN
+#define WINHTTP_DISABLE_SPN_SERVER_PORT           0x00000000
+#define WINHTTP_ENABLE_SPN_SERVER_PORT            0x00000001
+#define WINHTTP_OPTION_SPN_MASK                   WINHTTP_ENABLE_SPN_SERVER_PORT
+
+typedef struct tagWINHTTP_CREDS
+{
+    LPSTR lpszUserName;
+    LPSTR lpszPassword;
+    LPSTR lpszRealm;
+    DWORD dwAuthScheme;
+    LPSTR lpszHostName;
+    DWORD dwPort;
+} WINHTTP_CREDS, *PWINHTTP_CREDS;
+
+// structure for WINHTTP_OPTION_GLOBAL_SERVER_CREDS and
+// WINHTTP_OPTION_GLOBAL_PROXY_CREDS
+typedef struct tagWINHTTP_CREDS_EX
+{
+    LPSTR lpszUserName;
+    LPSTR lpszPassword;
+    LPSTR lpszRealm;
+    DWORD dwAuthScheme;
+    LPSTR lpszHostName;
+    DWORD dwPort;
+    LPSTR lpszUrl;
+} WINHTTP_CREDS_EX, *PWINHTTP_CREDS_EX;
+
+//
+// winhttp handle types
+//
+#define WINHTTP_HANDLE_TYPE_SESSION                  1
+#define WINHTTP_HANDLE_TYPE_CONNECT                  2
+#define WINHTTP_HANDLE_TYPE_REQUEST                  3
+
+//
+// values for auth schemes
+//
+#define WINHTTP_AUTH_SCHEME_BASIC      0x00000001
+#define WINHTTP_AUTH_SCHEME_NTLM       0x00000002
+#define WINHTTP_AUTH_SCHEME_PASSPORT   0x00000004
+#define WINHTTP_AUTH_SCHEME_DIGEST     0x00000008
+#define WINHTTP_AUTH_SCHEME_NEGOTIATE  0x00000010
+
+// WinHttp supported Authentication Targets
+
+#define WINHTTP_AUTH_TARGET_SERVER 0x00000000
+#define WINHTTP_AUTH_TARGET_PROXY  0x00000001
+
+//
+// values for WINHTTP_OPTION_SECURITY_FLAGS
+//
+
+// query only
+#define SECURITY_FLAG_SECURE                    0x00000001 // can query only
+#define SECURITY_FLAG_STRENGTH_WEAK             0x10000000
+#define SECURITY_FLAG_STRENGTH_MEDIUM           0x40000000
+#define SECURITY_FLAG_STRENGTH_STRONG           0x20000000
+
+
+
+// Secure connection error status flags
+#define WINHTTP_CALLBACK_STATUS_FLAG_CERT_REV_FAILED         0x00000001
+#define WINHTTP_CALLBACK_STATUS_FLAG_INVALID_CERT            0x00000002
+#define WINHTTP_CALLBACK_STATUS_FLAG_CERT_REVOKED            0x00000004
+#define WINHTTP_CALLBACK_STATUS_FLAG_INVALID_CA              0x00000008
+#define WINHTTP_CALLBACK_STATUS_FLAG_CERT_CN_INVALID         0x00000010
+#define WINHTTP_CALLBACK_STATUS_FLAG_CERT_DATE_INVALID       0x00000020
+#define WINHTTP_CALLBACK_STATUS_FLAG_CERT_WRONG_USAGE        0x00000040
+#define WINHTTP_CALLBACK_STATUS_FLAG_SECURITY_CHANNEL_ERROR  0x80000000
+
+
+#define WINHTTP_FLAG_SECURE_PROTOCOL_SSL2   0x00000008
+#define WINHTTP_FLAG_SECURE_PROTOCOL_SSL3   0x00000020
+#define WINHTTP_FLAG_SECURE_PROTOCOL_TLS1   0x00000080
+#define WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_1 0x00000200
+#define WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_2 0x00000800
+#define WINHTTP_FLAG_SECURE_PROTOCOL_ALL    (WINHTTP_FLAG_SECURE_PROTOCOL_SSL2 | \
+                                             WINHTTP_FLAG_SECURE_PROTOCOL_SSL3 | \
+                                             WINHTTP_FLAG_SECURE_PROTOCOL_TLS1)
+
+
+//
+// callback function for WinHttpSetStatusCallback
+//
+
+typedef
+VOID
+(CALLBACK * WINHTTP_STATUS_CALLBACK)(
+    IN HINTERNET hInternet,
+    IN DWORD_PTR dwContext,
+    IN DWORD dwInternetStatus,
+    IN LPVOID lpvStatusInformation OPTIONAL,
+    IN DWORD dwStatusInformationLength
+    );
+
+typedef WINHTTP_STATUS_CALLBACK * LPWINHTTP_STATUS_CALLBACK;
+
+
+//
+// status manifests for WinHttp status callback
+//
+
+#define WINHTTP_CALLBACK_STATUS_RESOLVING_NAME          0x00000001
+#define WINHTTP_CALLBACK_STATUS_NAME_RESOLVED           0x00000002
+#define WINHTTP_CALLBACK_STATUS_CONNECTING_TO_SERVER    0x00000004
+#define WINHTTP_CALLBACK_STATUS_CONNECTED_TO_SERVER     0x00000008
+#define WINHTTP_CALLBACK_STATUS_SENDING_REQUEST         0x00000010
+#define WINHTTP_CALLBACK_STATUS_REQUEST_SENT            0x00000020
+#define WINHTTP_CALLBACK_STATUS_RECEIVING_RESPONSE      0x00000040
+#define WINHTTP_CALLBACK_STATUS_RESPONSE_RECEIVED       0x00000080
+#define WINHTTP_CALLBACK_STATUS_CLOSING_CONNECTION      0x00000100
+#define WINHTTP_CALLBACK_STATUS_CONNECTION_CLOSED       0x00000200
+#define WINHTTP_CALLBACK_STATUS_HANDLE_CREATED          0x00000400
+#define WINHTTP_CALLBACK_STATUS_HANDLE_CLOSING          0x00000800
+#define WINHTTP_CALLBACK_STATUS_DETECTING_PROXY         0x00001000
+#define WINHTTP_CALLBACK_STATUS_REDIRECT                0x00004000
+#define WINHTTP_CALLBACK_STATUS_INTERMEDIATE_RESPONSE   0x00008000
+#define WINHTTP_CALLBACK_STATUS_SECURE_FAILURE          0x00010000
+#define WINHTTP_CALLBACK_STATUS_HEADERS_AVAILABLE       0x00020000
+#define WINHTTP_CALLBACK_STATUS_DATA_AVAILABLE          0x00040000
+#define WINHTTP_CALLBACK_STATUS_READ_COMPLETE           0x00080000
+#define WINHTTP_CALLBACK_STATUS_WRITE_COMPLETE          0x00100000
+#define WINHTTP_CALLBACK_STATUS_REQUEST_ERROR           0x00200000
+#define WINHTTP_CALLBACK_STATUS_SENDREQUEST_COMPLETE    0x00400000
+
+
+#define WINHTTP_CALLBACK_STATUS_GETPROXYFORURL_COMPLETE 0x01000000
+#define WINHTTP_CALLBACK_STATUS_CLOSE_COMPLETE          0x02000000
+#define WINHTTP_CALLBACK_STATUS_SHUTDOWN_COMPLETE       0x04000000
+#define WINHTTP_CALLBACK_STATUS_SETTINGS_WRITE_COMPLETE 0x10000000
+#define WINHTTP_CALLBACK_STATUS_SETTINGS_READ_COMPLETE  0x20000000
+
+// API Enums for WINHTTP_CALLBACK_STATUS_REQUEST_ERROR:
+#define API_RECEIVE_RESPONSE          (1)
+#define API_QUERY_DATA_AVAILABLE      (2)
+#define API_READ_DATA                 (3)
+#define API_WRITE_DATA                (4)
+#define API_SEND_REQUEST              (5)
+#define API_GET_PROXY_FOR_URL         (6)
+
+#define WINHTTP_CALLBACK_FLAG_RESOLVE_NAME              (WINHTTP_CALLBACK_STATUS_RESOLVING_NAME | WINHTTP_CALLBACK_STATUS_NAME_RESOLVED)
+#define WINHTTP_CALLBACK_FLAG_CONNECT_TO_SERVER         (WINHTTP_CALLBACK_STATUS_CONNECTING_TO_SERVER | WINHTTP_CALLBACK_STATUS_CONNECTED_TO_SERVER)
+#define WINHTTP_CALLBACK_FLAG_SEND_REQUEST              (WINHTTP_CALLBACK_STATUS_SENDING_REQUEST | WINHTTP_CALLBACK_STATUS_REQUEST_SENT)
+#define WINHTTP_CALLBACK_FLAG_RECEIVE_RESPONSE          (WINHTTP_CALLBACK_STATUS_RECEIVING_RESPONSE | WINHTTP_CALLBACK_STATUS_RESPONSE_RECEIVED)
+#define WINHTTP_CALLBACK_FLAG_CLOSE_CONNECTION          (WINHTTP_CALLBACK_STATUS_CLOSING_CONNECTION | WINHTTP_CALLBACK_STATUS_CONNECTION_CLOSED)
+#define WINHTTP_CALLBACK_FLAG_HANDLES                   (WINHTTP_CALLBACK_STATUS_HANDLE_CREATED | WINHTTP_CALLBACK_STATUS_HANDLE_CLOSING)
+#define WINHTTP_CALLBACK_FLAG_DETECTING_PROXY           WINHTTP_CALLBACK_STATUS_DETECTING_PROXY
+#define WINHTTP_CALLBACK_FLAG_REDIRECT                  WINHTTP_CALLBACK_STATUS_REDIRECT
+#define WINHTTP_CALLBACK_FLAG_INTERMEDIATE_RESPONSE     WINHTTP_CALLBACK_STATUS_INTERMEDIATE_RESPONSE
+#define WINHTTP_CALLBACK_FLAG_SECURE_FAILURE            WINHTTP_CALLBACK_STATUS_SECURE_FAILURE
+#define WINHTTP_CALLBACK_FLAG_SENDREQUEST_COMPLETE      WINHTTP_CALLBACK_STATUS_SENDREQUEST_COMPLETE
+#define WINHTTP_CALLBACK_FLAG_HEADERS_AVAILABLE         WINHTTP_CALLBACK_STATUS_HEADERS_AVAILABLE
+#define WINHTTP_CALLBACK_FLAG_DATA_AVAILABLE            WINHTTP_CALLBACK_STATUS_DATA_AVAILABLE
+#define WINHTTP_CALLBACK_FLAG_READ_COMPLETE             WINHTTP_CALLBACK_STATUS_READ_COMPLETE
+#define WINHTTP_CALLBACK_FLAG_WRITE_COMPLETE            WINHTTP_CALLBACK_STATUS_WRITE_COMPLETE
+#define WINHTTP_CALLBACK_FLAG_REQUEST_ERROR             WINHTTP_CALLBACK_STATUS_REQUEST_ERROR
+
+
+#define WINHTTP_CALLBACK_FLAG_GETPROXYFORURL_COMPLETE   WINHTTP_CALLBACK_STATUS_GETPROXYFORURL_COMPLETE
+
+#define WINHTTP_CALLBACK_FLAG_ALL_COMPLETIONS           (WINHTTP_CALLBACK_STATUS_SENDREQUEST_COMPLETE   \
+                                                        | WINHTTP_CALLBACK_STATUS_HEADERS_AVAILABLE     \
+                                                        | WINHTTP_CALLBACK_STATUS_DATA_AVAILABLE        \
+                                                        | WINHTTP_CALLBACK_STATUS_READ_COMPLETE         \
+                                                        | WINHTTP_CALLBACK_STATUS_WRITE_COMPLETE        \
+                                                        | WINHTTP_CALLBACK_STATUS_REQUEST_ERROR         \
+                                                        | WINHTTP_CALLBACK_STATUS_GETPROXYFORURL_COMPLETE)
+#define WINHTTP_CALLBACK_FLAG_ALL_NOTIFICATIONS         0xffffffff
+
+//
+// if the following value is returned by WinHttpSetStatusCallback, then
+// probably an invalid (non-code) address was supplied for the callback
+//
+
+#define WINHTTP_INVALID_STATUS_CALLBACK        ((WINHTTP_STATUS_CALLBACK)(-1L))
+
+
+//
+// WinHttpQueryHeaders info levels. Generally, there is one info level
+// for each potential RFC822/HTTP/MIME header that an HTTP server
+// may send as part of a request response.
+//
+// The WINHTTP_QUERY_RAW_HEADERS info level is provided for clients
+// that choose to perform their own header parsing.
+//
+
+
+#define WINHTTP_QUERY_MIME_VERSION                 0
+#define WINHTTP_QUERY_CONTENT_TYPE                 1
+#define WINHTTP_QUERY_CONTENT_TRANSFER_ENCODING    2
+#define WINHTTP_QUERY_CONTENT_ID                   3
+#define WINHTTP_QUERY_CONTENT_DESCRIPTION          4
+#define WINHTTP_QUERY_CONTENT_LENGTH               5
+#define WINHTTP_QUERY_CONTENT_LANGUAGE             6
+#define WINHTTP_QUERY_ALLOW                        7
+#define WINHTTP_QUERY_PUBLIC                       8
+#define WINHTTP_QUERY_DATE                         9
+#define WINHTTP_QUERY_EXPIRES                      10
+#define WINHTTP_QUERY_LAST_MODIFIED                11
+#define WINHTTP_QUERY_MESSAGE_ID                   12
+#define WINHTTP_QUERY_URI                          13
+#define WINHTTP_QUERY_DERIVED_FROM                 14
+#define WINHTTP_QUERY_COST                         15
+#define WINHTTP_QUERY_LINK                         16
+#define WINHTTP_QUERY_PRAGMA                       17
+#define WINHTTP_QUERY_VERSION                      18  // special: part of status line
+#define WINHTTP_QUERY_STATUS_CODE                  19  // special: part of status line
+#define WINHTTP_QUERY_STATUS_TEXT                  20  // special: part of status line
+#define WINHTTP_QUERY_RAW_HEADERS                  21  // special: all headers as ASCIIZ
+#define WINHTTP_QUERY_RAW_HEADERS_CRLF             22  // special: all headers
+#define WINHTTP_QUERY_CONNECTION                   23
+#define WINHTTP_QUERY_ACCEPT                       24
+#define WINHTTP_QUERY_ACCEPT_CHARSET               25
+#define WINHTTP_QUERY_ACCEPT_ENCODING              26
+#define WINHTTP_QUERY_ACCEPT_LANGUAGE              27
+#define WINHTTP_QUERY_AUTHORIZATION                28
+#define WINHTTP_QUERY_CONTENT_ENCODING             29
+#define WINHTTP_QUERY_FORWARDED                    30
+#define WINHTTP_QUERY_FROM                         31
+#define WINHTTP_QUERY_IF_MODIFIED_SINCE            32
+#define WINHTTP_QUERY_LOCATION                     33
+#define WINHTTP_QUERY_ORIG_URI                     34
+#define WINHTTP_QUERY_REFERER                      35
+#define WINHTTP_QUERY_RETRY_AFTER                  36
+#define WINHTTP_QUERY_SERVER                       37
+#define WINHTTP_QUERY_TITLE                        38
+#define WINHTTP_QUERY_USER_AGENT                   39
+#define WINHTTP_QUERY_WWW_AUTHENTICATE             40
+#define WINHTTP_QUERY_PROXY_AUTHENTICATE           41
+#define WINHTTP_QUERY_ACCEPT_RANGES                42
+#define WINHTTP_QUERY_SET_COOKIE                   43
+#define WINHTTP_QUERY_COOKIE                       44
+#define WINHTTP_QUERY_REQUEST_METHOD               45  // special: GET/POST etc.
+#define WINHTTP_QUERY_REFRESH                      46
+#define WINHTTP_QUERY_CONTENT_DISPOSITION          47
+
+//
+// HTTP 1.1 defined headers
+//
+
+#define WINHTTP_QUERY_AGE                          48
+#define WINHTTP_QUERY_CACHE_CONTROL                49
+#define WINHTTP_QUERY_CONTENT_BASE                 50
+#define WINHTTP_QUERY_CONTENT_LOCATION             51
+#define WINHTTP_QUERY_CONTENT_MD5                  52
+#define WINHTTP_QUERY_CONTENT_RANGE                53
+#define WINHTTP_QUERY_ETAG                         54
+#define WINHTTP_QUERY_HOST                         55
+#define WINHTTP_QUERY_IF_MATCH                     56
+#define WINHTTP_QUERY_IF_NONE_MATCH                57
+#define WINHTTP_QUERY_IF_RANGE                     58
+#define WINHTTP_QUERY_IF_UNMODIFIED_SINCE          59
+#define WINHTTP_QUERY_MAX_FORWARDS                 60
+#define WINHTTP_QUERY_PROXY_AUTHORIZATION          61
+#define WINHTTP_QUERY_RANGE                        62
+#define WINHTTP_QUERY_TRANSFER_ENCODING            63
+#define WINHTTP_QUERY_UPGRADE                      64
+#define WINHTTP_QUERY_VARY                         65
+#define WINHTTP_QUERY_VIA                          66
+#define WINHTTP_QUERY_WARNING                      67
+#define WINHTTP_QUERY_EXPECT                       68
+#define WINHTTP_QUERY_PROXY_CONNECTION             69
+#define WINHTTP_QUERY_UNLESS_MODIFIED_SINCE        70
+
+
+
+#define WINHTTP_QUERY_PROXY_SUPPORT                75
+#define WINHTTP_QUERY_AUTHENTICATION_INFO          76
+#define WINHTTP_QUERY_PASSPORT_URLS                77
+#define WINHTTP_QUERY_PASSPORT_CONFIG              78
+
+#define WINHTTP_QUERY_MAX                          78
+
+//
+// WINHTTP_QUERY_CUSTOM - if this special value is supplied as the dwInfoLevel
+// parameter of WinHttpQueryHeaders() then the lpBuffer parameter contains the name
+// of the header we are to query
+//
+
+#define WINHTTP_QUERY_CUSTOM                       65535
+
+//
+// WINHTTP_QUERY_FLAG_REQUEST_HEADERS - if this bit is set in the dwInfoLevel
+// parameter of WinHttpQueryHeaders() then the request headers will be queried for the
+// request information
+//
+
+#define WINHTTP_QUERY_FLAG_REQUEST_HEADERS         0x80000000
+
+//
+// WINHTTP_QUERY_FLAG_SYSTEMTIME - if this bit is set in the dwInfoLevel parameter
+// of WinHttpQueryHeaders() AND the header being queried contains date information,
+// e.g. the "Expires:" header then lpBuffer will contain a SYSTEMTIME structure
+// containing the date and time information converted from the header string
+//
+
+#define WINHTTP_QUERY_FLAG_SYSTEMTIME              0x40000000
+
+//
+// WINHTTP_QUERY_FLAG_NUMBER - if this bit is set in the dwInfoLevel parameter of
+// HttpQueryHeader(), then the value of the header will be converted to a number
+// before being returned to the caller, if applicable
+//
+
+#define WINHTTP_QUERY_FLAG_NUMBER                  0x20000000
+
+//
+// HTTP_QUERY_FLAG_NUMBER64 - if this bit is set in the dwInfoLevel parameter of
+// HttpQueryInfo(), then the value of the header will be converted to a 64bit
+// number before being returned to the caller, if applicable
+//
+
+#define WINHTTP_QUERY_FLAG_NUMBER64                0x08000000
+
+
+//
+// HTTP Response Status Codes:
+//
+
+#define HTTP_STATUS_CONTINUE            100 // OK to continue with request
+#define HTTP_STATUS_SWITCH_PROTOCOLS    101 // server has switched protocols in upgrade header
+
+#define HTTP_STATUS_OK                  200 // request completed
+#define HTTP_STATUS_CREATED             201 // object created, reason = new URI
+#define HTTP_STATUS_ACCEPTED            202 // async completion (TBS)
+#define HTTP_STATUS_PARTIAL             203 // partial completion
+#define HTTP_STATUS_NO_CONTENT          204 // no info to return
+#define HTTP_STATUS_RESET_CONTENT       205 // request completed, but clear form
+#define HTTP_STATUS_PARTIAL_CONTENT     206 // partial GET fulfilled
+#define HTTP_STATUS_WEBDAV_MULTI_STATUS 207 // WebDAV Multi-Status
+
+#define HTTP_STATUS_AMBIGUOUS           300 // server couldn't decide what to return
+#define HTTP_STATUS_MOVED               301 // object permanently moved
+#define HTTP_STATUS_REDIRECT            302 // object temporarily moved
+#define HTTP_STATUS_REDIRECT_METHOD     303 // redirection w/ new access method
+#define HTTP_STATUS_NOT_MODIFIED        304 // if-modified-since was not modified
+#define HTTP_STATUS_USE_PROXY           305 // redirection to proxy, location header specifies proxy to use
+#define HTTP_STATUS_REDIRECT_KEEP_VERB  307 // HTTP/1.1: keep same verb
+#define HTTP_STATUS_PERMANENT_REDIRECT  308 // Object permanently moved keep verb
+
+#define HTTP_STATUS_BAD_REQUEST         400 // invalid syntax
+#define HTTP_STATUS_DENIED              401 // access denied
+#define HTTP_STATUS_PAYMENT_REQ         402 // payment required
+#define HTTP_STATUS_FORBIDDEN           403 // request forbidden
+#define HTTP_STATUS_NOT_FOUND           404 // object not found
+#define HTTP_STATUS_BAD_METHOD          405 // method is not allowed
+#define HTTP_STATUS_NONE_ACCEPTABLE     406 // no response acceptable to client found
+#define HTTP_STATUS_PROXY_AUTH_REQ      407 // proxy authentication required
+#define HTTP_STATUS_REQUEST_TIMEOUT     408 // server timed out waiting for request
+#define HTTP_STATUS_CONFLICT            409 // user should resubmit with more info
+#define HTTP_STATUS_GONE                410 // the resource is no longer available
+#define HTTP_STATUS_LENGTH_REQUIRED     411 // the server refused to accept request w/o a length
+#define HTTP_STATUS_PRECOND_FAILED      412 // precondition given in request failed
+#define HTTP_STATUS_REQUEST_TOO_LARGE   413 // request entity was too large
+#define HTTP_STATUS_URI_TOO_LONG        414 // request URI too long
+#define HTTP_STATUS_UNSUPPORTED_MEDIA   415 // unsupported media type
+#define HTTP_STATUS_RETRY_WITH          449 // retry after doing the appropriate action.
+
+#define HTTP_STATUS_SERVER_ERROR        500 // internal server error
+#define HTTP_STATUS_NOT_SUPPORTED       501 // required not supported
+#define HTTP_STATUS_BAD_GATEWAY         502 // error response received from gateway
+#define HTTP_STATUS_SERVICE_UNAVAIL     503 // temporarily overloaded
+#define HTTP_STATUS_GATEWAY_TIMEOUT     504 // timed out waiting for gateway
+#define HTTP_STATUS_VERSION_NOT_SUP     505 // HTTP version not supported
+
+#define HTTP_STATUS_FIRST               HTTP_STATUS_CONTINUE
+#define HTTP_STATUS_LAST                HTTP_STATUS_VERSION_NOT_SUP
+
+//
+// flags for CrackUrl() and CombineUrl()
+//
+
+#define ICU_NO_ENCODE   0x20000000  // Don't convert unsafe characters to escape sequence
+#define ICU_DECODE      0x10000000  // Convert %XX escape sequences to characters
+#define ICU_NO_META     0x08000000  // Don't convert .. etc. meta path sequences
+#define ICU_ENCODE_SPACES_ONLY 0x04000000  // Encode spaces only
+#define ICU_BROWSER_MODE 0x02000000 // Special encode/decode rules for browser
+#define ICU_ENCODE_PERCENT      0x00001000      // Encode any percent (ASCII25)
+
+        // signs encountered, default is to not encode percent.
+
+//
+// flags for WinHttpCrackUrl() and WinHttpCreateUrl()
+//
+#define ICU_ESCAPE      0x80000000  // (un)escape URL characters
+#define ICU_ESCAPE_AUTHORITY 0x00002000 //causes InternetCreateUrlA to escape chars in authority components (user, pwd, host)
+#define ICU_REJECT_USERPWD  0x00004000  // rejects usrls whick have username/pwd sections
+
+// WinHttpOpen dwAccessType values (also for WINHTTP_PROXY_INFO::dwAccessType)
+#define WINHTTP_ACCESS_TYPE_DEFAULT_PROXY               0
+#define WINHTTP_ACCESS_TYPE_NO_PROXY                    1
+#define WINHTTP_ACCESS_TYPE_NAMED_PROXY                 3
+#define WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY             4
+
+// WinHttpOpen prettifiers for optional parameters
+#define WINHTTP_NO_PROXY_NAME     NULL
+#define WINHTTP_NO_PROXY_BYPASS   NULL
+
+#define WINHTTP_NO_CLIENT_CERT_CONTEXT NULL
+
+// WinHttpOpenRequest prettifers for optional parameters
+#define WINHTTP_NO_REFERER             NULL
+#define WINHTTP_DEFAULT_ACCEPT_TYPES   NULL
+
+//
+// values for dwModifiers parameter of WinHttpAddRequestHeaders()
+//
+
+#define WINHTTP_ADDREQ_INDEX_MASK      0x0000FFFF
+#define WINHTTP_ADDREQ_FLAGS_MASK      0xFFFF0000
+
+//
+// WINHTTP_ADDREQ_FLAG_ADD_IF_NEW - the header will only be added if it doesn't
+// already exist
+//
+
+#define WINHTTP_ADDREQ_FLAG_ADD_IF_NEW 0x10000000
+
+//
+// WINHTTP_ADDREQ_FLAG_ADD - if WINHTTP_ADDREQ_FLAG_REPLACE is set but the header is
+// not found then if this flag is set, the header is added anyway, so long as
+// there is a valid header-value
+//
+
+#define WINHTTP_ADDREQ_FLAG_ADD        0x20000000
+
+//
+// WINHTTP_ADDREQ_FLAG_COALESCE - coalesce headers with same name. e.g.
+// "Accept: text/*" and "Accept: audio/*" with this flag results in a single
+// header: "Accept: text/*, audio/*"
+//
+
+#define WINHTTP_ADDREQ_FLAG_COALESCE_WITH_COMMA       0x40000000
+#define WINHTTP_ADDREQ_FLAG_COALESCE_WITH_SEMICOLON   0x01000000
+#define WINHTTP_ADDREQ_FLAG_COALESCE                  WINHTTP_ADDREQ_FLAG_COALESCE_WITH_COMMA
+
+//
+// WINHTTP_ADDREQ_FLAG_REPLACE - replaces the specified header. Only one header can
+// be supplied in the buffer. If the header to be replaced is not the first
+// in a list of headers with the same name, then the relative index should be
+// supplied in the low 8 bits of the dwModifiers parameter. If the header-value
+// part is missing, then the header is removed
+//
+
+#define WINHTTP_ADDREQ_FLAG_REPLACE    0x80000000
+
+#define WINHTTP_IGNORE_REQUEST_TOTAL_LENGTH 0
+
+// WinHttpSendRequest prettifiers for optional parameters.
+#define WINHTTP_NO_ADDITIONAL_HEADERS   NULL
+#define WINHTTP_NO_REQUEST_DATA         NULL
+
+
+// WinHttpQueryHeaders prettifiers for optional parameters.
+#define WINHTTP_HEADER_NAME_BY_INDEX           NULL
+#define WINHTTP_NO_OUTPUT_BUFFER               NULL
+#define WINHTTP_NO_HEADER_INDEX                NULL
+
+typedef struct
+{
+    BOOL    fAutoDetect;
+    LPWSTR  lpszAutoConfigUrl;
+    LPWSTR  lpszProxy;
+    LPWSTR  lpszProxyBypass;
+} WINHTTP_CURRENT_USER_IE_PROXY_CONFIG;
+
+//#if !defined(_WINERROR_)
+
+//
+// WinHttp API error returns
+//
+
+#define WINHTTP_ERROR_BASE                     12000
+
+#define ERROR_WINHTTP_OUT_OF_HANDLES           (WINHTTP_ERROR_BASE + 1)
+#define ERROR_WINHTTP_TIMEOUT                  (WINHTTP_ERROR_BASE + 2)
+#define ERROR_WINHTTP_INTERNAL_ERROR           (WINHTTP_ERROR_BASE + 4)
+#define ERROR_WINHTTP_INVALID_URL              (WINHTTP_ERROR_BASE + 5)
+#define ERROR_WINHTTP_UNRECOGNIZED_SCHEME      (WINHTTP_ERROR_BASE + 6)
+#define ERROR_WINHTTP_NAME_NOT_RESOLVED        (WINHTTP_ERROR_BASE + 7)
+#define ERROR_WINHTTP_INVALID_OPTION           (WINHTTP_ERROR_BASE + 9)
+#define ERROR_WINHTTP_OPTION_NOT_SETTABLE      (WINHTTP_ERROR_BASE + 11)
+#define ERROR_WINHTTP_SHUTDOWN                 (WINHTTP_ERROR_BASE + 12)
+
+
+#define ERROR_WINHTTP_LOGIN_FAILURE            (WINHTTP_ERROR_BASE + 15)
+#define ERROR_WINHTTP_OPERATION_CANCELLED      (WINHTTP_ERROR_BASE + 17)
+#define ERROR_WINHTTP_INCORRECT_HANDLE_TYPE    (WINHTTP_ERROR_BASE + 18)
+#define ERROR_WINHTTP_INCORRECT_HANDLE_STATE   (WINHTTP_ERROR_BASE + 19)
+#define ERROR_WINHTTP_CANNOT_CONNECT           (WINHTTP_ERROR_BASE + 29)
+#define ERROR_WINHTTP_CONNECTION_ERROR         (WINHTTP_ERROR_BASE + 30)
+#define ERROR_WINHTTP_RESEND_REQUEST           (WINHTTP_ERROR_BASE + 32)
+
+#define ERROR_WINHTTP_CLIENT_AUTH_CERT_NEEDED  (WINHTTP_ERROR_BASE + 44)
+
+
+//
+// WinHttpRequest Component errors
+//
+#define ERROR_WINHTTP_CANNOT_CALL_BEFORE_OPEN	(WINHTTP_ERROR_BASE + 100)
+#define ERROR_WINHTTP_CANNOT_CALL_BEFORE_SEND	(WINHTTP_ERROR_BASE + 101)
+#define ERROR_WINHTTP_CANNOT_CALL_AFTER_SEND	(WINHTTP_ERROR_BASE + 102)
+#define ERROR_WINHTTP_CANNOT_CALL_AFTER_OPEN	(WINHTTP_ERROR_BASE + 103)
+
+
+//
+// HTTP API errors
+//
+
+#define ERROR_WINHTTP_HEADER_NOT_FOUND             (WINHTTP_ERROR_BASE + 150)
+#define ERROR_WINHTTP_INVALID_SERVER_RESPONSE      (WINHTTP_ERROR_BASE + 152)
+#define ERROR_WINHTTP_INVALID_HEADER               (WINHTTP_ERROR_BASE + 153)
+#define ERROR_WINHTTP_INVALID_QUERY_REQUEST        (WINHTTP_ERROR_BASE + 154)
+#define ERROR_WINHTTP_HEADER_ALREADY_EXISTS        (WINHTTP_ERROR_BASE + 155)
+#define ERROR_WINHTTP_REDIRECT_FAILED              (WINHTTP_ERROR_BASE + 156)
+
+
+
+//
+// additional WinHttp API error codes
+//
+
+//
+// additional WinHttp API error codes
+//
+
+#define ERROR_WINHTTP_AUTO_PROXY_SERVICE_ERROR  (WINHTTP_ERROR_BASE + 178)
+#define ERROR_WINHTTP_BAD_AUTO_PROXY_SCRIPT     (WINHTTP_ERROR_BASE + 166)
+#define ERROR_WINHTTP_UNABLE_TO_DOWNLOAD_SCRIPT (WINHTTP_ERROR_BASE + 167)
+#define ERROR_WINHTTP_UNHANDLED_SCRIPT_TYPE     (WINHTTP_ERROR_BASE + 176)
+#define ERROR_WINHTTP_SCRIPT_EXECUTION_ERROR    (WINHTTP_ERROR_BASE + 177)
+
+#define ERROR_WINHTTP_NOT_INITIALIZED          (WINHTTP_ERROR_BASE + 172)
+#define ERROR_WINHTTP_SECURE_FAILURE           (WINHTTP_ERROR_BASE + 175)
+
+
+//
+// Certificate security errors. These are raised only by the WinHttpRequest
+// component. The WinHTTP Win32 API will return ERROR_WINHTTP_SECURE_FAILE and
+// provide additional information via the WINHTTP_CALLBACK_STATUS_SECURE_FAILURE
+// callback notification.
+//
+#define ERROR_WINHTTP_SECURE_CERT_DATE_INVALID    (WINHTTP_ERROR_BASE + 37)
+#define ERROR_WINHTTP_SECURE_CERT_CN_INVALID      (WINHTTP_ERROR_BASE + 38)
+#define ERROR_WINHTTP_SECURE_INVALID_CA           (WINHTTP_ERROR_BASE + 45)
+#define ERROR_WINHTTP_SECURE_CERT_REV_FAILED      (WINHTTP_ERROR_BASE + 57)
+#define ERROR_WINHTTP_SECURE_CHANNEL_ERROR        (WINHTTP_ERROR_BASE + 157)
+#define ERROR_WINHTTP_SECURE_INVALID_CERT         (WINHTTP_ERROR_BASE + 169)
+#define ERROR_WINHTTP_SECURE_CERT_REVOKED         (WINHTTP_ERROR_BASE + 170)
+#define ERROR_WINHTTP_SECURE_CERT_WRONG_USAGE     (WINHTTP_ERROR_BASE + 179)
+
+
+#define ERROR_WINHTTP_AUTODETECTION_FAILED                  (WINHTTP_ERROR_BASE + 180)
+#define ERROR_WINHTTP_HEADER_COUNT_EXCEEDED                 (WINHTTP_ERROR_BASE + 181)
+#define ERROR_WINHTTP_HEADER_SIZE_OVERFLOW                  (WINHTTP_ERROR_BASE + 182)
+#define ERROR_WINHTTP_CHUNKED_ENCODING_HEADER_SIZE_OVERFLOW (WINHTTP_ERROR_BASE + 183)
+#define ERROR_WINHTTP_RESPONSE_DRAIN_OVERFLOW               (WINHTTP_ERROR_BASE + 184)
+#define ERROR_WINHTTP_CLIENT_CERT_NO_PRIVATE_KEY            (WINHTTP_ERROR_BASE + 185)
+#define ERROR_WINHTTP_CLIENT_CERT_NO_ACCESS_PRIVATE_KEY     (WINHTTP_ERROR_BASE + 186)
+
+#define ERROR_WINHTTP_CLIENT_AUTH_CERT_NEEDED_PROXY         (WINHTTP_ERROR_BASE + 187)
+#define ERROR_WINHTTP_SECURE_FAILURE_PROXY                  (WINHTTP_ERROR_BASE + 188)
+
+
+#define WINHTTP_ERROR_LAST                                  (WINHTTP_ERROR_BASE + 188)
+
+#define WINHTTP_RESET_STATE                     0x00000001
+#define WINHTTP_RESET_SWPAD_CURRENT_NETWORK     0x00000002
+#define WINHTTP_RESET_SWPAD_ALL                 0x00000004
+#define WINHTTP_RESET_SCRIPT_CACHE              0x00000008
+#define WINHTTP_RESET_ALL                       0x0000FFFF
+#define WINHTTP_RESET_NOTIFY_NETWORK_CHANGED    0x00010000
+#define WINHTTP_RESET_OUT_OF_PROC               0x00020000
+
+
+//#endif // !defined(_WINERROR_)
+
+
+//
+// prototypes
+//
+
+WINHTTPAPI
+WINHTTP_STATUS_CALLBACK
+WINAPI
+WinHttpSetStatusCallback
+(
+    IN HINTERNET hInternet,
+    IN WINHTTP_STATUS_CALLBACK lpfnInternetCallback,
+    IN DWORD dwNotificationFlags,
+    IN DWORD_PTR dwReserved
+);
+
+BOOLAPI
+WinHttpTimeFromSystemTime
+(
+    _In_ CONST SYSTEMTIME *pst,  // input GMT time
+    _Out_writes_bytes_(WINHTTP_TIME_FORMAT_BUFSIZE) LPWSTR pwszTime // output string buffer
+);
+
+BOOLAPI
+WinHttpTimeToSystemTime
+(
+    _In_z_ LPCWSTR pwszTime,        // NULL terminated string
+    _Out_ SYSTEMTIME *pst           // output in GMT time
+);
+
+
+
+BOOLAPI
+WinHttpCrackUrl
+(
+    _In_reads_(dwUrlLength) LPCWSTR pwszUrl,
+    _In_ DWORD dwUrlLength,
+    _In_ DWORD dwFlags,
+    _Inout_ LPURL_COMPONENTS lpUrlComponents
+);
+
+_Success_(return != FALSE)
+BOOLAPI
+WinHttpCreateUrl
+(
+    _In_ LPURL_COMPONENTS lpUrlComponents,
+    _In_ DWORD dwFlags,
+    _Out_writes_to_opt_(*pdwUrlLength, *pdwUrlLength) LPWSTR pwszUrl,
+    _Inout_ LPDWORD pdwUrlLength
+);
+
+BOOLAPI
+WinHttpCheckPlatform(void);
+
+
+WINHTTPAPI BOOL WINAPI WinHttpGetDefaultProxyConfiguration( IN OUT WINHTTP_PROXY_INFO * pProxyInfo);
+WINHTTPAPI BOOL WINAPI WinHttpSetDefaultProxyConfiguration( IN WINHTTP_PROXY_INFO * pProxyInfo);
+
+
+WINHTTPAPI
+HINTERNET
+WINAPI
+WinHttpOpen
+(
+    _In_opt_z_ LPCWSTR pszAgentW,
+    _In_ DWORD dwAccessType,
+    _In_opt_z_ LPCWSTR pszProxyW,
+    _In_opt_z_ LPCWSTR pszProxyBypassW,
+    _In_ DWORD dwFlags
+);
+
+
+BOOLAPI
+WinHttpCloseHandle
+(
+    IN HINTERNET hInternet
+);
+
+
+WINHTTPAPI
+HINTERNET
+WINAPI
+WinHttpConnect
+(
+    IN HINTERNET hSession,
+    IN LPCWSTR pswzServerName,
+    IN INTERNET_PORT nServerPort,
+    IN DWORD dwReserved
+);
+
+
+BOOLAPI
+WinHttpReadData
+(
+    IN HINTERNET hRequest,
+    _Out_writes_bytes_to_(dwNumberOfBytesToRead, *lpdwNumberOfBytesRead) __out_data_source(NETWORK) LPVOID lpBuffer,
+    IN DWORD dwNumberOfBytesToRead,
+    OUT LPDWORD lpdwNumberOfBytesRead
+);
+
+BOOLAPI
+WinHttpWriteData
+(
+    IN HINTERNET hRequest,
+    _In_reads_bytes_opt_(dwNumberOfBytesToWrite) LPCVOID lpBuffer,
+    IN DWORD dwNumberOfBytesToWrite,
+    OUT LPDWORD lpdwNumberOfBytesWritten
+);
+
+
+BOOLAPI
+WinHttpQueryDataAvailable
+(
+    IN HINTERNET hRequest,
+    __out_data_source(NETWORK) LPDWORD lpdwNumberOfBytesAvailable
+);
+
+
+_Success_(return != FALSE)
+BOOLAPI
+WinHttpQueryOption
+(
+    IN HINTERNET hInternet,
+    IN DWORD dwOption,
+    _Out_writes_bytes_to_opt_(*lpdwBufferLength, *lpdwBufferLength) __out_data_source(NETWORK) LPVOID lpBuffer,
+    IN OUT LPDWORD lpdwBufferLength
+);
+
+BOOLAPI
+WinHttpSetOption(
+    _In_opt_ HINTERNET hInternet,
+    _In_ DWORD dwOption,
+    _When_((dwOption == WINHTTP_OPTION_USERNAME ||
+            dwOption == WINHTTP_OPTION_PASSWORD ||
+            dwOption == WINHTTP_OPTION_PROXY_USERNAME ||
+            dwOption == WINHTTP_OPTION_PROXY_PASSWORD ||
+            dwOption == WINHTTP_OPTION_USER_AGENT),
+           _At_((LPCWSTR)lpBuffer, _In_reads_(dwBufferLength)))
+    _When_((dwOption == WINHTTP_OPTION_CLIENT_CERT_CONTEXT),
+           _In_reads_bytes_opt_(dwBufferLength))
+    _When_((dwOption != WINHTTP_OPTION_USERNAME &&
+            dwOption != WINHTTP_OPTION_PASSWORD &&
+            dwOption != WINHTTP_OPTION_PROXY_USERNAME &&
+            dwOption != WINHTTP_OPTION_PROXY_PASSWORD &&
+            dwOption != WINHTTP_OPTION_CLIENT_CERT_CONTEXT &&
+            dwOption != WINHTTP_OPTION_USER_AGENT),
+           _In_reads_bytes_(dwBufferLength))
+    LPVOID lpBuffer,
+    _In_ DWORD dwBufferLength
+);
+
+
+
+BOOLAPI
+WinHttpSetTimeouts
+(
+    IN HINTERNET    hInternet,           // Session/Request handle.
+    IN int          nResolveTimeout,
+    IN int          nConnectTimeout,
+    IN int          nSendTimeout,
+    IN int          nReceiveTimeout
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpIsHostInProxyBypassList
+(
+    _In_ const WINHTTP_PROXY_INFO *pProxyInfo,
+    _In_z_ PCWSTR pwszHost,
+    _In_ INTERNET_SCHEME tScheme,
+    _In_ INTERNET_PORT nPort,
+    _Out_ BOOL *pfIsInBypassList
+);
+
+//
+// prototypes
+//
+
+WINHTTPAPI
+HINTERNET
+WINAPI
+WinHttpOpenRequest
+(
+    IN HINTERNET hConnect,
+    IN LPCWSTR pwszVerb,
+    IN LPCWSTR pwszObjectName,
+    IN LPCWSTR pwszVersion,
+    IN LPCWSTR pwszReferrer OPTIONAL,
+    IN LPCWSTR FAR * ppwszAcceptTypes OPTIONAL,
+    IN DWORD dwFlags
+);
+
+BOOLAPI
+WinHttpAddRequestHeaders
+(
+    IN HINTERNET hRequest,
+    _When_(dwHeadersLength == (DWORD)-1, _In_z_)
+    _When_(dwHeadersLength != (DWORD)-1, _In_reads_(dwHeadersLength))
+    LPCWSTR lpszHeaders,
+    IN DWORD dwHeadersLength,
+    IN DWORD dwModifiers
+);
+
+BOOLAPI
+WinHttpSendRequest
+(
+    IN HINTERNET hRequest,
+    _In_reads_opt_(dwHeadersLength) LPCWSTR lpszHeaders,
+    IN DWORD dwHeadersLength,
+    _In_reads_bytes_opt_(dwOptionalLength) LPVOID lpOptional,
+    IN DWORD dwOptionalLength,
+    IN DWORD dwTotalLength,
+    IN DWORD_PTR dwContext
+);
+
+BOOLAPI WinHttpSetCredentials
+(
+
+    IN HINTERNET   hRequest,        // HINTERNET handle returned by WinHttpOpenRequest.
+
+
+    IN DWORD       AuthTargets,      // Only WINHTTP_AUTH_TARGET_SERVER and
+                                    // WINHTTP_AUTH_TARGET_PROXY are supported
+                                    // in this version and they are mutually
+                                    // exclusive
+
+    IN DWORD       AuthScheme,      // must be one of the supported Auth Schemes
+                                    // returned from WinHttpQueryAuthSchemes()
+
+    IN LPCWSTR     pwszUserName,    // 1) NULL if default creds is to be used, in
+                                    // which case pszPassword will be ignored
+
+    IN LPCWSTR     pwszPassword,    // 1) "" == Blank Password; 2)Parameter ignored
+                                    // if pszUserName is NULL; 3) Invalid to pass in
+                                    // NULL if pszUserName is not NULL
+    IN LPVOID      pAuthParams
+);
+
+
+BOOLAPI WinHttpQueryAuthSchemes
+(
+    IN  HINTERNET   hRequest,             // HINTERNET handle returned by WinHttpOpenRequest
+    OUT LPDWORD     lpdwSupportedSchemes, // a bitmap of available Authentication Schemes
+    OUT LPDWORD     lpdwFirstScheme,      // returns the first auth scheme returned by the server
+    OUT LPDWORD     pdwAuthTarget
+);
+
+BOOLAPI WinHttpQueryAuthParams(
+    IN  HINTERNET   hRequest,        // HINTERNET handle returned by WinHttpOpenRequest
+    IN  DWORD       AuthScheme,
+    OUT LPVOID*     pAuthParams      // Scheme-specific Advanced auth parameters
+    );
+
+
+WINHTTPAPI
+BOOL
+WINAPI
+WinHttpReceiveResponse
+(
+    IN HINTERNET hRequest,
+    IN LPVOID lpReserved
+);
+
+_Success_(return != FALSE)
+BOOLAPI
+WinHttpQueryHeaders
+(
+    IN     HINTERNET hRequest,
+    IN     DWORD     dwInfoLevel,
+    IN     LPCWSTR   pwszName OPTIONAL,
+    _Out_writes_bytes_to_opt_(*lpdwBufferLength, *lpdwBufferLength) __out_data_source(NETWORK) LPVOID lpBuffer,
+    IN OUT LPDWORD   lpdwBufferLength,
+    IN OUT LPDWORD   lpdwIndex OPTIONAL
+);
+
+BOOLAPI
+WinHttpDetectAutoProxyConfigUrl
+(
+    DWORD dwAutoDetectFlags,
+    _Outptr_result_maybenull_ LPWSTR * ppwstrAutoConfigUrl
+);
+
+BOOLAPI
+WinHttpGetProxyForUrl
+(
+    IN  HINTERNET                   hSession,
+    IN  LPCWSTR                     lpcwszUrl,
+    IN  WINHTTP_AUTOPROXY_OPTIONS * pAutoProxyOptions,
+    OUT WINHTTP_PROXY_INFO *        pProxyInfo
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpCreateProxyResolver
+(
+    _In_ HINTERNET hSession,
+    _Out_ HINTERNET *phResolver
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpGetProxyForUrlEx
+(
+    _In_ HINTERNET hResolver,
+    _In_ PCWSTR pcwszUrl,
+    _In_ WINHTTP_AUTOPROXY_OPTIONS *pAutoProxyOptions,
+    _In_opt_ DWORD_PTR pContext
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpGetProxyForUrlEx2
+(
+    _In_ HINTERNET hResolver,
+    _In_ PCWSTR pcwszUrl,
+    _In_ WINHTTP_AUTOPROXY_OPTIONS *pAutoProxyOptions,
+    _In_ DWORD cbInterfaceSelectionContext,
+    _In_reads_bytes_opt_(cbInterfaceSelectionContext) BYTE *pInterfaceSelectionContext,
+    _In_opt_ DWORD_PTR pContext
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpGetProxyResult
+(
+    _In_ HINTERNET hResolver,
+    _Out_ WINHTTP_PROXY_RESULT *pProxyResult
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpGetProxyResultEx
+(
+    _In_ HINTERNET hResolver,
+    _Out_ WINHTTP_PROXY_RESULT_EX *pProxyResultEx
+);
+
+WINHTTPAPI
+VOID
+WINAPI
+WinHttpFreeProxyResult
+(
+    _Inout_ WINHTTP_PROXY_RESULT *pProxyResult
+);
+
+WINHTTPAPI
+VOID
+WINAPI
+WinHttpFreeProxyResultEx
+(
+    _Inout_ WINHTTP_PROXY_RESULT_EX *pProxyResultEx
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpResetAutoProxy
+(
+    _In_ HINTERNET hSession,
+    _In_ DWORD dwFlags
+);
+
+BOOLAPI
+WinHttpGetIEProxyConfigForCurrentUser
+(
+    IN OUT WINHTTP_CURRENT_USER_IE_PROXY_CONFIG * pProxyConfig
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpWriteProxySettings(
+    _In_ HINTERNET hSession,
+    _In_ BOOL fForceUpdate,
+    _In_ WINHTTP_PROXY_SETTINGS *pWinHttpProxySettings
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpReadProxySettings(
+    _In_ HINTERNET hSession,
+    _In_opt_ PCWSTR pcwszConnectionName,
+    _In_ BOOL fFallBackToDefaultSettings,
+    _In_ BOOL fSetAutoDiscoverForDefaultSettings,
+    _Out_ DWORD *pdwSettingsVersion,
+    _Out_ BOOL *pfDefaultSettingsAreReturned,
+    _Out_ WINHTTP_PROXY_SETTINGS *pWinHttpProxySettings
+);
+
+WINHTTPAPI
+VOID
+WINAPI
+WinHttpFreeProxySettings(
+    _In_ WINHTTP_PROXY_SETTINGS *pWinHttpProxySettings
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpGetProxySettingsVersion(
+    _In_ HINTERNET hSession,
+    _Out_ DWORD *pdwProxySettingsVersion
+);
+
+typedef enum _WINHTTP_WEB_SOCKET_OPERATION
+{
+    WINHTTP_WEB_SOCKET_SEND_OPERATION                   = 0,
+    WINHTTP_WEB_SOCKET_RECEIVE_OPERATION                = 1,
+    WINHTTP_WEB_SOCKET_CLOSE_OPERATION                  = 2,
+    WINHTTP_WEB_SOCKET_SHUTDOWN_OPERATION               = 3
+} WINHTTP_WEB_SOCKET_OPERATION;
+
+typedef enum _WINHTTP_WEB_SOCKET_BUFFER_TYPE
+{
+    WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE       = 0,
+    WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE      = 1,
+    WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE         = 2,
+    WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE        = 3,
+    WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE                = 4
+} WINHTTP_WEB_SOCKET_BUFFER_TYPE;
+
+typedef enum _WINHTTP_WEB_SOCKET_CLOSE_STATUS
+{
+    WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS                = 1000,
+    WINHTTP_WEB_SOCKET_ENDPOINT_TERMINATED_CLOSE_STATUS    = 1001,
+    WINHTTP_WEB_SOCKET_PROTOCOL_ERROR_CLOSE_STATUS         = 1002,
+    WINHTTP_WEB_SOCKET_INVALID_DATA_TYPE_CLOSE_STATUS      = 1003,
+    WINHTTP_WEB_SOCKET_EMPTY_CLOSE_STATUS                  = 1005,
+    WINHTTP_WEB_SOCKET_ABORTED_CLOSE_STATUS                = 1006,
+    WINHTTP_WEB_SOCKET_INVALID_PAYLOAD_CLOSE_STATUS        = 1007,
+    WINHTTP_WEB_SOCKET_POLICY_VIOLATION_CLOSE_STATUS       = 1008,
+    WINHTTP_WEB_SOCKET_MESSAGE_TOO_BIG_CLOSE_STATUS        = 1009,
+    WINHTTP_WEB_SOCKET_UNSUPPORTED_EXTENSIONS_CLOSE_STATUS = 1010,
+    WINHTTP_WEB_SOCKET_SERVER_ERROR_CLOSE_STATUS           = 1011,
+    WINHTTP_WEB_SOCKET_SECURE_HANDSHAKE_ERROR_CLOSE_STATUS = 1015
+} WINHTTP_WEB_SOCKET_CLOSE_STATUS;
+
+typedef struct _WINHTTP_WEB_SOCKET_ASYNC_RESULT
+{
+    WINHTTP_ASYNC_RESULT AsyncResult;
+    WINHTTP_WEB_SOCKET_OPERATION Operation;
+} WINHTTP_WEB_SOCKET_ASYNC_RESULT;
+
+typedef struct _WINHTTP_WEB_SOCKET_STATUS
+{
+    DWORD dwBytesTransferred;
+    WINHTTP_WEB_SOCKET_BUFFER_TYPE eBufferType;
+} WINHTTP_WEB_SOCKET_STATUS;
+
+#define WINHTTP_WEB_SOCKET_MAX_CLOSE_REASON_LENGTH 123
+#define WINHTTP_WEB_SOCKET_MIN_KEEPALIVE_VALUE 15000
+
+WINHTTPAPI
+HINTERNET
+WINAPI
+WinHttpWebSocketCompleteUpgrade
+(
+    _In_ HINTERNET hRequest,
+    _In_opt_ DWORD_PTR pContext
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpWebSocketSend
+(
+    _In_ HINTERNET hWebSocket,
+    _In_ WINHTTP_WEB_SOCKET_BUFFER_TYPE eBufferType,
+    _In_reads_opt_(dwBufferLength) PVOID pvBuffer,
+    _In_ DWORD dwBufferLength
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpWebSocketReceive
+(
+    _In_ HINTERNET hWebSocket,
+    _Out_writes_bytes_to_(dwBufferLength, *pdwBytesRead) PVOID pvBuffer,
+    _In_ DWORD dwBufferLength,
+    _Out_range_(0, dwBufferLength) DWORD *pdwBytesRead,
+    _Out_ WINHTTP_WEB_SOCKET_BUFFER_TYPE *peBufferType
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpWebSocketShutdown
+(
+    _In_ HINTERNET hWebSocket,
+    _In_ USHORT usStatus,
+    _In_reads_bytes_opt_(dwReasonLength) PVOID pvReason,
+    _In_range_(0, WINHTTP_WEB_SOCKET_MAX_CLOSE_REASON_LENGTH) DWORD dwReasonLength
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpWebSocketClose
+(
+    _In_ HINTERNET hWebSocket,
+    _In_ USHORT usStatus,
+    _In_reads_bytes_opt_(dwReasonLength) PVOID pvReason,
+    _In_range_(0, WINHTTP_WEB_SOCKET_MAX_CLOSE_REASON_LENGTH) DWORD dwReasonLength
+);
+
+WINHTTPAPI
+DWORD
+WINAPI
+WinHttpWebSocketQueryCloseStatus
+(
+    _In_ HINTERNET hWebSocket,
+    _Out_ USHORT *pusStatus,
+    _Out_writes_bytes_to_opt_(dwReasonLength, *pdwReasonLengthConsumed) PVOID pvReason,
+    _In_range_(0, WINHTTP_WEB_SOCKET_MAX_CLOSE_REASON_LENGTH) DWORD dwReasonLength,
+    _Out_range_(0, WINHTTP_WEB_SOCKET_MAX_CLOSE_REASON_LENGTH) DWORD *pdwReasonLengthConsumed
+);
+
+
+
+#if defined(__cplusplus)
+}
+#endif
+
+
+/*
+ * Return packing to whatever it was before we
+ * entered this file
+ */
+#include <poppack.h>
+
+
+#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+#pragma endregion
+
+#endif // !defined(_WINHTTPX_)
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         // list stl/clr header
+// Copyright (c) Microsoft Corporation. All rights reserved.
+#ifndef _CLI_LIST_
+ #define _CLI_LIST_
+#include <cliext/functional>
+#include <cliext/iterator>
+
+namespace cliext {
+	namespace impl {
+//
+// TEMPLATE REF CLASS list_node
+//
+template<typename _Value_t>
+	ref class list_node
+	:	public _STLCLR Generic::INode<_Value_t>
+	{	// list node
+public:
+	typedef list_node<_Value_t> _Mytype_t;
+	typedef _STLCLR Generic::INode<_Value_t> _Mynode_it;
+	typedef _STLCLR Generic::IBidirectionalContainer<_Value_t> _Mycont_it;
+	typedef _Value_t value_type;
+
+	list_node(_Mycont_it^ _Owner)
+		:	_Mycont(_Owner)
+		{	// construct a node with defaults
+		}
+
+	_Mycont_it^ container()
+		{	// return owning container
+		return (_Head == nullptr ? nullptr : _Head->_Mycont);
+		}
+
+	bool is_head()
+		{	// test if head node
+		return (_Mycont != nullptr);
+		}
+
+	_Mytype_t^ next_node()
+		{	// return successor node
+		if (this == _Head || _Head == nullptr)
+			throw gcnew System::InvalidOperationException();
+		return (_Next);
+		}
+
+	_Mytype_t^ prev_node()
+		{	// return predecessor node
+		if (_Head == _Prev || _Head == nullptr)
+			throw gcnew System::InvalidOperationException();
+		return (_Prev);
+		}
+
+	property _Value_t% _Value
+		{	// get or set _Myval
+		virtual _Value_t% get()
+			{	// get _Myval element
+			if (this == _Head || _Head == nullptr)
+				throw gcnew System::InvalidOperationException();
+			return (_Myval);
+			}
+
+		virtual void set(_Value_t% _Val)
+			{	// set _Myval element
+			if (this == _Head || _Head == nullptr)
+				throw gcnew System::InvalidOperationException();
+			_Myval = _Val;
+			}
+		};
+
+	// data members
+	_Mycont_it^ _Mycont;	// pointer to owning list (if head node)
+	_Mytype_t^ _Head;	// pointer to head node
+	_Mytype_t^ _Next;	// pointer to successor node
+	_Mytype_t^ _Prev;	// pointer to predecessor node
+	value_type _Myval;	// the stored value (if not head node)
+
+private:
+	virtual _Mycont_it^ container_virtual() sealed
+		= _Mynode_it::container
+		{	// return owning container
+		return (container());
+		}
+
+	virtual bool is_head_virtual() sealed
+		= _Mynode_it::is_head
+		{	// test if head node
+		return (is_head());
+		}
+
+	virtual _Mynode_it^ next_node_virtual() sealed
+		= _Mynode_it::next_node
+		{	// return successor node
+		return (next_node());
+		}
+
+	virtual _Mynode_it^ prev_node_virtual() sealed
+		= _Mynode_it::prev_node
+		{	// return predecessor node
+		return (prev_node());
+		}
+	};
+
+//
+// TEMPLATE REF CLASS list_impl
+//
+template<typename _Value_t,
+	bool _Is_ref>
+	ref class list_impl
+	:	public _STLCLR IList<_Value_t>
+	{	// bidirectional linked list of elements
+public:
+	// types
+	typedef list_impl<_Value_t, _Is_ref> _Mytype_t;
+	typedef _STLCLR IList<_Value_t> _Mycont_it;
+	typedef list_node<_Value_t> _Mynode_t;
+	typedef cli::array<_Value_t> _Myarray_t;
+	typedef System::Collections::Generic::IEnumerable<_Value_t> _Myenum_it;
+	typedef _Cont_make_value<_Value_t, _Is_ref> _Mymake_t;
+
+	typedef list_node<_Value_t> node_type;
+
+	typedef BidirectionalIterator<_Mytype_t>
+		iterator;
+	typedef ConstBidirectionalIterator<_Mytype_t>
+		const_iterator;
+	typedef ReverseBidirectionalIterator<_Mytype_t>
+		reverse_iterator;
+	typedef ReverseBidirectionalIterator<_Mytype_t>
+		const_reverse_iterator;
+
+	typedef int size_type;
+	typedef int difference_type;
+	typedef _Value_t value_type;
+	typedef value_type% reference;
+	typedef value_type% const_reference;
+
+	typedef _Mycont_it generic_container;
+	typedef value_type generic_value;
+	typedef _STLCLR Generic::ContainerBidirectionalIterator<_Value_t>
+		generic_iterator;
+	typedef _STLCLR Generic::ReverseBidirectionalIterator<_Value_t>
+		generic_reverse_iterator;
+
+	typedef _STLCLR BinaryDelegate<value_type, value_type, bool>
+		_Valcomp_dt;
+	typedef _STLCLR UnaryDelegate<value_type, bool> _Valtest_dt;
+
+	// constants
+	static const int _Maxsize = MAX_CONTAINER_SIZE;
+
+	// basics
+	list_impl()
+		:	_Mysize(0), _Mygen(0)
+		{	// construct empty list
+		_Myhead = _Buynode();
+		}
+
+	list_impl% operator=(list_impl% _Right)
+		{	// assign
+		if ((Object^)this != %_Right)
+			{	// worth doing, do it
+			clear();
+			insert_node(head_node(),
+				_Right.front_node(), _Right.head_node());
+			}
+		return (*this);
+		}
+
+	// constructors
+	list_impl(_Mytype_t% _Right)
+		:	_Mysize(0), _Mygen(0)
+		{	// construct by copying _Right
+		_Myhead = _Buynode();
+		insert_node(head_node(), _Right.front_node(), _Right.head_node());
+		}
+
+	explicit list_impl(size_type _Count)
+		:	_Mysize(0), _Mygen(0)
+		{	// construct from _Count * value_type()
+		_Myhead = _Buynode();
+		insert_node(head_node(), _Count, value_type());
+		}
+
+	list_impl(size_type _Count, value_type _Val)
+		:	_Mysize(0), _Mygen(0)
+		{	// construct from _Count * _Val
+		_Myhead = _Buynode();
+		insert_node(head_node(), _Count, _Val);
+		}
+
+	template<typename _InIt_t>
+		list_impl(_InIt_t _First, _InIt_t _Last)
+		:	_Mysize(0), _Mygen(0)
+		{	// construct from [_First, _Last)
+		_Myhead = _Buynode();
+		_Construct(_First, _Last, _Iter_category(_First));
+		}
+
+	template<typename _InIt_t>
+		void _Construct(_InIt_t _Count, _InIt_t _Val,
+			_Int_iterator_tag%)
+		{	// initialize with _Count * _Val
+		insert_node(head_node(), (size_type)_Count, (value_type)_Val);
+		}
+
+	template<typename _InIt_t>
+		void _Construct(_InIt_t _First, _InIt_t _Last,
+			input_iterator_tag%)
+		{	// initialize with [_First, _Last), input iterators
+		for (; _First != _Last; ++_First)
+			push_back((value_type)*_First);
+		}
+
+	template<typename _InIt_t>
+		void _Construct(_InIt_t _First, _InIt_t _Last,
+			random_access_iterator_tag%)
+		{	// initialize with [_First, _Last), random-access iterators
+		if (_Last < _First)
+			throw gcnew System::ArgumentOutOfRangeException();
+		for (; _First != _Last; ++_First)
+			push_back((value_type)*_First);
+		}
+
+	list_impl(_Myenum_it^ _Right)
+		:	_Mysize(0), _Mygen(0)
+		{	// initialize with enumeration
+		_Myhead = _Buynode();
+		for each (value_type _Val in _Right)
+			push_back(_Val);
+		}
+
+	// destructor
+	~list_impl()
+		{	// destroy the object
+		clear();
+		_Myhead = nullptr;
+		_Mysize = 0;
+		++_Mygen;
+		}
+
+	// accessors
+	unsigned long get_generation()
+		{	// get underlying container generation
+		return (_Mygen);
+		}
+
+	node_type^ get_node(iterator _Where)
+		{	// get node from valid iterator
+		node_type^ _Node = (node_type^)_Where.get_node();
+
+		if (_Node->container() != (System::Object^)this)
+			throw gcnew System::InvalidOperationException();
+		return (_Node);
+		}
+
+	node_type^ front_node()
+		{	// return leftmost node in tree
+		return (head_node()->_Next);	// avoid usual check
+		}
+
+	node_type^ back_node()
+		{	// return rightmost node in tree
+		return (head_node()->_Prev);	// avoid usual check
+		}
+
+	node_type^ head_node()
+		{	// get head node
+		return (_Myhead);
+		}
+
+//	property reference default[/* size_type */];
+
+	property value_type front_item
+		{	// get or set first element
+		virtual value_type get()
+			{	// get first element
+			return (front());
+			}
+
+		virtual void set(value_type _Val)
+			{	// set first element
+			front() = _Mymake_t::make_value(_Val);
+			}
+		};
+
+	property value_type back_item
+		{	// get or set last element
+		virtual value_type get()
+			{	// get last element
+			return (back());
+			}
+
+		virtual void set(value_type _Val)
+			{	// set last element
+			back() = _Mymake_t::make_value(_Val);
+			}
+		};
+
+	reference front()
+		{	// get first element of mutable sequence
+		if (empty())
+			throw gcnew System::NullReferenceException();
+		return (front_node()->_Myval);
+		}
+
+	reference back()
+		{	// get last element of mutable sequence
+		if (empty())
+			throw gcnew System::NullReferenceException();
+		return (back_node()->_Myval);
+		}
+
+	// converters
+	_Myarray_t^ to_array()
+		{	// convert to array
+		_Myarray_t^ _Ans = gcnew _Myarray_t(size());
+		node_type^ _Node = head_node();
+
+		for (int _Idx = size(); 0 <= --_Idx; )
+			{	// copy back to front
+			_Node = _Node->prev_node();
+			_Ans[_Idx] = _Mymake_t::make_value(_Node->_Myval);
+			}
+		return (_Ans);
+		}
+
+	// iterator generators
+	iterator make_iterator(node_type^ _Node)
+		{	// return iterator for node
+		return (iterator(_Node));
+		}
+
+	iterator begin()
+		{	// return iterator for beginning of mutable sequence
+		return (make_iterator(front_node()));
+		}
+
+	iterator end()
+		{	// return iterator for end of mutable sequence
+		return (make_iterator(head_node()));
+		}
+
+	reverse_iterator rbegin()
+		{	// return reverse iterator for beginning of mutable sequence
+		return (reverse_iterator(end()));
+		}
+
+	reverse_iterator rend()
+		{	// return reverse iterator for end of mutable sequence
+		return (reverse_iterator(begin()));
+		}
+
+	// size controllers
+//	void reserve(size_type _Capacity);
+//	size_type capacity();
+
+	virtual void resize(size_type _Newsize)
+		{	// determine new length, padding with value_type elements
+		resize(_Newsize, value_type());
+		}
+
+	void resize(size_type _Newsize, value_type _Val)
+		{	// determine new length, padding with _Val elements
+		if (_Newsize < 0)
+			throw gcnew System::ArgumentOutOfRangeException();
+
+		if (size() < _Newsize)
+			insert_node(head_node(), _Newsize - size(), _Val);
+		else
+			for (; _Newsize < size(); )
+				pop_back();	// discard from end
+		}
+
+	size_type size()
+		{	// return length of sequence
+		return (_Mysize);
+		}
+
+	bool empty()
+		{	// test if sequence is empty
+		return (size() == 0);
+		}
+
+	// mutators
+	void push_front(value_type _Val)
+		{	// insert element at beginning
+		insert_node(front_node(), 1, _Val);
+		}
+
+	void pop_front()
+		{	// erase element at beginning
+		if (empty())
+			throw gcnew System::InvalidOperationException();
+		erase_node(front_node());	// discard from beginning
+		}
+
+	void push_back(value_type _Val)
+		{	// insert element at end
+		insert_node(head_node(), 1, _Val);
+		}
+
+	void pop_back()
+		{	// erase element at end
+		if (empty())
+			throw gcnew System::InvalidOperationException();
+		erase_node(back_node());	// discard from end
+		}
+
+	void assign(size_type _Count, value_type _Val)
+		{	// assign _Count * _Val
+		clear();
+		insert_node(head_node(), _Count, _Val);
+		}
+
+	void assign(_STLCLR Generic::IInputIterator<_Value_t>^ _First,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _Last)
+		{	// assign [_First, _Last)
+		if (_First->container() != this)
+			clear();
+
+		size_type _Oldsize = size();
+
+		_Insert_safe(front_node(), _First, _Last);
+		for (; 0 < _Oldsize; --_Oldsize)
+			pop_back();	// discard old stuff
+		}
+
+	void assign(_Myenum_it^ _Right)
+		{	// initialize with enumeration
+		node_type^ _Oldfirst = front_node();
+
+		try
+			{	// try to build insert list
+			for each (value_type _Val in _Right)
+				insert_node(_Oldfirst,	// insert new at beginning
+					1, _Val);
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; front_node() != _Oldfirst; )
+				pop_front();
+			throw;
+			}
+		for (; _Oldfirst != head_node(); )
+			_Oldfirst = erase_node(_Oldfirst);	// discard old stuff
+		}
+
+	void assign(System::Collections::IEnumerable^ _Right)
+		{	// initialize with enumeration
+		node_type^ _Oldfirst = front_node();
+
+		try
+			{	// try to build insert list
+			for each (value_type _Val in _Right)
+				insert_node(_Oldfirst,	// insert new at beginning
+					1, _Val);
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; front_node() != _Oldfirst; )
+				pop_front();
+			throw;
+			}
+		for (; _Oldfirst != head_node(); )
+			_Oldfirst = erase_node(_Oldfirst);	// discard old stuff
+		}
+
+	iterator insert(iterator _Where, value_type _Val)
+		{	// insert _Val at _Where
+		insert_node(get_node(_Where), 1, _Val);
+		return (--_Where);
+		}
+
+	void insert(iterator _Where,
+		size_type _Count, value_type _Val)
+		{	// insert _Count * _Val at _Where
+		insert_node(get_node(_Where), _Count, _Val);
+		}
+
+	void insert(iterator _Where_iter,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _First,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _Last)
+		{	// insert [_First, _Last) at _Where, input iterators
+		node_type^ _Where = get_node(_Where_iter);
+
+		if (_First->container() == this)
+			_Insert_safe(_Where, _First, _Last);
+		else
+			for (; !_First->equal_to(_Last); _First->next())
+				insert_node(_Where, 1, (value_type)_First->get_cref());
+		}
+
+	void insert(iterator _Where_iter,
+		_Myenum_it^ _Right)
+		{	// insert enumeration at _Where, possibly from this container
+		node_type^ _Where = get_node(_Where_iter);
+		node_type^ _Oldfirst = front_node();
+
+		try
+			{	// try to build insert list
+			for each (value_type _Val in _Right)
+				insert_node(_Oldfirst,	// insert new at beginning
+					1, _Val);
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; front_node() != _Oldfirst; )
+				pop_front();
+			throw;
+			}
+		splice_node(_Where, this,
+			front_node(), _Oldfirst);	// splice new into place
+		}
+
+	void insert(iterator _Where_iter,
+		System::Collections::IEnumerable^ _Right)
+		{	// insert enumeration at _Where, possibly from this container
+		node_type^ _Where = get_node(_Where_iter);
+		node_type^ _Oldfirst = front_node();
+
+		try
+			{	// try to build insert list
+			for each (value_type _Val in _Right)
+				insert_node(_Oldfirst,	// insert new at beginning
+					1, _Val);
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; front_node() != _Oldfirst; )
+				pop_front();
+			throw;
+			}
+		splice_node(_Where, this,
+			front_node(), _Oldfirst);	// splice new into place
+		}
+
+	void _Insert_safe(_Mynode_t^ _Where,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _First,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _Last)
+		{	// insert [_First, _Last] at _Where, possibly from this container
+		node_type^ _Oldfirst = front_node();
+
+		try
+			{	// try to build insert list
+			for (; !_First->equal_to(_Last); _First->next())
+				insert_node(_Oldfirst,
+					1, (value_type)_First->get_cref());	// insert at beginning
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; front_node() != _Oldfirst; )
+				pop_front();
+			throw;
+			}
+		splice_node(_Where, this,
+			front_node(), _Oldfirst);	// splice new into place
+		}
+
+	template<typename _InIt_t>
+		void _Insert_safe(_Mynode_t^ _Where, _InIt_t _First, _InIt_t _Last)
+		{	// insert [_First, _Last] at _Where, possibly from this container
+		node_type^ _Oldfirst = front_node();
+
+		try
+			{	// try to build insert list
+			for (; _First != _Last; ++_First)
+				insert_node(_Oldfirst,
+					1, (value_type)*_First);	// insert new at beginning
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; front_node() != _Oldfirst; )
+				pop_front();
+			throw;
+			}
+		splice_node(_Where, this,
+			front_node(), _Oldfirst);	// splice new into place
+		}
+
+	void insert_node(node_type^ _Where,
+		size_type _Count, value_type _Val)
+		{	// insert _Count * _Val at _Where
+		size_type _Added = 0;
+
+		if ((System::Object^)_Where->container() != this)
+			throw gcnew System::ArgumentException();
+
+		if (_Count < 0 || _Maxsize - size() < _Count)
+			throw gcnew System::ArgumentOutOfRangeException();
+		try
+			{	// try to insert _Count copies
+			for (; _Added < _Count; ++_Added)
+				{	// insert a node at _Where
+				node_type^ _Node = _Buynode(_Where, _Where->_Prev, _Val);
+
+				_Where->_Prev = _Node;
+				_Node->_Prev->_Next = _Node;
+				++_Mysize;
+				}
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; 0 < _Added; --_Added)
+				erase_node(_Where->prev_node());
+			}
+
+		if (0 < _Added)
+			++_Mygen;
+		}
+
+	node_type^ insert_node(node_type^ _Where,
+		node_type^ _First, node_type^ _Last)
+		{	// insert copy of list subrange
+		size_type _Added = 0;
+
+		if (_Where->container() != this)
+			throw gcnew System::ArgumentException();
+
+		try
+			{	// try to insert _Count copies
+			for (; _First != _Last; _First = _First->next_node(), ++_Added)
+				insert_node(_Where, 1, _First->_Myval);
+			}
+		catch (System::Object^)
+			{	// failed, discard new stuff
+			for (; 0 < _Added; --_Added)
+				erase_node(_Where->prev_node());
+			}
+
+		if (0 < _Added)
+			++_Mygen;
+		return (_Where);
+		}
+
+	iterator erase(iterator _Where)
+		{	// erase element at _Where
+		node_type^ _Node = get_node(_Where);
+
+		return (make_iterator(erase_node(_Node)));
+		}
+
+	iterator erase(iterator _First, iterator _Last)
+		{	// erase [_First, _Last)
+		return (erase_node(get_node(_First), get_node(_Last)));
+		}
+
+	node_type^ erase_node(node_type^ _Where)
+		{	// erase node at _Where
+		if (_Where->container() != this || _Where->is_head())
+			throw gcnew System::InvalidOperationException();
+
+		_Mymake_t::unmake_value(_Where->_Myval);
+		_Where->_Head = nullptr;	// orphan corresponding iterators
+		_Where->_Prev->_Next = _Where->_Next;
+		_Where = _Where->_Next;
+		_Where->_Prev = _Where->_Prev->_Prev;
+		--_Mysize;
+		++_Mygen;
+		return (_Where);
+		}
+
+	iterator erase_node(node_type^ _First, node_type^ _Last)
+		{	// erase nodes in [_First, _Last)
+		if (_First == nullptr || _First->container() != this)
+			throw gcnew System::ArgumentException();
+
+		for (; _First != _Last; )
+			_First = erase_node(_First);
+		return (make_iterator(_First));
+		}
+
+	void clear()
+		{	// erase all
+		for (; front_node() != head_node(); )
+			erase_node(front_node());
+		}
+
+	void swap(_Mytype_t% _Right)
+		{	// exchange contents with _Right
+		if ((Object^)this != %_Right)
+			{	// worth doing, swap
+			node_type^ _Oldfirst = front_node();
+
+			splice_node(_Oldfirst, %_Right,
+				_Right.front_node(), _Right.head_node());
+			_Right.splice_node(_Right.head_node(), this,
+				_Oldfirst, head_node());
+
+			++_Mygen;
+			++_Right._Mygen;
+			}
+		}
+
+	// special functions
+	void splice(iterator _Where, _Mytype_t% _Right)
+		{	// splice all of _Right at _Where
+		splice_node(get_node(_Where), %_Right,
+			_Right.front_node(), _Right.head_node());
+		}
+
+	void splice(iterator _Where, _Mytype_t% _Right, iterator _First)
+		{	// splice _Right [_First, _First + 1) at _Where
+		node_type^ _Node = _Right.get_node(_First);
+
+		splice_node(get_node(_Where), %_Right,
+			_Node, _Node->next_node());
+		}
+
+	void splice(iterator _Where, _Mytype_t% _Right,
+		iterator _First, iterator _Last)
+		{	// splice _Right [_First, _First + 1) at _Where
+		splice_node(get_node(_Where), %_Right,
+			_Right.get_node(_First), _Right.get_node(_Last));
+		}
+
+	void splice_node(node_type^ _Where, _Mytype_t^ _Right,
+		node_type^ _First, node_type^ _Last)
+		{	// splice _Right [_First, _Last) before _Where
+		if (_Where->container() != this
+			|| _First->container() != _Right)
+			throw gcnew System::ArgumentException();
+
+		if (_First == _Last)
+			;	// nothing to do
+		else if ((Object^)this != _Right)
+			{	// get sublist from another list
+			node_type^ _Nlast = _Last->_Prev;
+
+			_Mysize += _Right->unsplice_node(this, _First, _Last);
+			_Nlast->_Next = _Where;
+			_Where->_Prev->_Next = _First;
+			_First->_Prev = _Where->_Prev;
+			_Where->_Prev = _Nlast;
+			++_Mygen;
+			}
+		else if (_First != _Where && _Where != _Last)
+			{	// worth splicing, do it
+			node_type^ _Node = _Where->_Prev;
+
+			_First->_Prev->_Next = _Last;
+			_Last->_Prev->_Next = _Where;
+			_Where->_Prev->_Next = _First;
+			_Where->_Prev = _Last->_Prev;
+			_Last->_Prev = _First->_Prev;
+			_First->_Prev = _Node;
+			++_Mygen;
+			}
+		}
+
+	size_type unsplice_node(_Mytype_t^ _Left,
+		node_type^ _First, node_type^ _Last)
+		{	// unsplice [_First, _Last) to give to _Left
+		if (_First->container() != this)
+			throw gcnew System::InvalidOperationException();
+
+		size_type _Count = 0;
+		node_type^ _Node = _First;
+
+		for (; _Node != _Last && !_Node->is_head();
+			_Node = _Node->_Next, ++_Count)
+			_Node->_Head = _Left->head_node();	// change ownership
+
+		if (_Node != _Last || _Maxsize - _Left->size() < _Count)
+			{	// invalid splice, back out
+			for (; _First != _Node; _First = _First->_Next)
+				_Node->_Head = _Myhead;	// revert ownership
+
+			if (_Node != _Last)
+				throw gcnew System::InvalidOperationException();
+			else
+				throw gcnew System::ArgumentOutOfRangeException();
+			}
+
+		_First->_Prev->_Next = _Last;	// remove sublist
+		_Last->_Prev = _First->_Prev;
+		_Mysize -= _Count;
+		++_Mygen;
+		return (_Count);
+		}
+
+	void remove(value_type _Val)
+		{	// erase each element matching _Val
+		for (node_type^ _First = front_node(); _First != head_node(); )
+			{	// point past element and test it
+			_First = _First->next_node();
+			if (_First->prev_node()->_Myval == _Val)
+				erase_node(_First->prev_node());
+			}
+		}
+
+	void remove_if(_Valtest_dt^ _Pred)
+		{	// erase each element satisfying _Pred
+		for (node_type^ _First = front_node(); _First != head_node(); )
+			{	// point past element and test it
+			_First = _First->next_node();
+			if (_Pred(_First->prev_node()->_Myval))
+				erase_node(_First->prev_node());
+			}
+		}
+
+	template<typename _Pr1_t>
+		void remove_if(_Pr1_t _Pred)
+		{	// erase each element satisfying _Pred
+		for (node_type^ _First = front_node(); _First != head_node(); )
+			{	// point past element and test it
+			_First = _First->next_node();
+			if (_Pred(_First->prev_node()->_Myval))
+				erase_node(_First->prev_node());
+			}
+		}
+
+	void unique()
+		{	// erase each element matching previous
+		_Unique(equal_to<value_type>());
+		}
+
+	void unique(_Valcomp_dt^ _Pred)
+		{	// erase each element satisfying _Pred with previous
+		_Unique(_Pred);
+		}
+
+	template<typename _Pr2_t>
+		void unique(_Pr2_t _Pred)
+		{	// erase each element satisfying _Pred with previous
+		_Unique(_Pred);
+		}
+
+	template<typename _Pr2_t>
+		void _Unique(_Pr2_t _Pred)
+		{	// erase each element satisfying _Pred with previous
+		if (2 <= size())
+			{	// worth doing, do it
+			for (node_type^ _First = front_node();
+				_First->next_node() != head_node(); )
+				if (_Pred(_First->_Myval, _First->next_node()->_Myval))
+					erase_node(_First->next_node());
+				else
+					_First = _First->next_node();
+			}
+		}
+
+	void merge(_Mytype_t% _Right)
+		{	// merge in elements from _Right, both ordered by operator<
+		_Merge(_Right, less<value_type>());
+		}
+
+	void merge(_Mytype_t% _Right, _Valcomp_dt^ _Pred)
+		{	// merge in elements from _Right, both ordered by _Pred
+		_Merge(_Right, _Pred);
+		}
+
+	template<typename _Pr3_t>
+		void merge(_Mytype_t% _Right, _Pr3_t _Pred)
+		{	// merge in elements from _Right, both ordered by _Pred
+		_Merge(_Right, _Pred);
+		}
+
+	template<typename _Pr3_t>
+		void _Merge(_Mytype_t% _Right, _Pr3_t _Pred)
+		{	// merge in elements from _Right, both ordered by _Pred
+		if ((Object^)this != %_Right)
+			{	// safe to merge, do it
+			node_type^ _First1 = front_node();
+			node_type^ _First2 = _Right.front_node();
+
+			for (; _First1 != head_node() && _First2 != _Right.head_node(); )
+				if (_Pred(_First2->_Myval, _First1->_Myval))
+					{	// splice in an element from _Right
+					_First2 = _First2->next_node();
+					splice_node(_First1, %_Right,
+						_First2->prev_node(), _First2);
+					}
+				else
+					_First1 = _First1->next_node();
+
+			splice_node(head_node(), %_Right, _First2,
+				_Right.head_node());
+			}
+		}
+
+	void sort()
+		{	// order sequence, using operator<
+		_Sort(less<value_type>());
+		}
+
+	void sort(_Valcomp_dt^ _Pred)
+		{	// order sequence, using _Pred
+		_Sort(_Pred);
+		}
+
+	template<typename _Pr3_t>
+		void sort(_Pr3_t _Pred)
+		{	// order sequence, using _Pred
+		_Sort(_Pred);
+		}
+
+	template<typename _Pr3_t>
+		void _Sort(_Pr3_t _Pred)
+		{	// order sequence, using _Pred
+		if (2 <= size())
+			{	// worth sorting, do it
+			const size_type _Maxbins = 30;
+			typedef cli::array<list_impl^> _Myarray_t;
+
+			list_impl^ _Templist = gcnew list_impl;
+			_Myarray_t^ _Binlist = gcnew _Myarray_t(_Maxbins);
+			int _Maxbin = 0;
+			int _Bin;
+			for (; !empty(); )
+				{	// sort another element, using bins
+				_Templist->splice_node(_Templist->front_node(), this,
+					front_node(),
+					front_node()->next_node());	// pick an element
+				for (_Bin = 0; _Bin < _Maxbin && !_Binlist[_Bin]->empty();
+					++_Bin)
+					{	// merge into ever larger bins
+					_Binlist[_Bin]->merge(*_Templist, _Pred);
+					_Binlist[_Bin]->swap(*_Templist);
+					}
+				if (_Bin == _Maxbins)
+					_Binlist[_Bin - 1]->merge(*_Templist, _Pred);
+				else
+					{	// spill to empty or new bin, while they last
+					if (_Bin == _Maxbin)
+						{	// start a new bin
+						_Binlist[_Bin] = gcnew list_impl;
+						++_Maxbin;
+						}
+					_Binlist[_Bin]->swap(*_Templist);
+					}
+				}
+			for (_Bin = 1; _Bin < _Maxbin; ++_Bin)
+				_Binlist[_Bin]->merge(*_Binlist[_Bin - 1], _Pred);
+			splice_node(head_node(), _Binlist[_Maxbin - 1],
+				_Binlist[_Maxbin - 1]->front_node(),
+				_Binlist[_Maxbin - 1]->head_node());
+			}
+		}
+
+	void reverse()
+		{	// reverse sequence
+		if (2 <= size())
+			for (node_type^ _Node = front_node()->next_node();
+				_Node != head_node(); )
+				{	// move next element to beginning
+				_Node = _Node->_Next;
+				splice_node(front_node(), this, _Node->_Prev, _Node);
+				}
+		}
+
+_STLCLR_FIELD_ACCESS:
+	node_type^ _Buynode()
+		{	// allocate a head node and set links
+		node_type^ _Node = gcnew node_type(this);
+
+		_Node->_Head = _Node;
+		_Node->_Next = _Node;
+		_Node->_Prev = _Node;
+		return (_Node);
+		}
+
+	node_type^ _Buynode(node_type^ _Next, node_type^ _Prev,
+		value_type _Val)
+		{	// allocate a node and set links
+		node_type^ _Node = gcnew node_type(nullptr);
+
+		_Node->_Head = _Myhead;
+		_Node->_Next = _Next;
+		_Node->_Prev = _Prev;
+		_Node->_Myval = _Mymake_t::make_value(_Val);
+		return (_Node);
+		}
+
+	// data members
+	node_type^ _Myhead;		// pointer to head node
+	size_type _Mysize;		// number of elements
+	unsigned long _Mygen;	// current change generation
+
+	// interfaces
+public:
+	virtual System::Object^ Clone()
+		{	// clone the list
+		return (gcnew list_impl(*this));
+		}
+
+private:
+	property size_type Count
+		{	// element count
+		virtual size_type get() sealed
+			= System::Collections::ICollection::Count::get
+			{	// get element count
+			return (size());
+			}
+		};
+
+	property bool IsSynchronized
+		{	// synchronized status
+		virtual bool get() sealed
+			= System::Collections::ICollection::IsSynchronized::get
+			{	// test if synchronized
+			return (false);
+			}
+		};
+
+	property System::Object^ SyncRoot
+		{	// synchronizer
+		virtual System::Object^ get() sealed
+			= System::Collections::ICollection::SyncRoot::get
+			{	// get synchronizer
+			return (this);
+			}
+		};
+
+	virtual void CopyTo(System::Array^ _Dest_arg, int _First) sealed
+		= System::Collections::ICollection::CopyTo
+		{	// copy to _Dest_arg, beginning at _First
+		cli::array<System::Object^>^ _Dest =
+			(cli::array<System::Object ^>^)_Dest_arg;
+		node_type^ _Node = head_node();
+
+		for (int _Idx = size(); 0 <= --_Idx; )
+			{	// copy back to front
+			_Node = _Node->prev_node();
+			_Dest[_First + _Idx] = _Mymake_t::make_value(_Node->_Myval);
+			}
+		}
+
+	virtual System::Collections::IEnumerator^ GetEnumerator() sealed
+		= System::Collections::IEnumerable::GetEnumerator
+		{	// get enumerator for the container
+		return (gcnew _STLCLR ListEnumerator<_Value_t>(front_node()));
+		}
+
+	virtual unsigned long get_generation_virtual() sealed
+		= _Mycont_it::get_generation
+		{	// get underlying container generation
+		return (get_generation());
+		}
+
+//	virtual bool valid_bias_virtual(size_type _Bias);
+//	virtual reference at_virtual(size_type _Pos);
+//	virtual reference at_bias_virtual(size_type _Bias);
+
+	virtual reference front_virtual() sealed
+		= _Mycont_it::front
+		{	// get first element of mutable sequence
+		return (front());
+		}
+
+	virtual reference back_virtual() sealed
+		= _Mycont_it::back
+		{	// get last element of mutable sequence
+		return (back());
+		}
+
+	// iterator generators
+	virtual generic_iterator begin_virtual() sealed
+		= _Mycont_it::begin
+		{	// return iterator for beginning of mutable sequence
+		return (begin());
+		}
+	virtual generic_iterator end_virtual() sealed
+		= _Mycont_it::end
+		{	// return iterator for end of mutable sequence
+		return (end());
+		}
+
+	virtual generic_reverse_iterator rbegin_virtual() sealed
+		= _Mycont_it::rbegin
+		{	// return reverse iterator for beginning of mutable sequence
+		return (generic_reverse_iterator(end()));
+		}
+
+	virtual generic_reverse_iterator rend_virtual() sealed
+		= _Mycont_it::rend
+		{	// return reverse iterator for end of mutable sequence
+		return (generic_reverse_iterator(begin()));
+		}
+
+	// size controllers
+//	virtual void reserve_virtual(size_type _Capacity);
+//	virtual size_type capacity_virtual();
+
+	virtual void resize_virtual(size_type _Newsize) sealed
+		= _Mycont_it::resize
+		{	// determine new length, padding with value_type elements
+		resize(_Newsize);
+		}
+
+	virtual void resize_virtual(size_type _Newsize, value_type _Val) sealed
+		= _Mycont_it::resize
+		{	// determine new length, padding with _Val elements
+		resize(_Newsize, _Val);
+		}
+
+	virtual size_type size_virtual() sealed
+		= _Mycont_it::size
+		{	// return length of sequence
+		return (size());
+		}
+
+	virtual bool empty_virtual() sealed
+		= _Mycont_it::empty
+		{	// test if sequence is empty
+		return (empty());
+		}
+
+	// mutators
+	virtual void push_front_virtual(value_type _Val) sealed
+		= _Mycont_it::push_front
+		{	// insert element at end
+		push_front(_Val);
+		}
+
+	virtual void pop_front_virtual() sealed
+		= _Mycont_it::pop_front
+		{	// erase element at end
+		pop_front();
+		}
+
+	virtual void push_back_virtual(value_type _Val) sealed
+		= _Mycont_it::push_back
+		{	// insert element at end
+		push_back(_Val);
+		}
+
+	virtual void pop_back_virtual() sealed
+		= _Mycont_it::pop_back
+		{	// erase element at end
+		pop_back();
+		}
+
+	virtual void assign_virtual(size_type _Count, value_type _Val) sealed
+		= _Mycont_it::assign
+		{	// assign _Count * _Val
+		assign(_Count, _Val);
+		}
+
+	virtual void assign_virtual(
+		_STLCLR Generic::IInputIterator<_Value_t>^ _First,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _Last) sealed
+		= _Mycont_it::assign
+		{	// initialize with [_First, _Last), input iterators
+		assign(_First, _Last);
+		}
+
+	virtual void assign_virtual(
+		System::Collections::IEnumerable^ _Right) sealed
+		= _Mycont_it::assign
+		{	// initialize with enumeration
+		assign(_Right);
+		}
+
+	virtual generic_iterator insert_virtual(generic_iterator _Where,
+		value_type _Val) sealed
+		= _Mycont_it::insert
+		{	// insert _Val at _Where
+		return (insert(iterator(_Where), _Val));
+		}
+
+	virtual void insert_virtual(generic_iterator _Where,
+		size_type _Count, value_type _Val) sealed
+			= _Mycont_it::insert
+		{	// insert _Count * _Val at _Where
+		return (insert(iterator(_Where), _Count, _Val));
+		}
+
+	virtual void insert_virtual(generic_iterator _Where_iter,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _First,
+		_STLCLR Generic::IInputIterator<_Value_t>^ _Last) sealed
+			= _Mycont_it::insert
+		{	// insert [_First, _Last) at _Where, input iterators
+		insert(iterator(_Where_iter), _First, _Last);
+		}
+
+	virtual void insert_virtual(generic_iterator _Where_iter,
+		System::Collections::IEnumerable^ _Right) sealed
+			= _Mycont_it::insert
+		{	// insert enumeration at _Where, possibly from this container
+		insert(iterator(_Where_iter), _Right);
+		}
+
+	virtual generic_iterator erase_virtual(generic_iterator _Where) sealed
+		= _Mycont_it::erase
+		{	// erase element at _Where
+		return (erase(iterator(_Where)));
+		}
+
+	virtual generic_iterator erase_virtual(generic_iterator _First,
+		generic_iterator _Last) sealed
+		= _Mycont_it::erase
+		{	// erase [_First, _Last)
+		return (erase(iterator(_First), iterator(_Last)));
+		}
+
+	virtual void clear_virtual() sealed
+		= _Mycont_it::clear
+		{	// erase all
+		clear();
+		}
+
+	virtual void swap_virtual(_Mycont_it^ _Right) sealed
+		= _Mycont_it::swap
+		{	// exchange contents with _Right
+		swap(*(_Mytype_t^)_Right);
+		}
+
+	// special functions
+	virtual void splice_virtual(generic_iterator _Where,
+		_Mycont_it^ _Right) sealed
+			= _Mycont_it::splice
+		{	// splice all of _Right at _Where
+		splice(iterator(_Where), *(_Mytype_t^)_Right);
+		}
+
+	virtual void splice_virtual(generic_iterator _Where, _Mycont_it^ _Right,
+		generic_iterator _First) sealed
+			= _Mycont_it::splice
+		{	// splice _Right [_First, _First + 1) at _Where
+		splice(iterator(_Where), *(_Mytype_t^)_Right, iterator(_First));
+		}
+
+	virtual void splice_virtual(generic_iterator _Where, _Mycont_it^ _Right,
+		generic_iterator _First, generic_iterator _Last) sealed
+			= _Mycont_it::splice
+		{	// splice _Right [_First, _First + 1) at _Where
+		splice(iterator(_Where), *(_Mytype_t^)_Right,
+			iterator(_First), iterator(_Last));
+		}
+
+	virtual void remove_virtual(value_type _Val) sealed
+		= _Mycont_it::remove
+		{	// erase each element matching _Val
+		remove(_Val);
+		}
+
+	virtual void remove_if_virtual(_Valtest_dt^ _Pred) sealed
+		= _Mycont_it::remove_if
+		{	// erase each element satisfying _Pred
+		remove_if(_Pred);
+		}
+
+	virtual void unique_virtual(_Valcomp_dt^ _Pred) sealed
+		= _Mycont_it::unique
+		{	// erase each element satisfying _Pred with previous
+		unique(_Pred);
+		}
+
+	virtual void merge_virtual(_Mycont_it^ _Right, _Valcomp_dt^ _Pred) sealed
+		= _Mycont_it::merge
+		{	// merge in elements from _Right, both ordered by _Pred
+		merge(*(_Mytype_t^)_Right, _Pred);
+		}
+
+	virtual void sort_virtual(_Valcomp_dt^ _Pred) sealed
+		= _Mycont_it::sort
+		{	// order sequence, using _Pred
+		sort(_Pred);
+		}
+
+	virtual void reverse_virtual() sealed
+		= _Mycont_it::reverse
+		{	// reverse sequence
+		reverse();
+		}
+	};
+
+//
+// TEMPLATE REF CLASS list_base
+//
+template<typename _Value_t,
+	bool _Is_ref>
+	ref class list_base
+	:	public list_impl<_Value_t, _Is_ref>,
+			System::Collections::Generic::ICollection<_Value_t>,
+			System::Collections::Generic::IEnumerable<_Value_t>
+	{	// bidirectional linked list of elements
+public:
+	// types
+	typedef list_base<_Value_t, _Is_ref> _Mytype_t;
+	typedef list_impl<_Value_t, _Is_ref> _Mybase_t;
+//	typedef _STLCLR IList<_Value_t> _Mycont_it;
+	typedef _Cont_make_value<_Value_t, _Is_ref> _Mymake_t;
+
+//	typedef int size_type;
+//	typedef int difference_type;
+//	typedef _Value_t value_type;
+//	typedef value_type% reference;
+//	typedef value_type% const_reference;
+
+//	typedef _Mycont_it generic_container;
+//	typedef value_type generic_value;
+
+	// basics
+	list_base()
+		:	_Mybase_t()
+		{	// construct default
+		}
+
+	list_base(list_base% _Right)
+		:	_Mybase_t(%_Right)
+		{	// construct by copying a list
+		}
+
+	list_base% operator=(list_base% _Right)
+		{	// assign
+		_Mybase_t::operator=(_Right);
+		return (*this);
+		}
+
+	operator _Mycont_it^()
+		{	// convert to interface
+		return (this);
+		}
+
+	// constructors
+	explicit list_base(size_type _Count)
+		:	_Mybase_t(_Count)
+		{	// construct from _Count * value_type()
+		}
+
+	list_base(size_type _Count, value_type _Val)
+		:	_Mybase_t(_Count, _Val)
+		{	// construct from _Count * _Val
+		}
+
+	template<typename _InIt_t>
+		list_base(_InIt_t _First, _InIt_t _Last)
+		:	_Mybase_t(_First, _Last)
+		{	// construct from [_First, _Last)
+		}
+
+	list_base(_Myenum_it^ _Right)
+		:	_Mybase_t(_Right)
+		{	// initialize with enumeration
+		}
+
+	// mutators
+	template<typename _InIt_t>
+		void assign(_InIt_t _First, _InIt_t _Last)
+		{	// assign [_First, _Last)
+		_Assign(_First, _Last, _Iter_category(_First));
+		}
+
+	template<typename _InIt_t>
+		void _Assign(_InIt_t _Count, _InIt_t _Val,
+			_Int_iterator_tag%)
+		{	// assign _Count * _Val
+		clear();
+		insert_node(head_node(), (size_type)_Count, (value_type)_Val);
+		}
+
+	template<typename _InIt_t>
+		void _Assign(_InIt_t _First, _InIt_t _Last,
+			input_iterator_tag%)
+		{	// initialize with [_First, _Last), input iterators
+		if (_Iter_container(_First) != this)
+			clear();
+
+		size_type _Oldsize = size();
+
+		_Insert_safe(front_node(), _First, _Last);
+		for (; 0 < _Oldsize; --_Oldsize)
+			pop_back();	// discard old stuff
+		}
+
+	template<typename _InIt_t>
+		void insert(iterator _Where, _InIt_t _First, _InIt_t _Last)
+		{	// insert [_First, _Last) at _Where
+		_Insert(get_node(_Where), _First, _Last,
+			_Iter_category(_First));
+		}
+
+	template<typename _InIt_t>
+		void _Insert(node_type^ _Where, _InIt_t _First, _InIt_t _Last,
+			_Int_iterator_tag%)
+		{	// insert _Count * _Val at _Where
+		insert_node(_Where, (size_type)_First, (value_type)_Last);
+		}
+
+	template<typename _InIt_t>
+		void _Insert(node_type^ _Where, _InIt_t _First, _InIt_t _Last,
+			input_iterator_tag%)
+		{	// insert [_First, _Last) at _Where, input iterators
+		if (_Iter_container(_First) == this)
+			_Insert_safe(_Where, _First, _Last);
+		else
+			for (; _First != _Last; ++_First)
+				insert_node(_Where, 1, (value_type)*_First);
+		}
+
+	// interfaces
+private:
+	property size_type Count_generic
+		{	// element count
+		virtual size_type get() sealed
+			= System::Collections::Generic::ICollection<_Value_t>::Count::get
+			{	// get element count
+			return (size());
+			}
+		};
+
+	property bool IsReadOnly
+		{	// test if read only
+		virtual bool get() sealed
+			= System::Collections::Generic::ICollection<_Value_t>
+				::IsReadOnly::get
+			{	// test if read only
+			return (false);
+			}
+		};
+
+	virtual void CopyTo(_Myarray_t^ _Dest, int _First) sealed
+		= System::Collections::Generic::ICollection<_Value_t>::CopyTo
+		{	// copy to _Dest, beginning at _First
+		node_type^ _Node = head_node();
+
+		for (int _Idx = size(); 0 <= --_Idx; )
+			{	// copy back to front
+			_Node = _Node->prev_node();
+			_Dest[_First + _Idx] = _Mymake_t::make_value(_Node->_Myval);
+			}
+		}
+
+	virtual System::Collections::Generic::IEnumerator<_Value_t>^
+		GetEnumerator() sealed
+		= System::Collections::Generic::IEnumerable<_Value_t>::GetEnumerator
+		{	// get enumerator for the container
+		return (gcnew _STLCLR ListEnumerator<_Value_t>(front_node()));
+		}
+
+	virtual void Add(value_type _Val) sealed
+		= System::Collections::Generic::ICollection<_Value_t>::Add
+		{	// add element with value _Val
+		insert_node(head_node(), 1, _Val);
+		}
+
+	virtual void Clear() sealed
+		= System::Collections::Generic::ICollection<_Value_t>::Clear
+		{	// erase all elements
+		clear();
+		}
+
+	virtual bool Contains(value_type _Val) sealed
+		= System::Collections::Generic::ICollection<_Value_t>::Contains
+		{	// search for element matching value _Val
+		for (node_type^ _Node = front_node(); _Node != head_node();
+			_Node = _Node->next_node())
+			if (((System::Object^)_Val)->Equals(
+				(System::Object^)_Node->_Myval))
+				return (true);
+		return (false);
+		}
+
+	virtual bool Remove(value_type _Val) sealed
+		= System::Collections::Generic::ICollection<_Value_t>::Remove
+		{	// remove first element matching value _Val
+		for (node_type^ _Node = front_node(); _Node != head_node();
+			_Node = _Node->next_node())
+			if (((System::Object^)_Val)->Equals(
+				(System::Object^)_Node->_Myval))
+				{	// found a match, remove it
+				erase_node(_Node);
+				return (true);
+				}
+		return (false);
+		}
+	};
+
+//
+// TEMPLATE CLASS list_select
+//
+template<typename _Value_t,
+	bool _Is_ref>
+	ref class list_select
+	:	public list_base<_Value_t, _Is_ref>
+	{	// bidirectional linked list of elements
+public:
+	// types
+	typedef _Value_t _Gvalue_t;
+
+	typedef list_select<_Value_t, _Is_ref> _Mytype_t;
+	typedef list_base<_Gvalue_t, _Is_ref> _Mybase_t;
+//	typedef _STLCLR IList<_Gvalue_t> _Mycont_it;
+//	typedef System::Collections::Generic::IEnumerable<_Gvalue_t> _Myenum_it;
+
+//	typedef int size_type;
+//	typedef int difference_type;
+	typedef _Value_t value_type;
+	typedef value_type% reference;
+	typedef value_type% const_reference;
+
+//	typedef _Mycont_it generic_container;
+//	typedef typename _Mybase_t::value_type generic_value;
+
+	// basics
+	list_select()
+		:	_Mybase_t()
+		{	// construct default
+		}
+
+	list_select(list_select% _Right)
+		:	_Mybase_t(_Right)
+		{	// construct by copying a list
+		}
+
+	list_select% operator=(list_select% _Right)
+		{	// assign
+		_Mybase_t::operator=(_Right);
+		return (*this);
+		}
+
+	// constructors
+	explicit list_select(size_type _Count)
+		:	_Mybase_t(_Count)
+		{	// construct from _Count * value_type()
+		}
+
+	list_select(size_type _Count, value_type _Val)
+		:	_Mybase_t(_Count, _Val)
+		{	// construct from _Count * _Val
+		}
+
+	template<typename _InIt_t>
+		list_select(_InIt_t _First, _InIt_t _Last)
+		:	_Mybase_t(_First, _Last)
+		{	// construct from [_First, _Last)
+		}
+
+	list_select(_Myenum_it^ _Right)
+		:	_Mybase_t(_Right)
+		{	// initialize with enumeration
+		}
+	};
+
+//
+// TEMPLATE CLASS list_select: _Value_t REF SPECIALIZATION
+//
+template<typename _Value_t>
+	ref class list_select<_Value_t, true>
+	:	public list_base<_Value_t^, true>
+	{	// bidirectional linked list of elements
+public:
+	// types
+	typedef _Value_t^ _Gvalue_t;
+
+	typedef list_select<_Value_t, true> _Mytype_t;
+	typedef list_base<_Gvalue_t, true> _Mybase_t;
+//	typedef _STLCLR IList<_Gvalue_t> _Mycont_it;
+//	typedef System::Collections::Generic::IEnumerable<_Gvalue_t> _Myenum_it;
+
+//	typedef int size_type;
+//	typedef int difference_type;
+	typedef _Value_t value_type;
+	typedef value_type% reference;
+	typedef value_type% const_reference;
+
+//	typedef _Mycont_it generic_container;
+//	typedef typename _Mybase_t::value_type generic_value;
+
+	// basics
+	list_select()
+		:	_Mybase_t()
+		{	// construct default
+		}
+
+	list_select(list_select% _Right)
+		:	_Mybase_t(_Right)
+		{	// construct by copying a list
+		}
+
+	list_select% operator=(list_select% _Right)
+		{	// assign
+		_Mybase_t::operator=(_Right);
+		return (*this);
+		}
+
+	// constructors
+	explicit list_select(size_type _Count)
+		{	// construct from _Count * value_type()
+		resize(_Count);
+		}
+
+	list_select(size_type _Count, value_type _Val)
+		{	// construct from _Count * _Val
+		resize(_Count, _Val);
+		}
+
+	template<typename _InIt_t>
+		list_select(_InIt_t _First, _InIt_t _Last)
+		:	_Mybase_t(_First, _Last)
+		{	// construct from [_First, _Last)
+		}
+
+	list_select(_Myenum_it^ _Right)
+		:	_Mybase_t(_Right)
+		{	// initialize with enumeration
+		}
+
+	// size controllers
+	virtual void resize(size_type _Newsize) override
+		{	// determine new length, padding with value_type elements
+		value_type _Val;
+
+		_Mybase_t::resize(_Newsize, %_Val);
+		}
+
+	void resize(size_type _Newsize, value_type _Val)
+		{	// determine new length, padding with _Val elements
+		_Mybase_t::resize(_Newsize, %_Val);
+		}
+
+	// accessors
+	property value_type front_item
+		{	// get or set first element
+		virtual value_type get()
+			{	// get first element
+			return (*_Mybase_t::front_item);
+			}
+
+		virtual void set(value_type _Val)
+			{	// set first element
+			_Mybase_t::front_item = gcnew value_type(_Val);
+			}
+		};
+
+	property value_type back_item
+		{	// get or set last element
+		virtual value_type get()
+			{	// get last element
+			return (*_Mybase_t::back_item);
+			}
+
+		virtual void set(value_type _Val)
+			{	// set last element
+			_Mybase_t::back_item = gcnew value_type(_Val);
+			}
+		};
+
+	reference front() new
+		{	// get first element of mutable sequence
+		return (*_Mybase_t::front());
+		}
+
+	reference back() new
+		{	// get last element of mutable sequence
+		return (*_Mybase_t::back());
+		}
+
+	// mutators
+	void push_front(value_type _Val)
+		{	// insert element at beginning
+		_Mybase_t::push_front(%_Val);
+		}
+
+	void push_back(value_type _Val)
+		{	// insert element at end
+		_Mybase_t::push_back(%_Val);
+		}
+
+	void assign(size_type _Count, value_type _Val)
+		{	// assign _Count * _Val
+		_Mybase_t::assign(_Count, %_Val);
+		}
+
+	iterator insert(iterator _Where, value_type _Val)
+		{	// insert _Val at _Where
+		return (_Mybase_t::insert(_Where, %_Val));
+		}
+
+	void insert(iterator _Where,
+		size_type _Count, value_type _Val)
+		{	// insert _Count * _Val at _Where
+		return (_Mybase_t::insert(_Where, _Count, %_Val));
+		}
+
+	// special functions
+	void remove(value_type _Val)
+		{	// erase each element matching _Val
+		_Mybase_t::remove(%_Val);
+		}
+	};
+	}	// namespace cliext::impl
+
+//
+// TEMPLATE REF CLASS list
+//
+template<typename _Value_t>
+	ref class list
+	:	public impl::list_select<
+		_Value_t,
+		__is_ref_class(typename _Dehandle<_Value_t>::type)
+			&& !is_handle<_Value_t>::value>
+	{	// bidirectional linked list of elements
+public:
+	// types
+	typedef list<_Value_t> _Mytype_t;
+	typedef impl::list_select<_Value_t,
+		__is_ref_class(typename _Dehandle<_Value_t>::type)
+		&& !is_handle<_Value_t>::value> _Mybase_t;
+//	typedef impl::_STLCLR IList<_Value_t> _Mycont_it;
+
+//	typedef int size_type;
+//	typedef int difference_type;
+//	typedef _Value_t value_type;
+//	typedef value_type% reference;
+//	typedef value_type% const_reference;
+
+//	typedef _Mycont_it generic_container;
+//	typedef value_type generic_value;
+
+	// basics
+	list()
+		:	_Mybase_t()
+		{	// construct default
+		}
+
+	list(list% _Right)
+		:	_Mybase_t((_Mybase_t%)_Right)
+		{	// construct by copying a list
+		}
+
+	list(list^ _Right)
+		:	_Mybase_t((_Mybase_t%)*_Right)
+		{	// construct by copying a list
+		}
+
+	list% operator=(list% _Right)
+		{	// assign
+		_Mybase_t::operator=(_Right);
+		return (*this);
+		}
+
+	list% operator=(list^ _Right)
+		{	// assign
+		_Mybase_t::operator=(*_Right);
+		return (*this);
+		}
+
+	// constructors
+	explicit list(size_type _Count)
+		:	_Mybase_t(_Count)
+		{	// construct from _Count * value_type()
+		}
+
+	list(size_type _Count, value_type _Val)
+		:	_Mybase_t(_Count, _Val)
+		{	// construct from _Count * _Val
+		}
+
+	template<typename _InIt_t>
+		list(_InIt_t _First, _InIt_t _Last)
+		:	_Mybase_t(_First, _Last)
+		{	// construct from [_First, _Last)
+		}
+
+	list(_Myenum_it^ _Right)
+		:	_Mybase_t(_Right)
+		{	// initialize with enumeration
+		}
+
+	// converters
+	virtual System::Object^ Clone() override
+		{	// clone the vector
+		return (gcnew _Mytype_t(*this));
+		}
+
+	// mutators
+	void swap(list% _Right)
+		{	// exchange contents with _Right
+		_Mybase_t::swap(_Right);
+		}
+	};
+
+//
+// TEMPLATE COMPARISONS
+//
+template<typename _Value_t> inline
+	bool operator==(list<_Value_t>% _Left,
+		list<_Value_t>% _Right)
+	{	// test if _Left == _Right
+	typedef list<_Value_t> _Mytype_t;
+
+	_Mytype_t::size_type _Size = _Left.size();
+
+	if (_Size != _Right.size())
+		return (false);
+	else
+		{	// same length, compare elements
+		_Mytype_t::node_type^ _Pleft = _Left.front_node();
+		_Mytype_t::node_type^ _Pright = _Right.front_node();
+
+		for (; 0 < _Size; --_Size)
+			{	// compare next two elements
+			if (_Pleft->_Myval != _Pright->_Myval)
+				return (false);
+			_Pleft = _Pleft->_Next;
+			_Pright = _Pright->_Next;
+			}
+		return (true);
+		}
+	}
+
+template<typename _Value_t> inline
+	bool operator!=(list<_Value_t>% _Left,
+		list<_Value_t>% _Right)
+	{	// test if _Left != _Right
+	return (!(_Left == _Right));
+	}
+
+template<typename _Value_t> inline
+	bool operator<(list<_Value_t>% _Left,
+		list<_Value_t>% _Right)
+	{	// test if _Left < _Right
+	typedef list<_Value_t> _Mytype_t;
+
+	_Mytype_t::size_type _Idx = 0;
+	_Mytype_t::node_type^ _Pleft = _Left.front_node();
+	_Mytype_t::node_type^ _Pright = _Right.front_node();
+
+	for (; _Idx != _Left.size() && _Idx != _Right.size(); ++_Idx)
+		{	// compare next two elements
+		if (_Pleft->_Myval < _Pright->_Myval)
+			return (true);
+		else if (_Pright->_Myval < _Pleft->_Myval)
+			return (false);
+		_Pleft = _Pleft->_Next;
+		_Pright = _Pright->_Next;
+		}
+	return (_Idx == _Left.size() && _Idx != _Right.size());
+	}
+
+template<typename _Value_t> inline
+	bool operator>=(list<_Value_t>% _Left,
+		list<_Value_t>% _Right)
+	{	// test if _Left >= _Right
+	return (!(_Left < _Right));
+	}
+
+template<typename _Value_t> inline
+	bool operator>(list<_Value_t>% _Left,
+		list<_Value_t>% _Right)
+	{	// test if _Left > _Right
+	return (_Right < _Left);
+	}
+
+template<typename _Value_t> inline
+	bool operator<=(list<_Value_t>% _Left,
+		list<_Value_t>% _Right)
+	{	// test if _Left <= _Right
+	return (!(_Right < _Left));
+	}
+
+//
+// TEMPLATE FUNCTION swap
+//
+template<typename _Value_t> inline
+	void swap(list<_Value_t>% _Left,
+		list<_Value_t>% _Right)
+	{	// swap two lists
+	_Left.swap(_Right);
+	}
+
+}	// namespace cliext
+#endif // _CLI_LIST_
+                                                                                                                                                       
+
+/* this ALWAYS GENERATED file contains the definitions for the interfaces */
+
+
+ /* File created by MIDL compiler version 8.01.0622 */
+/* @@MIDL_FILE_HEADING(  ) */
+
+
+
+/* verify that the <rpcndr.h> version is high enough to compile this file*/
+#ifndef __REQUIRED_RPCNDR_H_VERSION__
+#define __REQUIRED_RPCNDR_H_VERSION__ 500
+#endif
+
+/* verify that the <rpcsal.h> version is high enough to compile this file*/
+#ifndef __REQUIRED_RPCSAL_H_VERSION__
+#define __REQUIRED_RPCSAL_H_VERSION__ 100
+#endif
+
+#include "rpc.h"
+#include "rpcndr.h"
+
+#ifndef __RPCNDR_H_VERSION__
+#error this stub requires an updated version of <rpcndr.h>
+#endif /* __RPCNDR_H_VERSION__ */
+
+
+#ifndef __wcntypes_h__
+#define __wcntypes_h__
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#pragma once
+#endif
+
+/* Forward Declarations */ 
+
+#ifdef __cplusplus
+extern "C"{
+#endif 
+
+
+/* interface __MIDL_itf_wcntypes_0000_0000 */
+/* [local] */ 
+
+/*++
+
+Copyright (c) Microsoft Corporation
+
+Module Name:
+
+    WcnTypes.h
+
+Abstract:
+
+    Defines basic types and constants for WCN API
+
+--*/
+#include <winapifamily.h>
+#pragma region Desktop Family
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+//
+// WCN API error codes
+//
+#define WCN_E_PEER_NOT_FOUND             MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x3C01)
+#define WCN_E_AUTHENTICATION_FAILED      MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x3C02)
+#define WCN_E_CONNECTION_REJECTED        MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x3C03)
+#define WCN_E_SESSION_TIMEDOUT           MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x3C04)
+#define WCN_E_PROTOCOL_ERROR             MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x3C05)
+
+
+//
+// FD Query Constraint:
+// Turn on SoftAP and listen for wireless devices
+//
+#define WCN_QUERY_CONSTRAINT_USE_SOFTAP                L"WCN.Discovery.SoftAP"
+
+
+//
+// List of defined WCN attribute types.
+// These are based off of WPS TLV types.
+// If the attribute type is followed by "Modificed in WPS 2.0"
+//  it implies that the interpretation of the attribute has
+//  changed or been extended in the WPS 2.0 specification (from the 
+//  WPS 1.0h specification).
+// New attributes to WPS 2.0 have been appended to the enum.
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_ATTRIBUTE_TYPE
+    {
+        WCN_TYPE_AP_CHANNEL	= 0,
+        WCN_TYPE_ASSOCIATION_STATE	= ( WCN_TYPE_AP_CHANNEL + 1 ) ,
+        WCN_TYPE_AUTHENTICATION_TYPE	= ( WCN_TYPE_ASSOCIATION_STATE + 1 ) ,
+        WCN_TYPE_AUTHENTICATION_TYPE_FLAGS	= ( WCN_TYPE_AUTHENTICATION_TYPE + 1 ) ,
+        WCN_TYPE_AUTHENTICATOR	= ( WCN_TYPE_AUTHENTICATION_TYPE_FLAGS + 1 ) ,
+        WCN_TYPE_CONFIG_METHODS	= ( WCN_TYPE_AUTHENTICATOR + 1 ) ,
+        WCN_TYPE_CONFIGURATION_ERROR	= ( WCN_TYPE_CONFIG_METHODS + 1 ) ,
+        WCN_TYPE_CONFIRMATION_URL4	= ( WCN_TYPE_CONFIGURATION_ERROR + 1 ) ,
+        WCN_TYPE_CONFIRMATION_URL6	= ( WCN_TYPE_CONFIRMATION_URL4 + 1 ) ,
+        WCN_TYPE_CONNECTION_TYPE	= ( WCN_TYPE_CONFIRMATION_URL6 + 1 ) ,
+        WCN_TYPE_CONNECTION_TYPE_FLAGS	= ( WCN_TYPE_CONNECTION_TYPE + 1 ) ,
+        WCN_TYPE_CREDENTIAL	= ( WCN_TYPE_CONNECTION_TYPE_FLAGS + 1 ) ,
+        WCN_TYPE_DEVICE_NAME	= ( WCN_TYPE_CREDENTIAL + 1 ) ,
+        WCN_TYPE_DEVICE_PASSWORD_ID	= ( WCN_TYPE_DEVICE_NAME + 1 ) ,
+        WCN_TYPE_E_HASH1	= ( WCN_TYPE_DEVICE_PASSWORD_ID + 1 ) ,
+        WCN_TYPE_E_HASH2	= ( WCN_TYPE_E_HASH1 + 1 ) ,
+        WCN_TYPE_E_SNONCE1	= ( WCN_TYPE_E_HASH2 + 1 ) ,
+        WCN_TYPE_E_SNONCE2	= ( WCN_TYPE_E_SNONCE1 + 1 ) ,
+        WCN_TYPE_ENCRYPTED_SETTINGS	= ( WCN_TYPE_E_SNONCE2 + 1 ) ,
+        WCN_TYPE_ENCRYPTION_TYPE	= ( WCN_TYPE_ENCRYPTED_SETTINGS + 1 ) ,
+        WCN_TYPE_ENCRYPTION_TYPE_FLAGS	= ( WCN_TYPE_ENCRYPTION_TYPE + 1 ) ,
+        WCN_TYPE_ENROLLEE_NONCE	= ( WCN_TYPE_ENCRYPTION_TYPE_FLAGS + 1 ) ,
+        WCN_TYPE_FEATURE_ID	= ( WCN_TYPE_ENROLLEE_NONCE + 1 ) ,
+        WCN_TYPE_IDENTITY	= ( WCN_TYPE_FEATURE_ID + 1 ) ,
+        WCN_TYPE_IDENTITY_PROOF	= ( WCN_TYPE_IDENTITY + 1 ) ,
+        WCN_TYPE_KEY_WRAP_AUTHENTICATOR	= ( WCN_TYPE_IDENTITY_PROOF + 1 ) ,
+        WCN_TYPE_KEY_IDENTIFIER	= ( WCN_TYPE_KEY_WRAP_AUTHENTICATOR + 1 ) ,
+        WCN_TYPE_MAC_ADDRESS	= ( WCN_TYPE_KEY_IDENTIFIER + 1 ) ,
+        WCN_TYPE_MANUFACTURER	= ( WCN_TYPE_MAC_ADDRESS + 1 ) ,
+        WCN_TYPE_MESSAGE_TYPE	= ( WCN_TYPE_MANUFACTURER + 1 ) ,
+        WCN_TYPE_MODEL_NAME	= ( WCN_TYPE_MESSAGE_TYPE + 1 ) ,
+        WCN_TYPE_MODEL_NUMBER	= ( WCN_TYPE_MODEL_NAME + 1 ) ,
+        WCN_TYPE_NETWORK_INDEX	= ( WCN_TYPE_MODEL_NUMBER + 1 ) ,
+        WCN_TYPE_NETWORK_KEY	= ( WCN_TYPE_NETWORK_INDEX + 1 ) ,
+        WCN_TYPE_NETWORK_KEY_INDEX	= ( WCN_TYPE_NETWORK_KEY + 1 ) ,
+        WCN_TYPE_NEW_DEVICE_NAME	= ( WCN_TYPE_NETWORK_KEY_INDEX + 1 ) ,
+        WCN_TYPE_NEW_PASSWORD	= ( WCN_TYPE_NEW_DEVICE_NAME + 1 ) ,
+        WCN_TYPE_OOB_DEVICE_PASSWORD	= ( WCN_TYPE_NEW_PASSWORD + 1 ) ,
+        WCN_TYPE_OS_VERSION	= ( WCN_TYPE_OOB_DEVICE_PASSWORD + 1 ) ,
+        WCN_TYPE_POWER_LEVEL	= ( WCN_TYPE_OS_VERSION + 1 ) ,
+        WCN_TYPE_PSK_CURRENT	= ( WCN_TYPE_POWER_LEVEL + 1 ) ,
+        WCN_TYPE_PSK_MAX	= ( WCN_TYPE_PSK_CURRENT + 1 ) ,
+        WCN_TYPE_PUBLIC_KEY	= ( WCN_TYPE_PSK_MAX + 1 ) ,
+        WCN_TYPE_RADIO_ENABLED	= ( WCN_TYPE_PUBLIC_KEY + 1 ) ,
+        WCN_TYPE_REBOOT	= ( WCN_TYPE_RADIO_ENABLED + 1 ) ,
+        WCN_TYPE_REGISTRAR_CURRENT	= ( WCN_TYPE_REBOOT + 1 ) ,
+        WCN_TYPE_REGISTRAR_ESTABLISHED	= ( WCN_TYPE_REGISTRAR_CURRENT + 1 ) ,
+        WCN_TYPE_REGISTRAR_LIST	= ( WCN_TYPE_REGISTRAR_ESTABLISHED + 1 ) ,
+        WCN_TYPE_REGISTRAR_MAX	= ( WCN_TYPE_REGISTRAR_LIST + 1 ) ,
+        WCN_TYPE_REGISTRAR_NONCE	= ( WCN_TYPE_REGISTRAR_MAX + 1 ) ,
+        WCN_TYPE_REQUEST_TYPE	= ( WCN_TYPE_REGISTRAR_NONCE + 1 ) ,
+        WCN_TYPE_RESPONSE_TYPE	= ( WCN_TYPE_REQUEST_TYPE + 1 ) ,
+        WCN_TYPE_RF_BANDS	= ( WCN_TYPE_RESPONSE_TYPE + 1 ) ,
+        WCN_TYPE_R_HASH1	= ( WCN_TYPE_RF_BANDS + 1 ) ,
+        WCN_TYPE_R_HASH2	= ( WCN_TYPE_R_HASH1 + 1 ) ,
+        WCN_TYPE_R_SNONCE1	= ( WCN_TYPE_R_HASH2 + 1 ) ,
+        WCN_TYPE_R_SNONCE2	= ( WCN_TYPE_R_SNONCE1 + 1 ) ,
+        WCN_TYPE_SELECTED_REGISTRAR	= ( WCN_TYPE_R_SNONCE2 + 1 ) ,
+        WCN_TYPE_SERIAL_NUMBER	= ( WCN_TYPE_SELECTED_REGISTRAR + 1 ) ,
+        WCN_TYPE_WI_FI_PROTECTED_SETUP_STATE	= ( WCN_TYPE_SERIAL_NUMBER + 1 ) ,
+        WCN_TYPE_SSID	= ( WCN_TYPE_WI_FI_PROTECTED_SETUP_STATE + 1 ) ,
+        WCN_TYPE_TOTAL_NETWORKS	= ( WCN_TYPE_SSID + 1 ) ,
+        WCN_TYPE_UUID_E	= ( WCN_TYPE_TOTAL_NETWORKS + 1 ) ,
+        WCN_TYPE_UUID_R	= ( WCN_TYPE_UUID_E + 1 ) ,
+        WCN_TYPE_VENDOR_EXTENSION	= ( WCN_TYPE_UUID_R + 1 ) ,
+        WCN_TYPE_VERSION	= ( WCN_TYPE_VENDOR_EXTENSION + 1 ) ,
+        WCN_TYPE_X_509_CERTIFICATE_REQUEST	= ( WCN_TYPE_VERSION + 1 ) ,
+        WCN_TYPE_X_509_CERTIFICATE	= ( WCN_TYPE_X_509_CERTIFICATE_REQUEST + 1 ) ,
+        WCN_TYPE_EAP_IDENTITY	= ( WCN_TYPE_X_509_CERTIFICATE + 1 ) ,
+        WCN_TYPE_MESSAGE_COUNTER	= ( WCN_TYPE_EAP_IDENTITY + 1 ) ,
+        WCN_TYPE_PUBLIC_KEY_HASH	= ( WCN_TYPE_MESSAGE_COUNTER + 1 ) ,
+        WCN_TYPE_REKEY_KEY	= ( WCN_TYPE_PUBLIC_KEY_HASH + 1 ) ,
+        WCN_TYPE_KEY_LIFETIME	= ( WCN_TYPE_REKEY_KEY + 1 ) ,
+        WCN_TYPE_PERMITTED_CONFIG_METHODS	= ( WCN_TYPE_KEY_LIFETIME + 1 ) ,
+        WCN_TYPE_SELECTED_REGISTRAR_CONFIG_METHODS	= ( WCN_TYPE_PERMITTED_CONFIG_METHODS + 1 ) ,
+        WCN_TYPE_PRIMARY_DEVICE_TYPE	= ( WCN_TYPE_SELECTED_REGISTRAR_CONFIG_METHODS + 1 ) ,
+        WCN_TYPE_SECONDARY_DEVICE_TYPE_LIST	= ( WCN_TYPE_PRIMARY_DEVICE_TYPE + 1 ) ,
+        WCN_TYPE_PORTABLE_DEVICE	= ( WCN_TYPE_SECONDARY_DEVICE_TYPE_LIST + 1 ) ,
+        WCN_TYPE_AP_SETUP_LOCKED	= ( WCN_TYPE_PORTABLE_DEVICE + 1 ) ,
+        WCN_TYPE_APPLICATION_EXTENSION	= ( WCN_TYPE_AP_SETUP_LOCKED + 1 ) ,
+        WCN_TYPE_EAP_TYPE	= ( WCN_TYPE_APPLICATION_EXTENSION + 1 ) ,
+        WCN_TYPE_INITIALIZATION_VECTOR	= ( WCN_TYPE_EAP_TYPE + 1 ) ,
+        WCN_TYPE_KEY_PROVIDED_AUTOMATICALLY	= ( WCN_TYPE_INITIALIZATION_VECTOR + 1 ) ,
+        WCN_TYPE_802_1X_ENABLED	= ( WCN_TYPE_KEY_PROVIDED_AUTOMATICALLY + 1 ) ,
+        WCN_TYPE_APPSESSIONKEY	= ( WCN_TYPE_802_1X_ENABLED + 1 ) ,
+        WCN_TYPE_WEPTRANSMITKEY	= ( WCN_TYPE_APPSESSIONKEY + 1 ) ,
+        WCN_TYPE_UUID	= ( WCN_TYPE_WEPTRANSMITKEY + 1 ) ,
+        WCN_TYPE_PRIMARY_DEVICE_TYPE_CATEGORY	= ( WCN_TYPE_UUID + 1 ) ,
+        WCN_TYPE_PRIMARY_DEVICE_TYPE_SUBCATEGORY_OUI	= ( WCN_TYPE_PRIMARY_DEVICE_TYPE_CATEGORY + 1 ) ,
+        WCN_TYPE_PRIMARY_DEVICE_TYPE_SUBCATEGORY	= ( WCN_TYPE_PRIMARY_DEVICE_TYPE_SUBCATEGORY_OUI + 1 ) ,
+        WCN_TYPE_CURRENT_SSID	= ( WCN_TYPE_PRIMARY_DEVICE_TYPE_SUBCATEGORY + 1 ) ,
+        WCN_TYPE_BSSID	= ( WCN_TYPE_CURRENT_SSID + 1 ) ,
+        WCN_TYPE_DOT11_MAC_ADDRESS	= ( WCN_TYPE_BSSID + 1 ) ,
+        WCN_TYPE_AUTHORIZED_MACS	= ( WCN_TYPE_DOT11_MAC_ADDRESS + 1 ) ,
+        WCN_TYPE_NETWORK_KEY_SHAREABLE	= ( WCN_TYPE_AUTHORIZED_MACS + 1 ) ,
+        WCN_TYPE_REQUEST_TO_ENROLL	= ( WCN_TYPE_NETWORK_KEY_SHAREABLE + 1 ) ,
+        WCN_TYPE_REQUESTED_DEVICE_TYPE	= ( WCN_TYPE_REQUEST_TO_ENROLL + 1 ) ,
+        WCN_TYPE_SETTINGS_DELAY_TIME	= ( WCN_TYPE_REQUESTED_DEVICE_TYPE + 1 ) ,
+        WCN_TYPE_VERSION2	= ( WCN_TYPE_SETTINGS_DELAY_TIME + 1 ) ,
+        WCN_TYPE_VENDOR_EXTENSION_WFA	= ( WCN_TYPE_VERSION2 + 1 ) ,
+        WCN_NUM_ATTRIBUTE_TYPES	= ( WCN_TYPE_VENDOR_EXTENSION_WFA + 1 ) 
+    } 	WCN_ATTRIBUTE_TYPE;
+
+
+//
+// Values for WCN_TYPE_VERSION/WCN_TYPE_VERSION2 (these refer to the WPS protocol version)
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_VERSION
+    {
+        WCN_VALUE_VERSION_1_0	= 0x10,
+        WCN_VALUE_VERSION_2_0	= 0x20
+    } 	WCN_VALUE_TYPE_VERSION;
+
+
+//
+// Values for all boolean types (example: WCN_TYPE_AP_SETUP_LOCKED)
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_BOOLEAN
+    {
+        WCN_VALUE_FALSE	= 0,
+        WCN_VALUE_TRUE	= 1
+    } 	WCN_VALUE_TYPE_BOOLEAN;
+
+
+//
+// Values for WCN_TYPE_ASSOCIATION_STATE
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_ASSOCIATION_STATE
+    {
+        WCN_VALUE_AS_NOT_ASSOCIATED	= 0,
+        WCN_VALUE_AS_CONNECTION_SUCCESS	= 1,
+        WCN_VALUE_AS_CONFIGURATION_FAILURE	= 2,
+        WCN_VALUE_AS_ASSOCIATION_FAILURE	= 3,
+        WCN_VALUE_AS_IP_FAILURE	= 4
+    } 	WCN_VALUE_TYPE_ASSOCIATION_STATE;
+
+
+//
+// Values for WCN_TYPE_AUTHENTICATION_TYPE
+// and WCN_TYPE_AUTHENTICATION_TYPE_FLAGS
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_AUTHENTICATION_TYPE
+    {
+        WCN_VALUE_AT_OPEN	= 0x1,
+        WCN_VALUE_AT_WPAPSK	= 0x2,
+        WCN_VALUE_AT_SHARED	= 0x4,
+        WCN_VALUE_AT_WPA	= 0x8,
+        WCN_VALUE_AT_WPA2	= 0x10,
+        WCN_VALUE_AT_WPA2PSK	= 0x20,
+        WCN_VALUE_AT_WPAWPA2PSK_MIXED	= 0x22
+    } 	WCN_VALUE_TYPE_AUTHENTICATION_TYPE;
+
+
+//
+// Values for WCN_TYPE_CONFIG_METHODS
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_CONFIG_METHODS
+    {
+        WCN_VALUE_CM_USBA	= 0x1,
+        WCN_VALUE_CM_ETHERNET	= 0x2,
+        WCN_VALUE_CM_LABEL	= 0x4,
+        WCN_VALUE_CM_DISPLAY	= 0x8,
+        WCN_VALUE_CM_EXTERNAL_NFC	= 0x10,
+        WCN_VALUE_CM_INTEGRATED_NFC	= 0x20,
+        WCN_VALUE_CM_NFC_INTERFACE	= 0x40,
+        WCN_VALUE_CM_PUSHBUTTON	= 0x80,
+        WCN_VALUE_CM_KEYPAD	= 0x100,
+        WCN_VALUE_CM_VIRT_PUSHBUTTON	= 0x280,
+        WCN_VALUE_CM_PHYS_PUSHBUTTON	= 0x480,
+        WCN_VALUE_CM_VIRT_DISPLAY	= 0x2008,
+        WCN_VALUE_CM_PHYS_DISPLAY	= 0x4008
+    } 	WCN_VALUE_TYPE_CONFIG_METHODS;
+
+
+//
+// Values for WCN_TYPE_CONFIGURATION_ERROR
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_CONFIGURATION_ERROR
+    {
+        WCN_VALUE_CE_NO_ERROR	= 0,
+        WCN_VALUE_CE_OOB_INTERFACE_READ_ERROR	= 1,
+        WCN_VALUE_CE_DECRYPTION_CRC_FAILURE	= 2,
+        WCN_VALUE_CE_2_4_CHANNEL_NOT_SUPPORTED	= 3,
+        WCN_VALUE_CE_5_0_CHANNEL_NOT_SUPPORTED	= 4,
+        WCN_VALUE_CE_SIGNAL_TOO_WEAK	= 5,
+        WCN_VALUE_CE_NETWORK_AUTHENTICATION_FAILURE	= 6,
+        WCN_VALUE_CE_NETWORK_ASSOCIATION_FAILURE	= 7,
+        WCN_VALUE_CE_NO_DHCP_RESPONSE	= 8,
+        WCN_VALUE_CE_FAILED_DHCP_CONFIG	= 9,
+        WCN_VALUE_CE_IP_ADDRESS_CONFLICT	= 10,
+        WCN_VALUE_CE_COULD_NOT_CONNECT_TO_REGISTRAR	= 11,
+        WCN_VALUE_CE_MULTIPLE_PBC_SESSIONS_DETECTED	= 12,
+        WCN_VALUE_CE_ROGUE_ACTIVITY_SUSPECTED	= 13,
+        WCN_VALUE_CE_DEVICE_BUSY	= 14,
+        WCN_VALUE_CE_SETUP_LOCKED	= 15,
+        WCN_VALUE_CE_MESSAGE_TIMEOUT	= 16,
+        WCN_VALUE_CE_REGISTRATION_SESSION_TIMEOUT	= 17,
+        WCN_VALUE_CE_DEVICE_PASSWORD_AUTH_FAILURE	= 18
+    } 	WCN_VALUE_TYPE_CONFIGURATION_ERROR;
+
+
+//
+// Values for WCN_TYPE_CONNECTION_TYPE
+// and WCN_TYPE_CONNECTION_TYPE_FLAGS
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_CONNECTION_TYPE
+    {
+        WCN_VALUE_CT_ESS	= 1,
+        WCN_VALUE_CT_IBSS	= 2
+    } 	WCN_VALUE_TYPE_CONNECTION_TYPE;
+
+
+//
+// Values for WCN_TYPE_DEVICE_PASSWORD_ID
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_DEVICE_PASSWORD_ID
+    {
+        WCN_VALUE_DP_DEFAULT	= 0,
+        WCN_VALUE_DP_USER_SPECIFIED	= 0x1,
+        WCN_VALUE_DP_MACHINE_SPECIFIED	= 0x2,
+        WCN_VALUE_DP_REKEY	= 0x3,
+        WCN_VALUE_DP_PUSHBUTTON	= 0x4,
+        WCN_VALUE_DP_REGISTRAR_SPECIFIED	= 0x5,
+        WCN_VALUE_DP_NFC_CONNECTION_HANDOVER	= 0x7,
+        WCN_VALUE_DP_WFD_SERVICES	= 0x8,
+        WCN_VALUE_DP_OUTOFBAND_MIN	= 0x10,
+        WCN_VALUE_DP_OUTOFBAND_MAX	= 0xffff
+    } 	WCN_VALUE_TYPE_DEVICE_PASSWORD_ID;
+
+
+//
+// Values for WCN_TYPE_ENCRYPTION_TYPE and
+// WCN_TYPE_ENCRYPTION_TYPE_FLAGS
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_ENCRYPTION_TYPE
+    {
+        WCN_VALUE_ET_NONE	= 0x1,
+        WCN_VALUE_ET_WEP	= 0x2,
+        WCN_VALUE_ET_TKIP	= 0x4,
+        WCN_VALUE_ET_AES	= 0x8,
+        WCN_VALUE_ET_TKIP_AES_MIXED	= 0xc
+    } 	WCN_VALUE_TYPE_ENCRYPTION_TYPE;
+
+
+//
+// Values for WCN_TYPE_MESSAGE_TYPE
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_MESSAGE_TYPE
+    {
+        WCN_VALUE_MT_BEACON	= 0x1,
+        WCN_VALUE_MT_PROBE_REQUEST	= 0x2,
+        WCN_VALUE_MT_PROBE_RESPONSE	= 0x3,
+        WCN_VALUE_MT_M1	= 0x4,
+        WCN_VALUE_MT_M2	= 0x5,
+        WCN_VALUE_MT_M2D	= 0x6,
+        WCN_VALUE_MT_M3	= 0x7,
+        WCN_VALUE_MT_M4	= 0x8,
+        WCN_VALUE_MT_M5	= 0x9,
+        WCN_VALUE_MT_M6	= 0xa,
+        WCN_VALUE_MT_M7	= 0xb,
+        WCN_VALUE_MT_M8	= 0xc,
+        WCN_VALUE_MT_ACK	= 0xd,
+        WCN_VALUE_MT_NACK	= 0xe,
+        WCN_VALUE_MT_DONE	= 0xf
+    } 	WCN_VALUE_TYPE_MESSAGE_TYPE;
+
+
+//
+// Values for WCN_TYPE_REQUEST_TYPE
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_REQUEST_TYPE
+    {
+        WCN_VALUE_ReqT_ENROLLEE_INFO	= 0,
+        WCN_VALUE_ReqT_ENROLLEE_OPEN_1X	= 0x1,
+        WCN_VALUE_ReqT_REGISTRAR	= 0x2,
+        WCN_VALUE_ReqT_MANAGER_REGISTRAR	= 0x3
+    } 	WCN_VALUE_TYPE_REQUEST_TYPE;
+
+
+//
+// Values for WCN_TYPE_RESPONSE_TYPE
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_RESPONSE_TYPE
+    {
+        WCN_VALUE_RspT_ENROLLEE_INFO	= 0,
+        WCN_VALUE_RspT_ENROLLEE_OPEN_1X	= 0x1,
+        WCN_VALUE_RspT_REGISTRAR	= 0x2,
+        WCN_VALUE_RspT_AP	= 0x3
+    } 	WCN_VALUE_TYPE_RESPONSE_TYPE;
+
+
+//
+// Values for WCN_TYPE_RF_BANDS
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_RF_BANDS
+    {
+        WCN_VALUE_RB_24GHZ	= 0x1,
+        WCN_VALUE_RB_50GHZ	= 0x2
+    } 	WCN_VALUE_TYPE_RF_BANDS;
+
+
+//
+// Values for WCN_TYPE_WI_FI_PROTECTED_SETUP_STATE
+//
+typedef /* [v1_enum] */ 
+enum tagWCN_VALUE_TYPE_WI_FI_PROTECTED_SETUP_STATE
+    {
+        WCN_VALUE_SS_RESERVED00	= 0,
+        WCN_VALUE_SS_NOT_CONFIGURED	= 0x1,
+        WCN_VALUE_SS_CONFIGURED	= 0x2
+    } 	WCN_VALUE_TYPE_WI_FI_PROTECTED_SETUP_STATE;
+
+
+//
+// Values for WCN_TYPE_PRIMARY_DEVICE_TYPE[Category]
+//
+typedef unsigned short WCN_VALUE_TYPE_DEVICE_TYPE_CATEGORY;
+
+#define	WCN_VALUE_DT_CATEGORY_COMPUTER	( 0x1 )
+
+#define	WCN_VALUE_DT_CATEGORY_INPUT_DEVICE	( 0x2 )
+
+#define	WCN_VALUE_DT_CATEGORY_PRINTER	( 0x3 )
+
+#define	WCN_VALUE_DT_CATEGORY_CAMERA	( 0x4 )
+
+#define	WCN_VALUE_DT_CATEGORY_STORAGE	( 0x5 )
+
+#define	WCN_VALUE_DT_CATEGORY_NETWORK_INFRASTRUCTURE	( 0x6 )
+
+#define	WCN_VALUE_DT_CATEGORY_DISPLAY	( 0x7 )
+
+#define	WCN_VALUE_DT_CATEGORY_MULTIMEDIA_DEVICE	( 0x8 )
+
+#define	WCN_VALUE_DT_CATEGORY_GAMING_DEVICE	( 0x9 )
+
+#define	WCN_VALUE_DT_CATEGORY_TELEPHONE	( 0xa )
+
+#define	WCN_VALUE_DT_CATEGORY_AUDIO_DEVICE	( 0xb )
+
+#define	WCN_VALUE_DT_CATEGORY_OTHER	( 0xff )
+
+
+//
+// Value for WCN_TYPE_PRIMARY_DEVICE_TYPE[SubCategoryOUI]
+//
+typedef unsigned __int32 WCN_VALUE_TYPE_DEVICE_TYPE_SUBCATEGORY_OUI;
+
+// Standard OUI for Wi-Fi Alliance
+#define	WCN_VALUE_DT_SUBTYPE_WIFI_OUI	( 0x50f204 )
+
+
+//
+// Values for WCN_TYPE_PRIMARY_DEVICE_TYPE[SubCategory]
+//
+typedef unsigned short WCN_VALUE_TYPE_DEVICE_TYPE_SUBCATEGORY;
+
+// Category = WCN_VALUE_DT_CATEGORY_COMPUTER
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__PC	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__SERVER	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__MEDIACENTER	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__ULTRAMOBILEPC	( 0x4 )
+
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__NOTEBOOK	( 0x5 )
+
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__DESKTOP	( 0x6 )
+
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__MID	( 0x7 )
+
+#define	WCN_VALUE_DT_SUBTYPE_COMPUTER__NETBOOK	( 0x8 )
+
+// NOTE: ALL input device sub-categories are new to WPS 2.0
+// Category = WCN_VALUE_DT_CATEGORY_INPUT_DEVICE
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__KEYBOARD	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__MOUSE	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__JOYSTICK	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__TRACKBALL	( 0x4 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__GAMECONTROLLER	( 0x5 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__REMOTE	( 0x6 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__TOUCHSCREEN	( 0x7 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__BIOMETRICREADER	( 0x8 )
+
+#define	WCN_VALUE_DT_SUBTYPE_INPUT_DEVICE__BARCODEREADER	( 0x9 )
+
+// NOTE: This category covers printers, scanners, faxes and copiers
+// Category = WCN_VALUE_DT_CATEGORY_PRINTER
+#define	WCN_VALUE_DT_SUBTYPE_PRINTER__PRINTER	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_PRINTER__SCANNER	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_PRINTER__FAX	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_PRINTER__COPIER	( 0x4 )
+
+#define	WCN_VALUE_DT_SUBTYPE_PRINTER__ALLINONE	( 0x5 )
+
+// Category = WCN_VALUE_DT_CATEGORY_CAMERA
+#define	WCN_VALUE_DT_SUBTYPE_CAMERA__STILL_CAMERA	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_CAMERA__VIDEO_CAMERA	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_CAMERA__WEB_CAMERA	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_CAMERA__SECURITY_CAMERA	( 0x4 )
+
+// Category = WCN_VALUE_DT_CATEGORY_STORAGE
+#define	WCN_VALUE_DT_SUBTYPE_STORAGE__NAS	( 0x1 )
+
+// Category = WCN_VALUE_DT_CATEGORY_NETWORK_INFRASTRUCTURE
+#define	WCN_VALUE_DT_SUBTYPE_NETWORK_INFRASTRUCUTURE__AP	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_NETWORK_INFRASTRUCUTURE__ROUTER	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_NETWORK_INFRASTRUCUTURE__SWITCH	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_NETWORK_INFRASTRUCUTURE__GATEWAY	( 0x4 )
+
+#define	WCN_VALUE_DT_SUBTYPE_NETWORK_INFRASTRUCUTURE__BRIDGE	( 0x5 )
+
+// Category = WCN_VALUE_DT_CATEGORY_DISPLAY
+#define	WCN_VALUE_DT_SUBTYPE_DISPLAY__TELEVISION	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_DISPLAY__PICTURE_FRAME	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_DISPLAY__PROJECTOR	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_DISPLAY__MONITOR	( 0x4 )
+
+// Category = WCN_VALUE_DT_CATEGORY_MULTIMEDIA_DEVICE
+#define	WCN_VALUE_DT_SUBTYPE_MULTIMEDIA_DEVICE__DAR	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_MULTIMEDIA_DEVICE__PVR	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_MULTIMEDIA_DEVICE__MCX	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_MULTIMEDIA_DEVICE__SETTOPBOX	( 0x4 )
+
+#define	WCN_VALUE_DT_SUBTYPE_MULTIMEDIA_DEVICE__MEDIA_SERVER_ADAPT_EXT	( 0x5 )
+
+#define	WCN_VALUE_DT_SUBTYPE_MULTIMEDIA_DEVICE__PVP	( 0x6 )
+
+// Category = WCN_VALUE_DT_CATEGORY_GAMING_DEVICE
+#define	WCN_VALUE_DT_SUBTYPE_GAMING_DEVICE__XBOX	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_GAMING_DEVICE__XBOX360	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_GAMING_DEVICE__PLAYSTATION	( 0x3 )
+
+#define	WCN_VALUE_DT_SUBTYPE_GAMING_DEVICE__CONSOLE_ADAPT	( 0x4 )
+
+#define	WCN_VALUE_DT_SUBTYPE_GAMING_DEVICE__PORTABLE	( 0x5 )
+
+// Category = WCN_VALUE_DT_CATEGORY_TELEPHONE
+#define	WCN_VALUE_DT_SUBTYPE_TELEPHONE__WINDOWS_MOBILE	( 0x1 )
+
+#define	WCN_VALUE_DT_SUBTYPE_TELEPHONE__PHONE_SINGLEMODE	( 0x2 )
+
+#define	WCN_VALUE_DT_SUBTYPE_TELEPHONE__PHONE_DUALMODE	(

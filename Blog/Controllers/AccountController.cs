@@ -11,8 +11,11 @@ namespace Blog.Controllers
         private readonly UserManager<UserModel> _usermanager;
         private readonly SignInManager<UserModel> _signInManager;
 
-        public AccountController(UserManager<UserModel> usermanager, SignInManager<UserModel> signInManager)
+        public readonly DBcontext _context;
+
+        public AccountController(DBcontext context,UserManager<UserModel> usermanager, SignInManager<UserModel> signInManager)
         {
+            _context = context;
             _usermanager = usermanager;
             _signInManager = signInManager;
         }
@@ -35,6 +38,7 @@ namespace Blog.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+           
             return View();
         }
         [HttpPost]

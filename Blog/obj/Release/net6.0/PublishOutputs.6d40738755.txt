@@ -23,6 +23,7 @@ E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFramework
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFrameworkCore.Relational.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFrameworkCore.SqlServer.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.Caching.Memory.dll
+E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.DependencyInjection.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.Features.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.Identity.Core.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.Identity.Stores.dll
@@ -46,6 +47,7 @@ E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\System.IO.Pipelines.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\System.Runtime.Caching.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\System.Security.Permissions.dll
+E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\System.Text.Json.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\System.Windows.Extensions.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 E:\ASP.NET-App\Blog\Blog\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll

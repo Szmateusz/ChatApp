@@ -1,0 +1,875 @@
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+
+
+/// <reference no-default-lib="true"/>
+
+
+/// <reference lib="es2015.symbol" />
+
+interface SymbolConstructor {
+    /**
+     * A method that returns the default iterator for an object. Called by the semantics of the
+     * for-of statement.
+     */
+    readonly iterator: unique symbol;
+}
+
+interface IteratorYieldResult<TYield> {
+    done?: false;
+    value: TYield;
+}
+
+interface IteratorReturnResult<TReturn> {
+    done: true;
+    value: TReturn;
+}
+
+type IteratorResult<T, TReturn = any> = IteratorYieldResult<T> | IteratorReturnResult<TReturn>;
+
+interface Iterator<T, TReturn = any, TNext = undefined> {
+    // NOTE: 'next' is defined using a tuple to ensure we report the correct assignability errors in all places.
+    next(...args: [] | [TNext]): IteratorResult<T, TReturn>;
+    return?(value?: TReturn): IteratorResult<T, TReturn>;
+    throw?(e?: any): IteratorResult<T, TReturn>;
+}
+
+interface Iterable<T> {
+    [Symbol.iterator](): Iterator<T>;
+}
+
+interface IterableIterator<T> extends Iterator<T> {
+    [Symbol.iterator](): IterableIterator<T>;
+}
+
+interface Array<T> {
+    /** Iterator */
+    [Symbol.iterator](): IterableIterator<T>;
+
+    /**
+     * Returns an iterable of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, T]>;
+
+    /**
+     * Returns an iterable of keys in the array
+     */
+    keys(): IterableIterator<number>;
+
+    /**
+     * Returns an iterable of values in the array
+     */
+    values(): IterableIterator<T>;
+}
+
+interface ArrayConstructor {
+    /**
+     * Creates an array from an iterable object.
+     * @param iterable An iterable object to convert to an array.
+     */
+    from<T>(iterable: Iterable<T> | ArrayLike<T>): T[];
+
+    /**
+     * Creates an array from an iterable object.
+     * @param iterable An iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from<T, U>(iterable: Iterable<T> | ArrayLike<T>, mapfn: (v: T, k: number) => U, thisArg?: any): U[];
+}
+
+interface ReadonlyArray<T> {
+    /** Iterator of values in the array. */
+    [Symbol.iterator](): IterableIterator<T>;
+
+    /**
+     * Returns an iterable of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, T]>;
+
+    /**
+     * Returns an iterable of keys in the array
+     */
+    keys(): IterableIterator<number>;
+
+    /**
+     * Returns an iterable of values in the array
+     */
+    values(): IterableIterator<T>;
+}
+
+interface IArguments {
+    /** Iterator */
+    [Symbol.iterator](): IterableIterator<any>;
+}
+
+interface Map<K, V> {
+    /** Returns an iterable of entries in the map. */
+    [Symbol.iterator](): IterableIterator<[K, V]>;
+
+    /**
+     * Returns an iterable of key, value pairs for every entry in the map.
+     */
+    entries(): IterableIterator<[K, V]>;
+
+    /**
+     * Returns an iterable of keys in the map
+     */
+    keys(): IterableIterator<K>;
+
+    /**
+     * Returns an iterable of values in the map
+     */
+    values(): IterableIterator<V>;
+}
+
+interface ReadonlyMap<K, V> {
+    /** Returns an iterable of entries in the map. */
+    [Symbol.iterator](): IterableIterator<[K, V]>;
+
+    /**
+     * Returns an iterable of key, value pairs for every entry in the map.
+     */
+    entries(): IterableIterator<[K, V]>;
+
+    /**
+     * Returns an iterable of keys in the map
+     */
+    keys(): IterableIterator<K>;
+
+    /**
+     * Returns an iterable of values in the map
+     */
+    values(): IterableIterator<V>;
+}
+
+interface MapConstructor {
+    new(): Map<any, any>;
+    new <K, V>(iterable?: Iterable<readonly [K, V]> | null): Map<K, V>;
+}
+
+interface WeakMap<K extends object, V> { }
+
+interface WeakMapConstructor {
+    new <K extends object, V>(iterable: Iterable<readonly [K, V]>): WeakMap<K, V>;
+}
+
+interface Set<T> {
+    /** Iterates over values in the set. */
+    [Symbol.iterator](): IterableIterator<T>;
+    /**
+     * Returns an iterable of [v,v] pairs for every value `v` in the set.
+     */
+    entries(): IterableIterator<[T, T]>;
+    /**
+     * Despite its name, returns an iterable of the values in the set.
+     */
+    keys(): IterableIterator<T>;
+
+    /**
+     * Returns an iterable of values in the set.
+     */
+    values(): IterableIterator<T>;
+}
+
+interface ReadonlySet<T> {
+    /** Iterates over values in the set. */
+    [Symbol.iterator](): IterableIterator<T>;
+
+    /**
+     * Returns an iterable of [v,v] pairs for every value `v` in the set.
+     */
+    entries(): IterableIterator<[T, T]>;
+
+    /**
+     * Despite its name, returns an iterable of the values in the set.
+     */
+    keys(): IterableIterator<T>;
+
+    /**
+     * Returns an iterable of values in the set.
+     */
+    values(): IterableIterator<T>;
+}
+
+interface SetConstructor {
+    new <T>(iterable?: Iterable<T> | null): Set<T>;
+}
+
+interface WeakSet<T extends object> { }
+
+interface WeakSetConstructor {
+    new <T extends object = object>(iterable: Iterable<T>): WeakSet<T>;
+}
+
+interface Promise<T> { }
+
+interface PromiseConstructor {
+    /**
+     * Creates a Promise that is resolved with an array of results when all of the provided Promises
+     * resolve, or rejected when any Promise is rejected.
+     * @param values An iterable of Promises.
+     * @returns A new Promise.
+     */
+    all<T>(values: Iterable<T | PromiseLike<T>>): Promise<Awaited<T>[]>;
+
+    /**
+     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
+     * or rejected.
+     * @param values An iterable of Promises.
+     * @returns A new Promise.
+     */
+    race<T>(values: Iterable<T | PromiseLike<T>>): Promise<Awaited<T>>;
+}
+
+interface String {
+    /** Iterator */
+    [Symbol.iterator](): IterableIterator<string>;
+}
+
+interface Int8Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Int8ArrayConstructor {
+    new (elements: Iterable<number>): Int8Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Int8Array;
+}
+
+interface Uint8Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Uint8ArrayConstructor {
+    new (elements: Iterable<number>): Uint8Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Uint8Array;
+}
+
+interface Uint8ClampedArray {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Uint8ClampedArrayConstructor {
+    new (elements: Iterable<number>): Uint8ClampedArray;
+
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Uint8ClampedArray;
+}
+
+interface Int16Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Int16ArrayConstructor {
+    new (elements: Iterable<number>): Int16Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Int16Array;
+}
+
+interface Uint16Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Uint16ArrayConstructor {
+    new (elements: Iterable<number>): Uint16Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Uint16Array;
+}
+
+interface Int32Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Int32ArrayConstructor {
+    new (elements: Iterable<number>): Int32Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Int32Array;
+}
+
+interface Uint32Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Uint32ArrayConstructor {
+    new (elements: Iterable<number>): Uint32Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Uint32Array;
+}
+
+interface Float32Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Float32ArrayConstructor {
+    new (elements: Iterable<number>): Float32Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Float32Array;
+}
+
+interface Float64Array {
+    [Symbol.iterator](): IterableIterator<number>;
+    /**
+     * Returns an array of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, number]>;
+    /**
+     * Returns an list of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an list of values in the array
+     */
+    values(): IterableIterator<number>;
+}
+
+interface Float64ArrayConstructor {
+    new (elements: Iterable<number>): Float64Array;
+
+    /**
+     * Creates an array from an array-like or iterable object.
+     * @param arrayLike An array-like or iterable object to convert to an array.
+     * @param mapfn A mapping function to call on every element of the array.
+     * @param thisArg Value of 'this' used to invoke the mapfn.
+     */
+    from(arrayLike: Iterable<number>, mapfn?: (v: number, k: number) => number, thisArg?: any): Float64Array;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  MZ       ÿÿ  ¸       @                                   €   º ´	Í!¸LÍ!This program cannot be run in DOS mode.
+$       PE  L M–”Å        à " 0     
+      
++       @    @                       €     hø   `…                           µ*  O    @  ¸             ¸'   `     Ä)  T                                                             H           .text                              `.rsrc   ¸   @                    @  @.reloc      `                    @  B                é*      H     (!  œ                                                       0 ™     i/r  ps  
+zš(  
+
+s  
+(  
+(  
+o  
+o  
+~  
+o  
+o  
+	o  
+o  
+o  
+  %¢%¢(  
+&Ş	,	o  
+Ü,o  
+Ü,o  
+Ü*   (   . Lz 
+     ( \„ 
+     " l 
+    (  
+*BSJB         v4.0.30319     l   D  #~  °  p  #Strings       ¤   #US Ä     #GUID   Ô  È  #Blob         G 	    ú3                                   É      >{ «{ { h ›   ¦ ê ’> > w> !> ¿ > Ü > ^>  > ş2
+ *ë #  ¯ P2  2
+ Yë e 2
+ ë
+ á
+ ë Y 2              *Æ9   P     ‘ 9d   !    †b     ª	 b  b  b
+ ) b 1 b 9 b A b I b Q b Y b a b i b ‘ b ™ u # y b( © 4. © F. y 3 ± / 8 ¹ = y A y  H  # M ‰ gT É m  q b .  j .  s .  ’ . # › . + é . 3 ú . ; . C ;. K h. S u. [ €. c ¥ €               <              [                 [ 2       Int32 <Module> System.IO mscorlib CopyToAsync set_DualMode JavaScriptDebugAdapterBridge IDisposable Console Dispose Parse DebuggableAttribute AssemblyTitleAttribute TargetFrameworkAttribute AssemblyFileVersionAttribute AssemblyInformationalVersionAttribute AssemblyConfigurationAttribute AssemblyDescriptionAttribute CompilationRelaxationsAttribute AssemblyProductAttribute AssemblyCopyrightAttribute AssemblyCompanyAttribute RuntimeCompatibilityAttribute JavaScriptDebugAdapterBridge.exe System.Runtime.Versioning Loopback Task NetworkStream GetStream Program System Main System.Reflection ArgumentException .ctor System.Diagnostics System.Runtime.CompilerServices DebuggingModes args System.Threading.Tasks DebugAdapterWrapperProcess IPAddress System.Net.Sockets Object Connect System.Net Socket get_Client TcpClient OpenStandardInput OpenStandardOutput AddressFamily WaitAny   €ŸE x p e c t e d   d e b u g   a d a p t e r   s e r v e r   p o r t   ( u s a g e :   D e b u g A d a p t e r W r a p p e r P r o c e s s . e x e   1 2 3 4 )    ÑeÉaHrH§ÊH)íü»M      =AAEE  Q  A  Y ] ]  a EA E·z\V4à‰         TWrapNonExceptionThrows      M .NETFramework,Version=v4.7.2 TFrameworkDisplayName.NET Framework 4.7.2 MicrosoftÂ©   Release  3 .Â© Microsoft Corporation. All rights reserved.  , 'JavaScript Debug Adapter Bridge Process   1.0.0.0  
+ 1.0.0  $ JavaScript Debug Adapter Bridge  ! JavaScriptDebugAdapterBridge       9v MP   v   *                  '   *                               RSDSÙæ÷²ÇK¥D)*awÄc   D:\a\_work\1\s\DebugAdapterWrapperProcess\obj\Release\net472\JavaScriptDebugAdapterBridge.pdb SHA256 Ùæ÷²ÇKeD)*awÄc9vpÓ»÷Ó‘ÈŸ¸èİ*          ÷*                          é*            _CorExeMain mscoree.dll        ÿ%  @                                                                                                                                                                                                                                                                      €   P  €                  8  €                   €                     h  €                   ¸  @  (          (4   V S _ V E R S I O N _ I N F O     ½ïş                 ?                         D    V a r F i l e I n f o     $    T r a n s l a t i o n       °ˆ   S t r i n g F i l e I n f o   d   0 0 0 0 0 4 b 0   h (  C o m m e n t s   J a v a S c r i p t   D e b u g   A d a p t e r   B r i d g e   P r o c e s s   6   C o m p a n y N a m e     M i c r o s o f t ©     b   F i l e D e s c r i p t i o n     J a v a S c r i p t D e b u g A d a p t e r B r i d g e     0   F i l e V e r s i o n     1 . 0 . 0 . 0   b !  I n t e r n a l N a m e   J a v a S c r i p t D e b u g A d a p t e r B r i d g e . e x e     € .  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   A l l   r i g h t s   r e s e r v e d .   j !  O r i g i n a l F i l e n a m e   J a v a S c r i p t D e b u g A d a p t e r B r i d g e . e x e     `    P r o d u c t N a m e     J a v a S c r i p t   D e b u g   A d a p t e r   B r i d g e   0   P r o d u c t V e r s i o n   1 . 0 . 0   8   A s s e m b l y   V e r s i o n   1 . 0 . 0 . 0   ÈD  ê          ï»¿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <assemblyIdentity version="1.0.0.0" name="MyApplication.app"/>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
+    <security>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <requestedExecutionLevel level="asInvoker" uiAccess="false"/>
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>                                                                                                                                                                                                                                                                                                                                                     ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ¸'    0‚'ª	*†H†÷ ‚'›0‚'—10	`†He 0\
++‚7 N0L0
++‚70	  ¢€ 010	`†He  É/§¡ÜE°=7Îué¸Ò‘–ª2†{¡1å"¤zÅ\NÂ ‚0‚ÿ0‚ç 3  R‹3ªø•ó9Û    R0	*†H†÷ 0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110210902183259Z220901183259Z0t10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMicrosoft Corporation0‚"0	*†H†÷ ‚ 0‚
+‚ ĞäÏ³õûÛ¯äô#«¨ô4“¨ÔªÕB£»‚WqÉ%É:Ö/ŒLJÈ¢íˆ±¶'®ğ_5@«“¦â‡¾-üÒìãq¾¦³M Aª°CPb"{6ğßóB5}oN/¾Š·E©slëÜÖûº“ë¿Ò4Õ/Ä­ìƒØNİõã]/¤J|ÉğD—ø]ñœÀ¿Ã
+y\æÛŞlÕYÚz2ˆS„
+n À­¥ÛÈ¾`Du$î¦TÇã‹¯ÍhFrGhËÖÍ‘)£3òâ3NØ0êmÃlã8{c!SÖP>r?~g+Â¼¹®Gû|«†Üñt|@†IA*~ÙN¦ÚWM £‚~0‚z0U%0
++‚7L+0U5’ZA‹Øk°·¶Nî|FyÑ0PUI0G¤E0C1)0'U Microsoft Operations Puerto Rico10U230012+4675970U#0€HndåPÓ‚ª77"µm¨Êu•0TUM0K0I G E†Chttp://www.microsoft.com/pkiops/crl/MicCodSigPCA2011_2011-07-08.crl0a+U0S0Q+0†Ehttp://www.microsoft.com/pkiops/certs/MicCodSigPCA2011_2011-07-08.crt0Uÿ0 0	*†H†÷ ‚ I7¹,dL@aÔÛ@—°b¼,g`_Z™øGY1†Ğ)«èˆR-tLÄ]AÜâGÒ¿‘Ç)’ó\_íŒ˜K‰¡	CGåK®ßğõ#ßÀ=W–¢coÉ¢NÖdS€š3Ñ4Ñ§Éè;—IS‰8E¨O¶hë:ú‚ zQ 4’‘µ‘ºŠ¸²0æY ÇÒ²ùÙ®Ãv/.Lˆ*ŸŒo1c£Á¾øà·ØĞJg>¶wQ¿º¯)á\•Ñ]L½ Ş‡òµ£Ã"j»º³şÅÊ£‹yD¸½1áõ8/íÄ&.­vÒ[KÔXøããÿ§&Ù¦¾»bÈnôõÑwv&=ŸÜbjíÊuj´AˆZ´¨AzÆ8`Ó+­Úš3Y±ŒÓë3èu‚4k½€Â¹fçeu8kYÓ (’ÚĞ*É1+¾­8^–´ûÎÓüõT\ÚŸíªINşô»KBãGŒ7q#ã¸Û¬¼·ı€Ü‡”j3¹Öò„~Ì^2¬
+[ >MX´µ‘©ô±Ú‰[¡%Á$23’+=ìFë©%÷Rº2aşv/í¢U:İkÅÖzÃÆëc'ŸtüâßÍâE¸ß9!Ç²dïvPú[„Œ¾l’]rMw2æà8ğª6âOéÆñÏ."ÆÙy½<Iæ2¨Õi0‚z0‚b 
+aÒ     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20110110708205909Z260708210909Z0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110‚"0	*†H†÷ ‚ 0‚
+‚ «ğúr.­Ønª‚M4ºò¶X!ŸB*kéZPª¸8IºÃİ7kÆØğ8Â™°È9Õ1BÓ‰yd‡~”`$l¯Iœéh^Òß›S²
+,Ã¯Ù©+®z	¯×–YÊ`éfvè2R&/ç«PÏ³D·]ØÄ.u«hóËmó:\¡ôFºà8d¬nd5x¦ c-Ó@“øãŞÕ\y¥I)ç¾ w¾”=ïûã+ZMV(¢zrà:·I^ØííC‘ƒÙ{²{†Ù>±Œ]è‰O„ò¡/Yä;-®3XÅ·>ş2Ó³=±²¯’8~Ò€,õNV‘!5%Ã9ndSºœ­#„Ëôº†÷_ğĞR¿Œ”‡¼À!t%_(¶Ì'(8%˜9J6Ï|±’®#§©fìajá(I_ˆâ%]Ó!K>RÄµW?$ğÑz[/Õ#ãp]QFw³ø á¼¬‚_ÛÀ³½ÔUKç9¡é#I¼¸D|EäÁÃrzàrç$ß¿F™ÅïÂWÛƒìMI0§«ßì[Ÿ¯üİ°fâÁ—{íÖíKçI)§(¦§}g€æŠbx_²/„×Wœ\¿w((ñímÃ(,@7OÁá…D‰Ä	LÅÔ¥C/t•÷nøx X,]`•š>O3„Ú°ˆŞNô–°¼F l˜ÒàÖˆŒ £‚í0‚é0	+‚7 0UHndåPÓ‚ª77"µm¨Êu•0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€r-:1C¹Náê§Ç1Ñ#‰40ZUS0Q0O M K†Ihttp://crl.microsoft.com/pki/crl/products/MicRooCerAut2011_2011_03_22.crl0^+R0P0N+0†Bhttp://www.microsoft.com/pki/certs/MicRooCerAut2011_2011_03_22.crt0ŸU —0”0‘	+‚7.0ƒ0?+3http://www.microsoft.com/pkiops/docs/primarycps.htm0@+042  L e g a l _ p o l i c y _ s t a t e m e n t . 0	*†H†÷ ‚ gò†¥˜àTy.ÓØtg"›–ác’™B–}ÒyÁe_.,>øÃrÑmƒş¾?è
+Ê;¿G©£óiÛc¿"5¥—]e„}‹FPUØ’|ÒKó<B‹RĞ°ıkã>.)›æ=¥Ôµw”9âédÉD=xz#ó}¦tƒôË&F*ÂŠ»¤©›íhúh.• *?*kXIc	inZ˜–äƒôÀóF+Şü;Ğ½5ïn%®å¯'íĞİó¯™(—˜M=ò‰ÖÃ2âğÅ-Î[´I9
+Æ
+ÂÆ­®å²ÙÛˆQEX82q'±ô'øŞ,: i˜²Y‰hno§·tÃ@¦*(>‚?MfÀ³Mõáo}E§vå@*e£Ã]Rb†Ãc6—†ßÚóøò¡š'áÍ¥—Ğî]cAã[œ‡>wÑ±u¾aaµğÜÆ¾ßAÇ(îŞe/ì—ö¡\–Ø Ö¡F½Yó—¥	KH™€Ğ )Å±›¥?Ew5ÆÒ¢¢Ÿzz"úH•«ûG#€õø¿k·K—âëuxìê7™yKÿÖ³#huæ¯úü‹ë€êi;¯ü0íLßßumc‘=ÑVNO¿€W"¡x2!zïA
+±?û¨Ì¤]Á¡ˆ›WqVNHEÀBÉ›v[
+€HkıyŸÁ½mmjÉRszPÍ1‚œ0‚˜0•0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20113  R‹3ªø•ó9Û    R0	`†He  Ô0	*†H†÷	1
++‚70
++‚710
++‚70/	*†H†÷	1" ü„‘ğ§¤JÀüÂ`8Aª•Èğ‘ŸY¹@ï°Wl,0h
++‚71Z0X :€8 J a v a S c r i p t D e b u g A d a p t e r B r i d g e¡€http://www.microsoft.com0	*†H†÷ ‚ wÊá¶ôŠUÿS!FYWÈ»ÇûˆÅ71Ì(Ö–.	Ú[È×i@9âøì'Šd§…(nîÀSˆn’›ÈTÀÈ'8ÅãJÔÅ©³s9A,„.”Ş¼¤ºF^1`Ÿk¤„ŠUNr‡j°—3pWø‰Oz 4-!ÖMÂuf‰wM¬Rˆ³â8ÍyK*˜×ëW½”ÓîoŒG3ÌW7uÜç²D¿ˆ¤ÕGÒeÛ-àl ÙÕµ›÷Ñe
+Ït*êİÓ¼ª˜e«(½-–{\Ÿï9få³ø8åk‘ö‹ŞVcşµü$®øè?†w•Õõ¸ÿ»˜[¡ ùBä¡ÌV°7ĞÄü•æ{é—¡‚ 0‚ü
++‚71‚ì0‚è	*†H†÷ ‚Ù0‚Õ10	`†He 0‚Q*†H†÷	 ‚@‚<0‚8
++„Y
+010	`†He  ‘íÃŸ#«®>÷l¸gî¹_ù¬¶¸¼îçšq!hb´bÕm20220628040735.442Z0€ô Ğ¤Í0Ê10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:D6BD-E3E7-16851%0#UMicrosoft Time-Stamp Service ‚W0‚0‚ô 3  ıÂ-Ø1Z¶±   0	*†H†÷ 0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100211202190520Z230228190520Z0Ê10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:D6BD-E3E7-16851%0#UMicrosoft Time-Stamp Service0‚"0	*†H†÷ ‚ 0‚
+‚ îé\¥HuÃğ6¼^EM" àÁjS®ù]pZÃfsz¹¶²¼UøÚKı›û¥P;ôÃ1ÌOšßâöxyÅõ0ø´ş„”1Ô´¡#«TÚª¥ÍgÁMT"ùg@W²"4{Â~Y…wÊğê”F•L{Ã¬¼2‘k †jÜ8O¥2É3RÑtÑÑ…”´ù°pÜQºĞ· â|-±š®„ğO ÅC5ßÏ¢„ÔY$ÂT2Øhº ´Mê–:ËŠªpa Û}Õ3z•wÀ§kê‡ÒĞĞ±‰Aûûâr]ƒ9¦üÿ{ÔÖ}¾©¡ØìMŸÍ©_‰Ë»0ş>ÎaF`ğ%£¬œ7=cÅÍ»ÅÕ%‹ç£Ë˜b(u¶‚ÃN`XTDOa‘É
+"c¨DMG4eáÓPp9·¦RßÎ$å xVÜôa¸2„„ã¥PÉ|ÃÎ³šÔÕn8ûùÁmGÃ˜?0^î]õH»îtÓªñ,aÙP>Z¦w8_ùnÉ˜Ú?ÿÛ¼Kg ÜÉ+÷pKc¹ÉâšS«Ä¥k¯c¿Xi‚aÏ¡µ‡ráç„£i¼]BeßØ2Âç¢8Áå©r»iù7a¦üõ¢ê‰Ó³[’
+-9RcusJûMIU‘{Ÿ5q £‚60‚20UhÓ>ƒÑu—>Ô$I:è‡Ùde»­0U#0€Ÿ§] ^b]ƒôåÒe§S5ér0_UX0V0T R P†Nhttp://www.microsoft.com/pkiops/crl/Microsoft%20Time-Stamp%20PCA%202010(1).crl0l+`0^0\+0†Phttp://www.microsoft.com/pkiops/certs/Microsoft%20Time-Stamp%20PCA%202010(1).crt0Uÿ0 0U%0
++0	*†H†÷ ‚ T¹U¡™Ï`õòÿ’M >èÕÛ„ß+ŸY‡ãTËªìÕ4µ´ÜÀ¾ëœaæµU¨­DNTa²3ÅKôo,NµÛv'3yQºèŠKºYaàŒj~±ÌfÏ9•”O¬ ¶êÜWÌdïz¨ü„9²¡ã!aËYè9ßëArïÎ‡”âyg/ä©§Ú	­®R˜7YtPBÏGÜ…*âG7D6*«04@x?Â6¶ÛQxüœN{ß±'s•lÄ3BjyêòÕIøtÍJğVÙC^·‹´Š½ş²Rˆıv¢ã+LXZ‹¨x¬*#Í+´”	ÉÈÑÃ¡ìmÎf‹²kJ»xÅØ¡ò^wâ‘ á´×2f‚fùùªh¨S"/`¸úw¼/Ÿœİ{İÙ¯¤W;W/GeGALÃüARc-Qvœ¦GöU<]’Uû¦XPEfG~FuN[vVåàF°·®Ì0€jjîÊ‹pàğ÷é>`boå‹ë_X‘` ëÅp”b'kd–6³BdXœ¨h)ä[Xbp¤NíÊâ#Ú2ú‰uo-åA^oCøFrº‚{„	`_™d£zóŸ¯í6šK[Êp&÷/W}ÇTq{½¶Ú»Ï€B&¼Àd5zqz~DœZ^İí˜…¯g^æ3qS$÷jÿl¢4!0‚q0‚Y 3   Åçk›I™     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100210930182225Z300930183225Z0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100‚"0	*†H†÷ ‚ 0‚
+‚ äá¦Lç´r!y¢Ë×$y½Õ‚ÓıîœÒ©lNuÈÊ5WölJàâ½¹>`3ÿ\OÇf÷•SqZâ~JZş¸6g…F#µÏw2Àè`}jRƒD·¦FkóÅvõ†PÜÁDÈq\Q17 
+8ní×Ø&S|9azÄªıri¯«¬ö6¾5&dÚ˜;º{3­€[~ŒRş¶èb%ÜjÏ]ôşSÏÖì…VMïİ¼¤ã‘²9,QœépiÊ6-p1È5(½ã´‡$ÃàÉ~µTÜúU˜mh;šF½í¤®z)7¬ËëƒEçFnÊ2ÕÀ†0\O,âb²Í¹âˆä–¬J»¾q©[g`Şø’‘=ı Ïs}AšFuÍÄ_4İ‰Öı¥ }~üÙEß¶r/Û}_€ºÛª~6ì6Lö+n¨Qè¿£Ñs¦M7t”4‚ğò·Gí§è™|?LÛ¯^ÂóÕØs=CNÁ39L¼Bh.ê„QFâÑ½jZasÊg¢^×(vâ3r×§ ğÂú
+×coÉ6d‹[ ¦ƒ!]_0t‘””Ø¹Pù‰aó65„GÛÜÑı²ÔÅkö\RQ]Û%º¯PzlÅrïùRÄ…“À<Û7Ç?x«E¶õ‡^ÚriÆ®{··>jâ.­ £‚İ0‚Ù0	+‚7 0#	+‚7*§RşdÄš¾‚‘<F5)Ïÿ/î0UŸ§] ^b]ƒôåÒe§S5ér0\U U0S0Q+‚7Lƒ}0A0?+3http://www.microsoft.com/pkiops/Docs/Repository.htm0U%0
++0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€ÕöVËè¢\bhÑ=”[×ÎšÄ0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0	*†H†÷ ‚ U}ü*­á,g1$[árKü©oê\¶>NGdx±“—=13µ9×Âq6?Údl|Ğu9m»1äÂûlÑ¡”"îéfg:SMİ˜º¶xØ6.œ©‚V °¾‰èiàº	î{ßjo¾)ËnØ?HuÙŞm‚õm#TäxSu$W¹İŸó=Æóhßeö¤Vª÷•¶(U'Ğ$½@ ¿¶]='à@–8¬÷ù)‰Ã¼°T…B³ü‹‰çğjÂBRuŠ6ÂÃas.,k{n?,	xé‘²©[ßI£t¼ì‘€Ò=æJ>f;O»†ú2Ù–ôö‘öÎÆtıöLro«u0Å4°zØPş
+Xİ@<ÇTmctH,±NG-Áq¿dù$¾smÊ	½³WITdÙs×[DZ‘kŸ¤(Üg($º8Kšnû!TkjEG©ñ·®Èè‰^OÒĞLvµWT	±iD~|¡alsş
+»ìAf=iıËÁAI~~“¾Ëø;ä·¿´Î>¥1Q„¼¿Á‚¢{‰pşçµĞ(‰6ÚºLù›ÿ
+é4ø$5g+à¸æŒ™Öá"êğ'B=%”ætt[jÑ>í~ 13}¼Ëé{¿8pDÑñÈ«:Š:bÙpcSMî‚m¥Áqj´U3X³¡pfò¡‚Î0‚70ø¡Ğ¤Í0Ê10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:D6BD-E3E7-16851%0#UMicrosoft Time-Stamp Service¢#
+0+ Â9[?”Ş‹¤_óBı ƒ0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*†H†÷  ædÏæ0"20220628085502Z20220629085502Z0w0=
++„Y
+1/0-0
+ ædÏæ 0
+ Şÿ0 ­0
+ æf!f 06
++„Y
+1(0&0
++„Y
+ 
+0 ¡ ¡
+0 † 0	*†H†÷  ŠfKJ&ÿ¿˜ÄÂ	,r¿pØ"šttÊ`ìç± ×¥Tx¼yN&(C;gNà^ş´‹üœ vZ‡ºVÒIK‰/»%7!£Å¥A¯Y\•M6¡/¢pP"ÍÎ„hr¿-i­Äj-ÈısVn©”E-Z Ë!s¢É<á¦âev&H1‚0‚	0“0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  ıÂ-Ø1Z¶±   0	`†He  ‚J0	*†H†÷	1*†H†÷	0/	*†H†÷	1" š­R~4c(YïÉ¼Zœ0^÷ÍÙ²’#•Ë&ğ@[¤Ü0ú*†H†÷	/1ê0ç0ä0½ ÅV2"ş\O©fBn¬Ÿ²
+º´EîW‚¹JÕıo<0˜0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  ıÂ-Ø1Z¶±   0" »ùûL©mn¤ é!„ÊP(®Q‰Œé_ëy¸HByW0	*†H†÷ ‚ wş¼/7¨„Ã XŞ9?§ãß”h“”É{všÀRş'_kƒF,ˆŒ½ •(˜0nÆ«cÃ/›*¨ÛİY™Ú¥H—“ˆ¬G0êÌ|o6 Jß¨k+r`Ëñ<wºV
+ö°ŞHZZ`ù¶Rt
+ğ2ñ¡Ÿi ü$A)|WvyÙÉ½sÎ®Í‹“W–ßÌ6Õ»eCgÛvúìÒPÎÔ¸{›F®ìœ
+J`°Ÿ¬¿—nZLrSKZêGNë¿1ùà*gÀ¸_qöšÕöº‚ò÷ƒ{Cäu"®/´„Fa*í)Á0Z)p=oYşç…\Íf²ê!¤kø)ã¯¢aqĞNRNPO¦ZëéïìšØ­Ä´´†ÑXŠ·›—¼Î›æÓU¹‡[{…Ä$dÁıÂvyyÒf±+Ó±•4.‡Q1i×{$“[œ¼*G¨ Q¼ÀŒ$—«üP+9’Uâ;×ü¼á#+6H@pVL1ı3ıtyØC+À–œÈ-Cô)ÜM 7¿¯š?ºÆú“P|~§I\!ê¤Ñ—ì²,:Y—ÉfQoøH¥¨”»òŒU_Zø³À»ğ‘}ôÁŞÿT<l‹OZ	`ÊùÊÂdn3àÅÄ-ÉÔˆ‹¦|Ú‹LÌ‚ˆs¬@Ê¯Ü2ªŒŒ÷+™§¦?pÀ                                                                          MZ       ÿÿ  ¸       @                                   €   º ´	Í!¸LÍ!This program cannot be run in DOS mode.
+$       PE  L 5MîY        à !  .         M       `    @                             —"  @…                           ÀL  K    `  p           8  Ğ   €                                                                       H           .text   -       .                    `.rsrc   p   `      0              @  @.reloc      €      6              @  B                ğL      H      K     	       P   P*   J  €                                   L*  ÎÊï¾   ‘   lSystem.Resources.ResourceReader, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089#System.Resources.RuntimeResourceSet   0       PADPADP*ó±‡e´şˆGUã°Õ˜†Â¡&¢‰Äu¤Øv°)Î«¾:«Â¾tçÓ¾IŒøÅ;cÉ¸Ú£É4Ñ®Ê…:ÖˆÖÑ¶â½æùÂ"é”~¬XsÜÜö„Äû…UQ{ +¬ôÄ˜’+„Å!?ˆõCñ<…EŞ²7Ts±?T"›[‹÷\Aq÷_ö¼%`kcnïc’}Ôe9´¸h¾fs®h›s{/‹tşôîux¹a~Ø	  D  J  ÿ  
+  z  7       ,	  {  +  è  Ä  p   	  ‘  ™   C  •  €  Ú  B    y	      9  /  h
+    !
+  §
+  ‰  Ö  ö
+  Û  ¦  o  †  à   0  Õ    Ì  |  ß  ¬  ‰  ”  2A D P _ I n t e r n a l P r o v i d e r E r r o r     4A r g u m e n t I s N u l l O r W h i t e s p a c e 3   $A u t o m a t i c M i g r a t i o n    BC q t _ G e n e r a l _ U n s u p p o r t e d E x p r e s s i o n ¢   4E L i n q _ D b F u n c t i o n D i r e c t C a l l á   &I n v a l i d D a t a b a s e N a m e $  HM a p p i n g _ P r o v i d e r _ W r o n g C o n n e c t i o n T y p e —  DM a p p i n g _ P r o v i d e r _ W r o n g M a n i f e s t T y p e Â  *N o S t o r e T y p e F o r E d m T y p e   4P r o v i d e r D o e s N o t S u p p o r t T y p e k  NP r o v i d e r R e t u r n e d N u l l F o r G e t D b I n f o r m a t i o n ©  NS p a t i a l _ W e l l K n o w n G e o g r a p h y V a l u e N o t V a l i d ë  LS p a t i a l _ W e l l K n o w n G e o m e t r y V a l u e N o t V a l i d u  <S q l G e n _ A p p l y N o t S u p p o r t e d O n S q l 8 ş  \S q l G e n _ C a n o n i c a l F u n c t i o n N o t S u p p o r t e d P r i o r S q l 1 0 †  PS q l G e n _ I n v a l i d D a t e P a r t A r g u m e n t E x p r e s s i o n ã  FS q l G e n _ I n v a l i d D a t e P a r t A r g u m e n t V a l u e <  VS q l G e n _ N i l a d i c F u n c t i o n s C a n n o t H a v e P a r a m e t e r s ‘  TS q l G e n _ P a r a m e t e r F o r L i m i t N o t S u p p o r t e d O n S q l 8   RS q l G e n _ P a r a m e t e r F o r S k i p N o t S u p p o r t e d O n S q l 8 ù  TS q l G e n _ P r i m i t i v e T y p e N o t S u p p o r t e d P r i o r S q l 1 0 ¸  6S q l G e n _ T y p e d N a N N o t S u p p o r t e d '  PS q l G e n _ T y p e d N e g a t i v e I n f i n i t y N o t S u p p o r t e d ˆ  PS q l G e n _ T y p e d P o s i t i v e I n f i n i t y N o t S u p p o r t e d ú  bS q l P r o v i d e r _ C r e d e n t i a l s M i s s i n g F o r M a s t e r C o n n e c t i o n l	  |S q l P r o v i d e r _ D d l G e n e r a t i o n _ C a n n o t D e l e t e D a t a b a s e N o I n i t i a l C a t a l o g Å
+  hS q l P r o v i d e r _ D d l G e n e r a t i o n _ C a n n o t T e l l I f D a t a b a s e E x i s t s D  ^S q l P r o v i d e r _ D d l G e n e r a t i o n _ M i s s i n g I n i t i a l C a t a l o g 4  TS q l P r o v i d e r _ G e o g r a p h y V a l u e N o t S q l C o m p a t i b l e Ã  RS q l P r o v i d e r _ G e o m e t r y V a l u e N o t S q l C o m p a t i b l e .  HS q l P r o v i d e r _ I n c o m p l e t e C r e a t e D a t a b a s e ˜  ZS q l P r o v i d e r _ I n c o m p l e t e C r e a t e D a t a b a s e A g g r e g a t e •  DS q l P r o v i d e r _ I n v a l i d G e o g r a p h y C o l u m n Ğ  BS q l P r o v i d e r _ I n v a l i d G e o m e t r y C o l u m n   :S q l P r o v i d e r _ N e e d S q l D a t a R e a d e r `  JS q l P r o v i d e r _ S q l 2 0 0 8 R e q u i r e d F o r S p a t i a l Ü  HS q l P r o v i d e r _ S q l T y p e s A s s e m b l y N o t F o u n d 6  ^S q l S e r v e r M i g r a t i o n S q l G e n e r a t o r _ U n k n o w n O p e r a t i o n ï  TS q l S p a t i a l S e r v i c e s _ P r o v i d e r V a l u e N o t S q l T y p e ³  |S q l S p a t i a l s e r v i c e s _ C o u l d N o t C r e a t e W e l l K n o w n G e o g r a p h y V a l u e N o S r i d =  „S q l S p a t i a l s e r v i c e s _ C o u l d N o t C r e a t e W e l l K n o w n G e o g r a p h y V a l u e N o W k b O r W k t ¸  zS q l S p a t i a l s e r v i c e s _ C o u l d N o t C r e a t e W e l l K n o w n G e o m e t r y V a l u e N o S r i d C  ‚S q l S p a t i a l s e r v i c e s _ C o u l d N o t C r e a t e W e l l K n o w n G e o m e t r y V a l u e N o W k b O r W k t ½  4T r a n s i e n t E x c e p t i o n D e t e c t e d G  :U n a b l e T o D e t e r m i n e S t o r e V e r s i o n 2  >U p d a t e _ N o t S u p p o r t e d I d e n t i t y T y p e ¡  >U p d a t e _ N o t S u p p o r t e d S e r v e r G e n K e y V  LU p d a t e _ S q l E n t i t y S e t W i t h o u t D m l F u n c t i o n s   1Interner .NET Framework Data Provider-Fehler {0}.YDas Argument '{0}' darf nicht 'null' oder leer sein bzw. nicht nur Leerzeichen enthalten.AutomaticMigration=Der Ausdruck '{0}' weist einen nicht unterstÃ¼tzten Typ auf. ADiese Funktion kann nur aus 'LINQ to Entities' aufgerufen werden.qDer Datenbankname '{0}' ist ungÃ¼ltig. Datenbanknamen mÃ¼ssen das Format [<schema_name>.]<object_name> aufweisen.)Die Verbindung weist nicht Typ '{0}' auf.>Das angegebene Anbietermanifest weist nicht den Typ '{0}' auf.gEs ist kein Speichertyp vorhanden, der dem Konzeptseitentyp '{0}' des primitiven Typs '{1}' entspricht.<Der zugrunde liegende Anbieter unterstÃ¼tzt Typ '{0}' nicht.@Der Anbieter hat fÃ¼r informationType '{0}' NULL zurÃ¼ckgegeben.‡Der angegebene DbWellKnownGeographyValue enthÃ¤lt weder bekannten Text (Well-Known Text) noch bekannte BinÃ¤rdaten (Well-Known Binary).†Der angegebene DbWellKnownGeometryValue enthÃ¤lt weder bekannten Text (Well-Known Text) noch bekannte BinÃ¤rdaten (Well-Known Binary).…Die AusfÃ¼hrung dieser Abfrage erfordert den APPLY-Operator, der in SQL Server-Versionen vor SQL Server 2005 nicht unterstÃ¼tzt wird.[Die EDM-Funktion '{0}' wird in SQL Server-Versionen vor SQL Server 2008 nicht unterstÃ¼tzt.WDas DATEPART-Argument fÃ¼r die Funktion '{0}.{1}' muss eine literale Zeichenfolge sein.S'{0}' ist kein gÃ¼ltiger Wert fÃ¼r das DATEPART-Argument in der Funktion '{1}.{2}'.ŠIm Anbietermanifest aufgelistete Funktionen, die als NiladicFunction='true' attributiert sind, kÃ¶nnen keine Parameterdeklarationen haben.ØParameter als Argumente fÃ¼r eine TOP-Unterklausel und eine LIMIT-Unterklausel in einer Abfrage oder ein LimitExpression in einer Befehlsstruktur werden in SQL Server-Versionen vor SQL Server 2005 nicht unterstÃ¼tzt.¼Parameter als Argumente fÃ¼r eine SKIP-Unterklausel in einer Abfrage oder ein SkipExpression in einer Befehlsstruktur werden in SQL Server-Versionen vor SQL Server 2005 nicht unterstÃ¼tzt.mIn SQL Server-Versionen vor SQL Server 2008 gibt es keinen Speichertyp, der dem EDM-Typ '{0}' zugeordnet ist._Konstante AusdrÃ¼cke vom Typ '{0}' mit dem Wert 'NaN' werden von SQL Server nicht unterstÃ¼tzt.pKonstante AusdrÃ¼cke vom Typ '{0}' mit dem Wert '{1}.NegativeInfinity' werden von SQL Server nicht unterstÃ¼tzt.pKonstante AusdrÃ¼cke vom Typ '{0}' mit dem Wert '{1}.PositiveInfinity' werden von SQL Server nicht unterstÃ¼tzt.ÖDer Vorgang erfordert eine Verbindung mit der Masterdatenbank ('master'). Es kann keine Verbindung mit der Masterdatenbank ('master') hergestellt werden, da die ursprÃ¼ngliche Datenbankverbindung geÃ¶ffnet wurde und die Anmeldeinformationen aus der Verbindungszeichenfolge entfernt wurden. Stellen Sie eine nicht geÃ¶ffnete Verbindung bereit.}Die Datenbank kann nicht gelÃ¶scht werden. Es ist keine Datenbank vorhanden, die dem angegebenen AttachDBFileName entspricht.íEs konnte keine Verbindung mit der angegebenen Datenbank geÃ¶ffnet werden. Weitere Informationen finden Sie unter "InnerException". Es ist jedoch eine Datenbank bei dem Server registriert, die dem angegebenen AttachDbFileName entspricht.ŒDer Vorgang kann nicht abgeschlossen werden. Die bereitgestellte SqlConnection gibt keinen ursprÃ¼nglichen Katalog oder AttachDBFileName an.iDer angegebene DbGeography-Wert konnte nicht in einen mit SQL Server kompatiblen Wert konvertiert werden.hDer angegebene DbGeometry-Wert konnte nicht in einen mit SQL Server kompatiblen Wert konvertiert werden.úDie Datenbankerstellung war erfolgreich, beim Erstellen der Datenbankobjekte ist jedoch ein Fehler aufgetreten. Beim anschlieÃŸenden LÃ¶schen der Datenbank ist ebenfalls ein Fehler aufgetreten. Weitere Informationen finden Sie unter "InnerException".9Weitere Informationen finden Sie unter "InnerExceptions".FErwartet wurde ein Geografiewert, gefunden wurde ein Wert vom Typ {0}.FErwartet wurde ein Geometriewert, gefunden wurde ein Wert vom Typ {0}.zRÃ¤umliche Leser kÃ¶nnen nur aus Lesern vom Typ SqlDataReader erstellt werden. Ein Leser vom Typ {0} wurde bereitgestellt.XRÃ¤umliche Typen und Funktionen werden nur von SQL Server 2008 oder hÃ¶her unterstÃ¼tzt.¶RÃ¤umliche Typen und Funktionen sind fÃ¼r diesen Anbieter nicht verfÃ¼gbar, da die 'Microsoft.SqlServer.Types'-Version 10 oder hÃ¶her fÃ¼r die Assembly nicht gefunden werden konnte. ÁDer aktuelle Migrations-SQL-Generator ({0}) ist nicht in der Lage, SQL fÃ¼r VorgÃ¤nge des Typs '{1}' zu erzeugen. Rufen Sie SetSqlGenerator in der Konfigurationsklasse Ihrer Migration auf, um einen anderen SQL-Generator zu verwenden. Zum HinzufÃ¼gen eines benutzerdefinierten SQL-Generators, der diesen Vorgangstyp verarbeiten kann, fÃ¼gen Sie eine neue Klasse hinzu, die von {0} abgeleitet wird, und Ã¼berschreiben Sie Generate(MigrationOperation).‡Der angegebene Anbieterwert ist mit dieser rÃ¤umlichen Dienstimplementierung nicht kompatibel. Ein Wert vom Typ '{0}' ist erforderlich.yAus dem angegebenen DbGeography-Wert konnte kein SRID-Wert (Spatial Reference System Identifier (SRID)) abgerufen werden.ˆDer angegebene DbGeography-Wert hat weder bekannten Text (Well-Known Text) noch bekannte BinÃ¤rdaten (Well-Known Binary) bereitgestellt.xAus dem angegebenen DbGeometry-Wert konnte kein SRID-Wert (Spatial Reference System Identifier (SRID)) abgerufen werden.‡Der angegebene DbGeometry-Wert hat weder bekannten Text (Well-Known Text) noch bekannte BinÃ¤rdaten (Well-Known Binary) bereitgestellt.èEs wurde eine Ausnahme ausgelÃ¶st, die vermutlich auf einen vorÃ¼bergehenden Fehler zurÃ¼ckzufÃ¼hren ist. Falls Sie gerade eine Verbindung zu einer SQL Azure-Datenbank herzustellen versuchen, verwenden Sie SqlAzureExecutionStrategy.mSpeicherversion konnte nicht ermittelt werden; gÃ¼ltige Speicherverbindung oder Versionshinweis erforderlich.²Vom Speicher generierte SchlÃ¼ssel werden nur fÃ¼r IdentitÃ¤tsspalten unterstÃ¼tzt. SchlÃ¼sselspalte '{0}' weist den Typ '{1}' auf, der nicht fÃ¼r IdentitÃ¤tsspalten gÃ¼ltig ist.¬Vom Speicher generierte SchlÃ¼ssel werden nur fÃ¼r IdentitÃ¤tsspalten unterstÃ¼tzt. Mehrere SchlÃ¼sselspalten sind in Tabelle '{0}' als vom Server generiert gekennzeichnet.°EntitySet '{0}' kann nicht aktualisiert werden, denn es hat eine DefiningQuery, und im <{2}>-Element ist kein <{1}>-Element zur UnterstÃ¼tzung des aktuellen Vorgangs vorhanden.Ì”­L›yé<ûŸ»†R§Ş;NrŸŞ QŸ‚€ì²2ırì¢ÔôÕá¡UJ ñ+Ş …éØ%9œgxéÕb¬ÜøíÆr*v¹/úì•“¼d^xäìÈ&Š­œğÕ>ÖYÏÚÁä¼áççlİg,¼HP£tSwIğPğù³ä¦BSJB         v4.0.30319     l   d   #~  Ğ   ¤   #Strings    t     #US |     #GUID   Œ     #Blob               ú%3                 z                 €             
+ .        1      <Module> EntityFramework.SqlServer.resources de System.Data.Entity.SqlServer.Properties.Resources.SqlServer.de.resources EntityFramework.SqlServer.resources.dll          îkĞ­’Mºä(uZ9¼¼                  èL          şL                          ğL        _CorDllMain mscoree.dll     ÿ%  @                                                                                                                                                                                                                                                                 €                  0  €               	  H   X`            4   V S _ V E R S I O N _ I N F O     ½ïş       _î                               D    V a r F i l e I n f o     $    T r a n s l a t i o n     °x   S t r i n g F i l e I n f o   T   0 4 0 7 0 4 b 0   T   C o m m e n t s   E n t i t y F r a m e w o r k . S q l S e r v e r . d l l   L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   \   F i l e D e s c r i p t i o n     E n t i t y F r a m e w o r k . S q l S e r v e r   8   F i l e V e r s i o n     6 . 2 . 6 1 0 2 3 . 0   p (  I n t e r n a l N a m e   E n t i t y F r a m e w o r k . S q l S e r v e r . r e s o u r c e s . d l l   Š 3  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .     A l l e   R e c h t e   v o r b e h a l t e n .     x (  O r i g i n a l F i l e n a m e   E n t i t y F r a m e w o r k . S q l S e r v e r . r e s o u r c e s . d l l   V   P r o d u c t N a m e     M i c r o s o f t   E n t i t y   F r a m e w o r k     <   P r o d u c t V e r s i o n   6 . 2 . 0 - 6 1 0 2 3                                                                                                                                                                                                                                                                                                                                                                                                                    @     =                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Ğ    0‚Á	*†H†÷ ‚²0‚®10	+ 0L
++‚7 >0<0
++‚70	  ¢€ 0!0	+ Jşr¥”4:`Qï÷Ræ ¢ ‚€0‚Â0‚ª 3   »¶w$qJ        »0	*†H†÷ 0w10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1!0UMicrosoft Time-Stamp PCA0160907175847Z180907175847Z0²10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10
+UAOC1'0%UnCipher DSE ESN:0DE8-2DC5-3CA91%0#UMicrosoft Time-Stamp Service0‚"0	*†H†÷ ‚ 0‚
+‚ ¸óå7òÂñ@Û¼8íp?f)áïùÿãÅ§Ó|ñõQyô‚¿ŸøË¿È^ß.s-ÊŒÌä—úIĞ”!J,ã®~¥;­jù_(f&†8ÛŸ+ƒÃ"³édÌJèéƒÑİp¶K[WÛV
+ƒ˜à‰Ôö†d¦"ı
+¶·qÆ9‘ë´’^}‘h€ÅÒ-	EQRËP½€£øŞt\ˆåf(Mct.áÄƒ/À=f:*ÙÕp=˜zÅãg¥_ş¢ç{&ı#ôªcÿ;¶ÆBŸGíñÑ8
+Ùäp¥eßÀfÔoTQ2İÛFúl¸5l²w^í/±Œ!x¥£Tá˜«90f‹ £‚	0‚0UÜ_î>GÁ™î·2àÇg$uÎ*K0U#0€#4øÙRFp
+í@ûvû³+°Ã5³0TUM0K0I G E†Chttp://crl.microsoft.com/pki/crl/products/MicrosoftTimeStampPCA.crl0X+L0J0H+0†<http://www.microsoft.com/pki/certs/MicrosoftTimeStampPCA.crt0U%0
++0	*†H†÷ ‚ pÂ<CCñA[ñe õ~;3¸>•úf2™Õ‹N5£e=¤ö\ÆÊô‹îü½'¹gÈÀ­¹¹¦Ú€}Ú'7(h´äÉë"ø%‚¼÷“#$µ»½k£¼şZÆ=¢™ˆ?–¼XÿY”_¿-fšÖæŞU F.kGİz9ÛáIÂÜ•ƒÂšêgÂœGrbQfmL .*k—ıÏÛ>
+'Å¡®æ#<5˜ArkC›{>Z×Ñã­ŠôBˆhYP™0õùßFmˆ} ZÓ³EuM…tô„šq³qwJn„XijÀjÎÏ®?İ İ9ã{>;ËÀY“†ê"Ìk ü80‚ë0‚Ó 3  x%ZµÍ#Æ_•   x0	*†H†÷ 0y10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1#0!UMicrosoft Code Signing PCA0170811201115Z180811201115Z0‚10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10
+UAOC10UMicrosoft Corporation0‚"0	*†H†÷ ‚ 0‚
+‚ ™nSU«²²]CÏ×<Ká>t¤›²AÊbQºHdÇò8S†›¯ ó±voÑ‡Tßƒ¾ÌÚ2A²ÿ ¡„$·é½ä¥©"s±4n0Çtn
+œt[ğ}I-ô»öœÃÿÑcÀ¤ë!>ÑÌÃÌiĞfğäœ†?â…ªüÑGıÓ¿yíÿœtå™Ä8vùàÕŠ@ïŸğÇúŒq¶ Ÿ_{d¾Ù¿É~9¾;aÙ˜)Âƒ=¾6)–êX½Mˆï‘íã² ĞçƒûÎ÷+6¨Çú¹†RÊA4“÷×F Ï:î…ïmÑy:**q‹7É"nî5ªN „+¤!Ù«Ş‚Vé¢hY¿= £‚`0‚\0U%0
++0UèmqCîÙ?D©h$UôåÊ`.70QUJ0H¤F0D10
+UAOC1402U+229803+1abf9e5f-ced0-42e6-a65d-d9350959fe0e0U#0€ËèÊÒ´XÉ7.3¹Lš
+0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicCodSigPCA_08-31-2010.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicCodSigPCA_08-31-2010.crt0	*†H†÷ ‚ bq¿ q¿ÆXGÃ@0v¼OF3G¸í‡a¹7šÚæ;¥!°3½;ÂŸj}k§¯+SÖ}Ç\Ó¡ØD¿š<Fbƒ KĞ@×rnƒ·$•ò«xGCàãƒÕTRÙ¦ê;hà+¬#•Éé=Kgù'Çô­3ac¥In—¥ÁjŞQùšz¸ìVORxÄŞ.s¢êˆÖìÔûÑ¡@¾Lêš>{œÂëãïùúÄ…><àÈ "Œ)@«
+¼¹L=­ê–³G·âğy3.î[Æô@×ÌÏ5Àz‰®gMÛ•L>nC¢V“„´DŞÄnóŒ•|ßşg[N…"ÕÀ}0‚¼0‚¤ 
+a3&     10	*†H†÷ 0_10
+	’&‰“ò,dcom10
+	’&‰“ò,d	microsoft1-0+U$Microsoft Root Certificate Authority0100831221932Z200831222932Z0y10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1#0!UMicrosoft Code Signing PCA0‚"0	*†H†÷ ‚ 0‚
+‚ ²rY\0d¿š`  B™vSl>ÖoÌËñêkş—àß:tƒ·/ 2ìÿŞÂBN#Õr Û5W
+‰Ê® Iôğh¬MK¥½yKq›GÚı%ßuˆÏªsD×Ûó½ò6¤É\EÜ¯­=à(h—§¥rsVñ”äı5”r Öv_wEƒ…8Ğs[ºgR¥²i/Úş’t)âv/Tİ0YøÒbıËÉ_F1P¹'ä@0Ïr)("Ç7N= 2=Í¡8…\NV‚(*2·K×OcçÒ-bñE=ç¬ öF¡Ñ[Œ&SèzªJòFÏ7<8´w\¥ËV<Á¬	_Ó £‚^0‚Z0Uÿ0ÿ0UËèÊÒ´XÉ7.3¹Lš
+0U†0	+‚7 0#	+‚7ıÑ1NÓ&Š•á˜`;¨1o¦<¼Ø-0	+‚7
+ S u b C A0U#0€¬‚`@V'—å%ü*á
+S•Yä¤0PUI0G0E C A†?http://crl.microsoft.com/pki/crl/products/microsoftrootcert.crl0T+H0F0D+0†8http://www.microsoft.com/pki/certs/MicrosoftRootCert.crt0	*†H†÷ ‚ Y9>&F¯ëo@±2µjë/n¨I÷ë_uíL;-×C­şËé-1£#Ì|P˜€!]¬=/Lº¢¨Vœãp»¸´øyµIr÷>êAÊáiË¥œ -úPÄVÍ-ãJÒ¼pç¨¢¥Và¸ŠKWò•Bœñóïîã†4<¸VšğS#…*¤‚“â”òâNøŒ¡Êè¥‘NÈÒr•*qm›øğSÖgÌ"ÿ\Í¢Œ½'²ycVD¢QÍùé£XVİ›ED/_ôÚ®Ô‚2nü¤•äëiç©¢,¾È+e™Ûõ¢ú&	e8”ñzJ»ÑáVèĞx–\É5_İ“I-¾­4Dî ]İ5[!Î˜Ç	î…ŒOmN=|)HœrÑólÊÁìp£W’W}” HZ÷Ï£g
+t¥6í-/Èær7ôo±<g‚ùR²3eŠİŞdôoÎFÔÓéyÄ´Óû,ßŠ¬
+û'@­äùá©F»`Ge`@N°BìNí³vyØ
+4	m€1âTİå¡ûåG­d˜ÿP.|¿!zâ•A'iÃ“•ÉØ›!®\œğ¢®†hƒj-»vk –­ò{öƒ$¹ˆÏj¨G1/šÜãq=× ~bGÑÎˆÉ¸úrÁ£=¯@jÿi›–â¨´7PÖÃ=0‚0‚ï 
+ah4     0	*†H†÷ 0_10
+	’&‰“ò,dcom10
+	’&‰“ò,d	microsoft1-0+U$Microsoft Root Certificate Authority0070403125309Z210403130309Z0w10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1!0UMicrosoft Time-Stamp PCA0‚"0	*†H†÷ ‚ 0‚
+‚ Ÿ¡l±ßÛH’*|k.á½âãÅ™Q#P­ÎİN$îÑ§ÑL­t0 ëÕT•I”B’®˜\0&Ú kè{½ì‰÷˜ğ‰ÌË3$‡òôg,ü{çˆêçN£¡Á#SÊúEÏ	Ğ^¯Ğ°B¢ù¦l“g×(ÜFS°†Ğå(F.'¬†OURä,ûj0n‡óY0ú~Ö—³è!—~øÒó·SmR´EŸH JGf')f¨—äÓJ¢ù„§G	‚Ÿ„íUxşšP… 0Fí·Ş#F»Ä-TŸ¯xA1wÌ›ß;ƒ“¡aµ±ü÷›²Î"KTÿùÃÂ  £‚«0‚§0Uÿ0ÿ0U#4øÙRFp
+í@ûvû³+°Ã5³0U†0	+‚7 0˜U#0€¬‚`@V'—å%ü*á
+S•Yä¤¡c¤a0_10
+	’&‰“ò,dcom10
+	’&‰“ò,d	microsoft1-0+U$Microsoft Root Certificate Authority‚y­¡J ¥­LsXô.e0PUI0G0E C A†?http://crl.microsoft.com/pki/crl/products/microsoftrootcert.crl0T+H0F0D+0†8http://www.microsoft.com/pki/certs/MicrosoftRootCert.crt0U%0
++0	*†H†÷ ‚ —ŠÃ\D6İé´­wÛÎyQM±.tq[m«Î¾{¸.Ô¢Œmb¸WËN P™İz@âW»¯Xšá†¬»xò‹Ğì;îâ¾
+ÈHâğSİO«’äçjÕ€Áæ”ò/…é‘*$"pûöüäx™.÷âp¼Nk
+r•¸¡9œg-ÅQêb\?˜‹ ?â2ùÌ1Jv1=+rÈêp=ÿ…
+ßÂ
+ağ×¸ëN‹Å5+^£¿ë¼}B{ÔSr!î0Ê»xe\[
+ÒÚ˜õ<¹fX³-/çù…†ÌQVèp”l¬9LÔöy¿ªzb)ï¢›)4wbÉ=m‚ğÇ,»ÏC³åùì}µã¤¨t5¸NÅq#&v<RŒqZFC¼³³°MgÈŸBÿ€y!€0fèB^È"!ĞCé+é»ôHÌ,ÔØ2€L&*H$_ZêVï¦Ş™Ê:o½'tîv!¿›‚Á'T¶±j=‰¡va´n¡¦¿ªGğoıŠ2l²şßQÈŒ#Éf½‡d=-¯Y¸ä!åµ°Êc´xTÔA.P¬”°¥x«³ –uÙ’‡u"/2¨n [Œ%¿ ï„Ê!ÖëOÉšîIà÷eo‰}ÈiÈænê§—Î1)ÿÅ[\ØM¡Øú/?.UkÉ£ı1‚È0‚Ä00y10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1#0!UMicrosoft Code Signing PCA3  x%ZµÍ#Æ_•   x0	+  á0	*†H†÷	1
++‚70
++‚710
++‚70#	*†H†÷	1!¾Rg-EÄæØ’“øş¦Q0€
++‚71r0p R€P E n t i t y   F r a m e w o r k   T o o l s   f o r   V i s u a l   S t u d i o¡€http://msdn.com/data/ef 0	*†H†÷ ‚ /YÙjÓÁÑFXâú+á,­”V ””lãå?lœ•1¬gnycÌ²½	"Qo€ğĞ_šw‘ZÉ§úÒ1åL ;IfññÃ¡—pä~¸ê¥¶ïFŞ†o'1»rMÖ%B%–¨KCCìú?‚àé¾šéÉÄ_îë>dºHŸı»—ô&kë¤Ú"Qr©û¿Å0½Òi“–ø¯_Pñ ¼w!E¼şn8=pÈ'¬°Ü$%?¾!ÁB‡† x©©’£jVÜ?>hiÚ.LCgÕÑ¹ãåçÂ˜ƒ94fRI*o+^re¡/ 6 £*_H]f`{¡‚(0‚$	*†H†÷	1‚0‚00w10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1!0UMicrosoft Time-Stamp PCA3   »¶w$qJ        »0	+  ]0	*†H†÷	1	*†H†÷0	*†H†÷	1171023201345Z0#	*†H†÷	1{¶2Ç¥«k,.ıUQ:ã,}¤0	*†H†÷ ‚ ¯^-®$ğL"K7"÷ñ@†zóAa¢ò9İ6Óvâz<;aï›<ŒwF{í¸c xGşÖçËÜ9¹ß›9^øZ±!¼‰°Ø˜{óıòÑÂ•Iùîèœîr3ls¤¬I‚†2wÚßIı>i©‰b)aÌ˜Æ^1µâ7·¶|–aş‘eÜò¾Kÿ¸ÜØ¹zì%÷ògA6ÖuÏã=ï;o´@—w'ñ¨ß!¨÷/ãpe¸ü>#¡ ^tØ²ç•oG¤+u9Tq?ÉzŞ¶ÄEkª¥	Z%íÛ.‚×µõç+=,0{{Jö½V¬~=•˜›                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   MZ       ÿÿ  ¸       @                                   €   º ´	Í!¸LÍ!This program cannot be run in DOS mode.
+$       PE  L Ëàb        à !  :         Y       `    @                             Ê=  @…                           <Y  O    `             D  hM   €                                                                       H           .text   ”9       :                    `.rsrc      `      <              @  @.reloc      €      B              @  B                pY      H     \W  à  	       P   ‹6  ÛV  €                                   ‡6  ÎÊï¾   ‘   lSystem.Resources.ResourceReader, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089#System.Resources.RuntimeResourceSet   ‘       PADPADP“bÄ€© œ‚¦Ä‡»åˆ‚àÌ‰ GÎ‰õI¹ŒT7 fáÈ‘j¸“‰›½”`€	•¬¨‰•ğR4˜bC˜?X>š|jãšÃ^ø›åYœ°˜½ùşí%tÍÔpÄ£‰r9¤B¥
+¨§µT©A{«šo¬2Ÿ­fìŠ®2a¯gxA°æeº°M4±\¬³µÀöc¶—„¶4…—¶˜ÇØ¶Ì”ó¶2Ì¸ü \¹ÀZd¼#î"¿öğw¿Åü;ÀØŠ¸Àl¼ÓÃô5uÅäÔ5ÇÀ¯ĞÇ‡:ÙÇ¨"ÈWË’ ×ÏŠBûÑ’rÕ†¨bÖ¼ßÖ.O‚×±Iş×ÅˆØM	‰Ø¹¾.Ù­{"ÚŒ ³Û1æŞ‚¸8Ş™ùpŞ.áL;¹äò³ÖæÈÇÌè 3Øè´ú°é@Gë&”~ì×A¡íºÎğ—òÃòCHùju¸ş9iˆÎ–£ûQ›HòŠäüTˆå~ëïAoÌ¹Ç—êãkJÒK„èy&c‡bş)Y‡Vh°„ë¨#u@*%C&Z¨_'ñ¢²*ñ&Ó*z¿K+ËÎ.;Á/†/‡Jã/=íê3¢µ×4z†I7hÀ…8ÏûE9w(Î?æ*Ê@¤:9A±mÁA×©D@E¸}FNs²J™Û'M¬-±MDİ@Pl‚SƒéUœñ`WÒ›M\%êE]6>F]7sË`:ïoaMÜíf%çÓg]€´kµøAl·l{m¶¡BpYÈ1{"]{C}{ÓàR}–ñû}B  ì!  Ò  £   }  É  ¿    „  °  æ  C  &  A  ®     k  »
+  c  …  ‹  	   =     “  Û    é  1  œ  ˆ  Z  Š    E  u  Y  ‚  ½  
+  —  I  P  j  r  Ë  {  Û  7  í  ˜  À  ä  3  ½  /  s   	  ¦  z
+    ì  ú  H  
+  
+  ¼  Ç  4   ]  Š  Ë  ¿!  Ù  ±  Â    t  €  f  »  Ï    Œ  ¡  ò  ×   B    Ï  E
+  Š        „  ½  t           ?  ˜  Ö  v  ö    %  £  M	  C  „	  0  ;  Å	  ø  !  l   »  í  ]  E  	     6    Ò  ñ  ¯  a  I  f  W  û  ğ   °  Ò  *  Ñ  ¬  !  [!  !  =  ë  q'  8P r o p e r t y . C a t e g o r y . C o l l e c t i o n     *P r o p e r t y . C a t e g o r y . E T W 
+   2P r o p e r t y . C a t e g o r y . G e n e r a l    HP r o p e r t y . C a t e g o r y . M a c h i n e I n f o r m a t i o n    JP r o p e r t y . C a t e g o r y . P e r f o r m a n c e C o u n t e r s /   2P r o p e r t y . C a t e g o r y . P r o c e s s E   4P r o p e r t y . C a t e g o r y . S a m p l i n g M   0P r o p e r t y . C a t e g o r y . T h r e a d [   2P r o p e r t y . C a t e g o r y . V e r s i o n c   0P r o p e r t y . N a m e . A p p E t l P a t h x   0P r o p e r t y . N a m e . B u f f e r S i z e Œ   2P r o p e r t y . N a m e . B u i l d N u m b e r    *P r o p e r t y . N a m e . C o u n t e r °   :P r o p e r t y . N a m e . C p u A r c h i t e c t u r e ½   .P r o p e r t y . N a m e . C p u F a m i l y Õ   (P r o p e r t y . N a m e . C p u M h z ê   ,P r o p e r t y . N a m e . C p u M o d e l   2P r o p e r t y . N a m e . C p u S t e p p i n g   *P r o p e r t y . N a m e . C p u T y p e *  4P r o p e r t y . N a m e . C r e a t i o n T i m e 9  4P r o p e r t y . N a m e . E t w S i g n a t u r e J  *P r o p e r t y . N a m e . I s 6 4 B i t _  4P r o p e r t y . N a m e . I s A l l o c a t i o n j  6P r o p e r t y . N a m e . I s C o n c u r r e n c y v  :P r o p e r t y . N a m e . I s C y c l e S a m p l i n g Š  6P r o p e r t y . N a m e . I s D h p H a p p e n e d ¢  8P r o p e r t y . N a m e . I s G r a c e f u l E x i t ´  >P r o p e r t y . N a m e . I s I n s t r u m e n t a t i o n Ç  .P r o p e r t y . N a m e . I s J S c r i p t ×  0P r o p e r t y . N a m e . I s L i f e t i m e à  .P r o p e r t y . N a m e . I s M a n a g e d ñ  BP r o p e r t y . N a m e . I s P a g e F a u l t S a m p l i n g ş  FP r o p e r t y . N a m e . I s P e r f C o u n t e r S a m p l i n g   DP r o p e r t y . N a m e . I s R e s o u r c e C o n t e n t i o n ;  0P r o p e r t y . N a m e . I s S a m p l i n g Q  >P r o p e r t y . N a m e . I s S y s C a l l S a m p l i n g _  >P r o p e r t y . N a m e . I s T h r e a d E x e c u t i o n u  &P r o p e r t y . N a m e . I s T i p ƒ  @P r o p e r t y . N a m e . I s U m s A p p T e r m i n a t e d ˆ  <P r o p e r t y . N a m e . I s U n s u p p o r t e d C L R ¤  6P r o p e r t y . N a m e . K e r n e l E t l P a t h Å  2P r o p e r t y . N a m e . M a c h i n e N a m e Ö  <P r o p e r t y . N a m e . M a j o r F i l e V e r s i o n ç  BP r o p e r t y . N a m e . M a j o r P r o d u c t V e r s i o n ş  4P r o p e r t y . N a m e . M a x P r o c e s s e s   0P r o p e r t y . N a m e . M a x T h r e a d s 5  <P r o p e r t y . N a m e . M i n o r F i l e V e r s i o n Q  BP r o p e r t y . N a m e . M i n o r P r o d u c t V e r s i o n j  >P r o p e r t y . N a m e . N u m A b o r t e d S a m p l e s †  FP r o p e r t y . N a m e . N u m A p p l i c a t i o n S a m p l e s ›  :P r o p e r t y . N a m e . N u m B r o k e n S t a c k s °  @P r o p e r t y . N a m e . N u m C a l l b a c k S a m p l e s Æ  *P r o p e r t y . N a m e . N u m C p u s ä  <P r o p e r t y . N a m e . N u m K e r n e l S a m p l e s ø  @P r o p e r t y . N a m e . N u m O t h e r A p p S a m p l e s 
+  @P r o p e r t y . N a m e . N u m O v e r h e a d S a m p l e s   6P r o p e r t y . N a m e . N u m S t a c k W a l k s +  :P r o p e r t y . N a m e . N u m b e r O f B u f f e r s T  >P r o p e r t y . N a m e . N u m b e r O f P r o c e s s e s b  :P r o p e r t y . N a m e . N u m b e r O f T h r e a d s t  6P r o p e r t y . N a m e . O S B u i l d N u m b e r …  8P r o p e r t y . N a m e . O S M a j o r V e r s i o n ¬  8P r o p e r t y . N a m e . O S M i n o r V e r s i o n Ò  <P r o p e r t y . N a m e . P r o c e s s H i g h W a t e r ú  <P r o p e r t y . N a m e . S a m p l i n g I n t e r v a l   :P r o p e r t y . N a m e . T h r e a d H i g h W a t e r )  8P r o p e r t y . N a m e . T o t a l P r o c e s s e s ?  4P r o p e r t y . N a m e . T o t a l S a m p l e s Z  4P r o p e r t y . N a m e . T o t a l T h r e a d s o  6P r o p e r t y . N a m e . V e r s i o n S t r i n g ‰  XR e a d e r . C a l l T r a c e . A p p l i c a t i o n E x c l u s i v e C o u n t e r —  RR e a d e r . C a l l T r a c e . A p p l i c a t i o n E x c l u s i v e T i m e ¶  XR e a d e r . C a l l T r a c e . A p p l i c a t i o n I n c l u s i v e C o u n t e r Î  RR e a d e r . C a l l T r a c e . A p p l i c a t i o n I n c l u s i v e T i m e ì  4R e a d e r . C a l l T r a c e . C a l l D e p t h   2R e a d e r . C a l l T r a c e . C o d e T y p e    PR e a d e r . C a l l T r a c e . E l a p s e d E x c l u s i v e C o u n t e r *  JR e a d e r . C a l l T r a c e . E l a p s e d E x c l u s i v e T i m e R  PR e a d e r . C a l l T r a c e . E l a p s e d I n c l u s i v e C o u n t e r s  JR e a d e r . C a l l T r a c e . E l a p s e d I n c l u s i v e T i m e š  ,R e a d e r . C a l l T r a c e . E n t r y ¾  8R e a d e r . C a l l T r a c e . E v e n t A c t i o n Ä  4R e a d e r . C a l l T r a c e . E v e n t T y p e Õ  TR e a d e r . C a l l T r a c e . E x c l u s i v e P r o f i l e r O v e r h e a d ä  bR e a d e r . C a l l T r a c e . E x c l u s i v e P r o f i l e r O v e r h e a d C o u n t e r   *R e a d e r . C a l l T r a c e . E x i t .  2R e a d e r . C a l l T r a c e . E x p l i c i t 8  @R e a d e r . C a l l T r a c e . F u n c t i o n A d d r e s s ?  :R e a d e r . C a l l T r a c e . F u n c t i o n N a m e N  2R e a d e r . C a l l T r a c e . I m p l i c i t ]  TR e a d e r . C a l l T r a c e . I n c l u s i v e P r o f i l e r O v e r h e a d g  bR e a d e r . C a l l T r a c e . I n c l u s i v e P r o f i l e r O v e r h e a d C o u n t e r ‰  0R e a d e r . C a l l T r a c e . M a n a g e d ¯  6R e a d e r . C a l l T r a c e . M o d u l e N a m e ¼  6R e a d e r . C a l l T r a c e . M o d u l e P a t h Ë  .R e a d e r . C a l l T r a c e . N a t i v e Ş  4R e a d e r . C a l l T r a c e . P r o c e s s I D ç  8R e a d e r . C a l l T r a c e . P r o c e s s N a m e ş  .R e a d e r . C a l l T r a c e . S c r i p t   :R e a d e r . C a l l T r a c e . S t a c k P o i n t e r   2R e a d e r . C a l l T r a c e . T h r e a d I D &  6R e a d e r . C a l l T r a c e . T h r e a d N a m e <  4R e a d e r . C a l l T r a c e . T i m e s t a m p J  <R e a d e r . C l r S t u b O r U n k n o w n A d d r e s s ]  4R e a d e r . C o n t e n t i o n s . C o u n t e r i  8R e a d e r . C p u A r c h i t e c t u r e . A l p h a v  4R e a d e r . C p u A r c h i t e c t u r e . A r m |  <R e a d e r . C p u A r c h i t e c t u r e . H i t a c h i   8R e a d e r . C p u A r c h i t e c t u r e . I n t e l Š  6R e a d e r . C p u A r c h i t e c t u r e . M i p s ‘  4R e a d e r . C p u A r c h i t e c t u r e . P p c —  <R e a d e r . C p u A r c h i t e c t u r e . U n k n o w n œ  $R e a d e r . C p u T y p e . A M D ¦  ,R e a d e r . C p u T y p e . C e n t a u r «  (R e a d e r . C p u T y p e . C y r i x ´  (R e a d e r . C p u T y p e . I n t e l »  *R e a d e r . C p u T y p e . N e x g e n Â  $R e a d e r . C p u T y p e . U M C Ê  ,R e a d e r . C p u T y p e . U n k n o w n Ï  .R e a d e r . E r r . A c c e s s D e n i e d Ù  .R e a d e r . E r r . C o r r u p t B l o c k ï  :R e a d e r . E r r . D e s e r i a l i z e M o f D a t a E	  >R e a d e r . E r r . D e s e r i a l i z e T o k e n D a t a v	  R e a d e r . E r r . D h p ¬	  (R e a d e r . E r r . E m p t y F i l e ¾
+  .R e a d e r . E r r . F i l e N o t F o u n d å
+  ,R e a d e r . E r r . F i l e S h a r i n g 	  $R e a d e r . E r r . G e n e r a l a  RR e a d e r . E r r . I n c o m p a t i b l e C o l l e c t i o n S e t t i n g s i  DR e a d e r . E r r . I n c o m p a t i b l e F i l e V e r s i o n è  ,R e a d e r . E r r . I n v a l i d F i l e   8R e a d e r . E r r . I n v a l i d F i l e N o N a m e 1  (R e a d e r . E r r . N o B u f f e r s O  ,R e a d e r . E r r . O u t O f M e m o r y q  2R e a d e r . E r r . P r o c e s s B u f f e r s €  &R e a d e r . E r r . T d h E r r o r Ÿ  :R e a d e r . E r r . T i m e s t a m p . O v e r f l o w Á  6R e a d e r . E r r . U m s A p p T e r m i n a t e d ÿ  $R e a d e r . E r r . U n k n o w n ~  BR e a d e r . R u l e s . D e s e r i a l i z a t i o n E r r o r   8R e a d e r . R u l e s . M a x S u p p r e s s i o n s Å  >R e a d e r . R u l e s . S e r i a l i z a t i o n E r r o r ó  R e a d e r . U n k n o w n '  (R e a d e r . U n k n o w n F r a m e s 3  DR e a d e r . W a r n . V s P e r f C o r P r o f N o t L o a d e d =  KolekcjaETWOgÃ³lneInformacje o maszynieLiczniki wydajnoÅ›ciProcesPrÃ³bkowanieWÄ…tekInformacje o wersjiPlik ETL aplikacjiRozmiar buforÃ³wNumer kompilacjiLicznik {0}Architektura procesoraRodzina procesorÃ³wCzÄ™stotliwoÅ›Ä‡ zegaraModel procesoraTaktowanie procesoraTyp procesoraCzas utworzeniaSygnatura pliku ETL	64-bitowy
+PrzydziaÅ‚WspÃ³Å‚bieÅ¼noÅ›Ä‡PrÃ³bkowanie cykliczneWystÄ…pienie DHPÅagodne wyjÅ›cieInstrumentacjaJScriptOkres istnieniaZarzÄ…dzanyPrÃ³bkowanie PageFault#PrÃ³bkowanie licznikÃ³w wydajnoÅ›ciRywalizacja o zasobyPrÃ³bkowaniePrÃ³bkowanie SysCallWizualizatorTIPZakoÅ„czono aplikacjÄ™ UMSNieobsÅ‚ugiwane Å›rodowisko CLRPlik ETL jÄ…draNazwa komputeraWersja gÅ‚Ã³wna plikuWersja gÅ‚Ã³wna produktuMaksymalna liczba procesÃ³wMaksymalna liczba wÄ…tkÃ³wWersja pomocnicza plikuWersja pomocnicza produktuPrÃ³bki (anulowane)PrÃ³bki (aplikacja)PrÃ³bki (uszkodzone)PrÃ³bki (wywoÅ‚anie zwrotne)Liczba procesorÃ³wPrÃ³bki (jÄ…dro)PrÃ³bki (inne)PrÃ³bki (zapas)'WywoÅ‚ania zwrotne (przeszukania stosu)Bufory we/wyLiczba procesÃ³wLiczba wÄ…tkÃ³w%Numer kompilacji systemu operacyjnego$Wersja gÅ‚Ã³wna systemu operacyjnego&Wersja pomocnicza systemu operacyjnegoLimity gÃ³rne procesuInterwaÅ‚ prÃ³bkowaniaLimity gÃ³rne wÄ…tkuÅÄ…czna liczba procesÃ³wPrÃ³bki (Å‚Ä…cznie)ÅÄ…czna liczba wÄ…tkÃ³wCiÄ…g wersjiWyÅ‚Ä…czny czas aplikacji {0}WÅ‚asny czas aplikacjiWÅ‚Ä…czny czas aplikacji {0}CaÅ‚kowity czas aplikacjiGÅ‚Ä™bokoÅ›Ä‡ wywoÅ‚aÅ„Typ kodu&Czas wyÅ‚Ä…czny, ktÃ³ry upÅ‚ynÄ…Å‚ {0}WÅ‚asny czas, ktÃ³ry upÅ‚ynÄ…Å‚%Czas wÅ‚Ä…czny, ktÃ³ry upÅ‚ynÄ…Å‚ {0}"CaÅ‚kowity czas, ktÃ³ry upÅ‚ynÄ…Å‚WpisAkcja zdarzeniaTyp zdarzenia!WyÅ‚Ä…czne obciÄ…Å¼enie profilera%WyÅ‚Ä…czne obciÄ…Å¼enie profilera {0}ZakoÅ„czJawneAdres funkcjiNazwa funkcjiNiejawne WÅ‚Ä…czne obciÄ…Å¼enie profilera$WÅ‚Ä…czne obciÄ…Å¼enie profilera {0}ZarzÄ…dzanyNazwa moduÅ‚uÅšcieÅ¼ka moduÅ‚uNatywnyIdentyfikator procesuNazwa procesuSkryptWskaÅºnik stosuIdentyfikator wÄ…tkuNazwa wÄ…tkuSygnatura czasowa
+[Nieznane]RywalizacjeAlfaARMHitachiIntelMIPSPPCNieznanyAMDCentaurCyrixIntelNexgenUMCNieznanyOdmowa dostÄ™pu: {0}TVSP1738: Podczas analizy odnaleziono uszkodzony blok danych. Dane zostaÅ‚y obciÄ™te./Nie moÅ¼na wyodrÄ™bniÄ‡ danych MOF funkcji ETW.4Nie moÅ¼na wyodrÄ™bniÄ‡ danych profilowania skryptu.VSP1713: Podczas zbierania danych nastÄ…piÅ‚o dynamiczne partycjonowanie sprzÄ™towe. 
+               Plik zawiera niedokÅ‚adne dane: {0}
+               UÅ¼yj opcji /Admin:driver programu VSPerfCmd.exe, aby zatrzymaÄ‡ dziaÅ‚anie sterownika i ponownie zebraÄ‡ dane.
+    %VSP1734: Plik nie zawiera danych: {0}"VSP1710: Nie znaleziono pliku: {0}VVSP1737: Nie moÅ¼na otworzyÄ‡ pliku z powodu naruszenia zasad wspÃ³Å‚uÅ¼ytkowania: {0}BÅ‚Ä…d}VSP1713: Niezgodne ustawienia kolekcji dla {0}. Nie moÅ¼na jednoczeÅ›nie zbieraÄ‡ danych dotyczÄ…cych pamiÄ™ci i rywalizacji.$VSP1713: Niezgodna wersja pliku: {0}!VSP1712: NieprawidÅ‚owy plik: {0}VSP1712: NieprawidÅ‚owy plik Plik nie zawiera buforÃ³w danychBrak pamiÄ™ciPrzetwarzanie buforÃ³w danych BÅ‚Ä…d odczytywania zdarzeÅ„ ETW<{0}: BÅ‚Ä…d zbierania danych. Ponownie wykonaj profilowanie.}VSP2359: Profilowanie prÃ³bkowania UMS (User-Mode Scheduling) nie jest obsÅ‚ugiwane. DziaÅ‚anie aplikacji zostaÅ‚o przerwane.Nieznany bÅ‚Ä…d4Deserializacja pominiÄ™Ä‡ reguÅ‚ nie powiodÅ‚a siÄ™.,OsiÄ…gniÄ™to maksymalnÄ… liczbÄ™ pominiÄ™Ä‡.2Serializacja pominiÄ™Ä‡ reguÅ‚ nie powiodÅ‚a siÄ™.
+[Nieznane]NieznanyÖVSP2340: Zmienne Å›rodowiskowe nie byÅ‚y prawidÅ‚owo ustawione podczas przebiegu profilowania, dlatego symbole zarzÄ…dzane mogÄ… nie byÄ‡ rozpoznawane. UÅ¼yj polecenia vsperfclrenv przed rozpoczÄ™ciem profilowania.ÇQtAnüVê¸WµkZ~’µO"Ë¼ë·‘±ÉÙÌëdÛN?#ñj3 w9è¯ƒI=n}#Î'×X³r=¡o«İpÍ©Ú·CXf İ	7frîX¿‰~×Kêä!%”Åœí]Á6U×ÈY¥â m:gHÈ…oÉ¹á=àUtb^XA BSJB         v4.0.30319     l   d   #~  Ğ   T   #Strings    $     #US ,     #GUID   <  ¤   #Blob               ú%3                 8                 €         !    
+ !        $      <Module> VSPerfReader.resources pl Reader.pl.resources VSPerfReader.resources.dll         QËßÒ²#G«‘-ÄØU² €  $  €  ”      $  RSA1     ÑúWÄ®Ùğ£.„ª®ıéèıjì‡ûvlƒL™’²;çšÙÕÜÁİšÒ6!r<ù€•ÄáwÆwO)è2’êìäè!À¥ïèñd\L“Á«™(]b,ªe,úÖ=t]o-åñ~^¯Ä–=&ŠCe mÀ“4MZÒ“ dY          ~Y                          pY            _CorDllMain mscoree.dll     ÿ%  @                                                                                                                                 €                  0  €               	  H   X`  ¼          ¼4   V S _ V E R S I O N _ I N F O     ½ïş      0Ö   0Ö                         D    V a r F i l e I n f o     $    T r a n s l a t i o n     °   S t r i n g F i l e I n f o   ø   0 4 1 5 0 4 b 0   L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   R   F i l e D e s c r i p t i o n     V S P e r f o r m a n c e   R e a d e r     ^   F i l e V e r s i o n     1 7 . 0 . 3 2 7 2 6 . 5 6 0   b u i l t   b y :   D 1 7 . 3     V   I n t e r n a l N a m e   V S P e r f R e a d e r . r e s o u r c e s . d l l      5  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   W s z e l k i e   p r a w a   z a s t r z e |o n e .     ^   O r i g i n a l F i l e n a m e   V S P e r f R e a d e r . r e s o u r c e s . d l l     T   P r o d u c t N a m e     M i c r o s o f t ®   V i s u a l   S t u d i o ®   B   P r o d u c t V e r s i o n   1 7 . 0 . 3 2 7 2 6 . 5 6 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  P     9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      hM    0‚MX	*†H†÷ ‚MI0‚ME10	`†He 0\
++‚7 N0L0
++‚70	  ¢€ 010	`†He  á/[éC]Í†Ø({ü-@Ji7$Ã…8³œÔĞß ‚v0‚ş0‚æ 3  ‘dbó·>âÍ    ‘0	*†H†÷ 0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20100220512204706Z230511204706Z0t10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMicrosoft Corporation0‚"0	*†H†÷ ‚ 0‚
+‚ ?ï((ñnSY]=¤êåÆt\ìO<¬‰‹ÿü+~é¤mLºR[SÊƒÒÚy±r’™«™İ¼/i‡ÒDôûgQNb™÷Íoi!V¥ÑÚ#\s?‚Bêu˜æˆïâ~“d q6x*àrÙ”.}Z/½ÍgGªh•á`T¯±É‡»®Ÿe)µ„…%4 &°ñ/Œ$í†s HAkÿôİ¿ˆ›iK…RÉÏ¶0'Û’íÈ~VlT~Ò9*¿ªêz’‹¶K|+ûÌÿ`€ >Vä+C0à!i±/+I}jÔ{¹„s˜›j|t?@èı?3hÇßz`hs‹ £‚}0‚y0U%0
++‚7=+0UÈZÔì¸Ş 2¢€“ÌËö:Z/0TUM0K¤I0G1-0+U$Microsoft Ireland Operations Limited10U230865+4705630U#0€æü_{»" XärNµô!t#2æï¬0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicCodSigPCA_2010-07-06.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicCodSigPCA_2010-07-06.crt0Uÿ0 0	*†H†÷ ‚ ËÃ~ä´¦-ñ’W“¢U„ã‚‰*dd:¾RWÔºWœ"šâUK cÀºâ@;ÃLˆ‹˜È
+óÁ)å±kÍ#nîÄ³İÎ;Äô‡uÃª=WÀa} 9EÙíï}î/SQwhÑ£a¢çFÑn?ÅµuEA-)şQÈÕ‚%ƒÉ9×h“KkøïĞ'ƒT¶"ü–-Ö"Ü?rªAŠôÆÒR€fÜÃƒÉÀ/f?©˜	Â˜¥ßÇ0¸A_ÁøD°	Òsÿø ĞËmÊR1%E^hêk³{äúDy0±¬=ó0çC¬5ƒH)k§9U†vQÂ]ü˜ŸİR<0‚p0‚X 
+aRL     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100100706204017Z250706205017Z0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20100‚"0	*†H†÷ ‚ 0‚
+‚ édPygµÄãı	 L”¬÷VhêDØÏÅXO©¥v|mEºÓ9’´¤ùùe‚äÒıDœèe“Î,U„¿}ã.+¨A+·¢KnILkŞÑÒÂ‰q”ÍµK´¯ØÌˆÖk”:“Î&?ìæş4˜WÕ]Iö²*.Õ…»Y?ø´+ƒtÊ+³;FãğFIÁfTÉ½ÄUbWrøg¹% 4Ş]¦¥•^«(€ÍÕ²åµcÓ²ÈÁÈŠ&
+Yìÿí€5L¦¾R[õ¦Úà‹HwÖ…GÕ¹Æèªî‹j-\`Æ´*[œ#_Eão7Ë3€j‰M£jfcx“Õ0Ï• £‚ã0‚ß0	+‚7 0Uæü_{»" XärNµô!t#2æï¬0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€ÕöVËè¢\bhÑ=”[×ÎšÄ0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0U •0’0	+‚7.00=+1http://www.microsoft.com/PKI/docs/CPS/default.htm0@+042  L e g a l _ P o l i c y _ S t a t e m e n t . 0	*†H†÷ ‚ tïWO){Ä…x¸PÓ"ü	¬‚—ø4ÿ*,—•åä¿Ï¿“Èã4©Û¸Ü ¾Ò5o¯åy•wåÔñëØÍNa¢ÂZ#ğŒ¨bQEgã?<“ø0…È9@¦×³!)å¥¡iŒ"“Ìt˜ç¡GCòS¬À0işÒ% moaÓßÕÙr ,i†v=QÛ¦9HÉ7amİSË§ÖaÂ¿âƒ«àk›•Ö}(Q°‰JQ¤šlÈ·Ji©×ÜÁ~ÑIpª¶­»rGcú¦Ö¢¦†ì¨D›c¶²i‰ÇF†z?èÅ!Õ{ù#-ÅAË¿LÈï±œü"KIŠnã¦v[ÑSy‘…ÕÒÛ=s5ó<®T²RGjÀª•ÒÚ™g^2Œû7…ÑÜu…œ‡ÆZW…Â¿İŒ›-ë´îÏ'Óµ^iú¤§$gsÏMO¶ŞV—z÷éRMôwO…ÆØñíB	Ñvã#Vx"&6¾Ê±Œnªä…ÚG3b¤É‘3_q@¯˜eÉ"èB!%Š-`Ù7‰A‰*×a<”h`RïÖG™ €@îw>œàSP8•›f3'9x‡6ÎNÃ_²õ=GS¶àåÛa=*×’,Î7Z>@B1¤ÂVœ¿$]QjyÒÓÚÁ”{%qD«jæÔÆß#š–uÅ1‚AU0‚AQ0•0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20103  ‘dbó·>âÍ    ‘0	`†He  ®0	*†H†÷	1
++‚70
++‚710
++‚70/	*†H†÷	1" Jí1Ô›7pŠÔc“ôŸåµtPc=
+˜É‡ÖŸ_©vÉ{0B
++‚71402 € M i c r o s o f t¡€http://www.microsoft.com0	*†H†÷ ‚ –4ñgØhŠôF§©†O8|òŞPUèx³²ë@»j5§yƒnß,m f•ÒJÍò”C"æ=/òé©o÷†ùÍu»3çjbË`L¼Óaiï Ë c-úäuÄJ‡PŞÒÖæ9ª¾!-"g+,JŸ°âÙˆŠÜ¥è»©÷«&[Dáæ|áN“ûî)k™UjoÆ×“^ª³ĞŸ¯í… F¾Şõºy"s¤[XQÈ„rTê!kıø5?<xz‡f'õx8Š›¤¥`M¢—°‘»?}
+˜Z˜SNÉkÈš7°Üè-}¬ı sZQõJ	¡‚>ß0‚
++‚71‚0‚ş	*†H†÷ ‚ï0‚ë10	`†He 0‚Y*†H†÷	 ‚H‚D0‚@
++„Y
+010	`†He  ƒ«÷@ÔdöR}’ÿüUtÜEşìô2Îëz±ûr’bŞtÔ1«20220727052120.234Z0€ô Ø¤Õ0Ò10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1-0+U$Microsoft Ireland Operations Limited1&0$UThales TSS ESN:8D41-4BF7-B3B71%0#UMicrosoft Time-Stamp Service ‚e0‚0‚ü 3  ˆ.ÍÆAá¼*   ˆ0	*†H†÷ 0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100211028192740Z230126192740Z0Ò10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1-0+U$Microsoft Ireland Operations Limited1&0$UThales TSS ESN:8D41-4BF7-B3B71%0#UMicrosoft Time-Stamp Service0‚"0	*†H†÷ ‚ 0‚
+‚ šç&‘ÅÇÈ:Õá/<Uâ`Ùqª4§¦ÊÚ¥…YÈaŒ»üÏW7ÖàÎrÍãÀW<N—
+t¤7†Ùtó÷)ÔMmŠµ´ÑT‡Å'š0‚¯à£.Zâ€w&KD~®Ãv€”±‡e¿ëƒõS‹±½Ú0éã}Õâµ E¼ØÎëƒÍ]Üç´ïµ]maÜK[BÔº@I0è6º÷×ì<qÙÃ.€ÿZ-¦ºS5HÍ‚ì"r<¦@€Ò	Õ¡Uğø²^ù:Õ¬_Û¶Óƒ‘ÿWô¤5ßaÌÎ«ü¶:0Ê¬»n7ØRç~zöèS5€„C}áé9L¾ÕÎÉ~ŒNg·qİøú´ı ÄH¬ıêØ:#Äñí®Œ¦"7ú^•´³^¿7¥=~±ÛÑSf÷šö*WVïŞZI™êÄfæ;]V³~…«İïèwåetòõ¸NSŸÅvø¦ÚŠ³ñhY	ãëe°ŸŒ~ÅN‰:ÿfpàhÆ‡Ÿ<èéHÜ
+OHM³$NÔñ¬³ò6ÑvÖé¶¹ËÌö4xL—äB¡Íkš2îN´Æb)]ˆäÃ´›YŠ¹@ ¢¯¸ãbğğ$.ÑØ_'M²[Ø×»áØ	ŠÏÏğ¿:¹q[äëÎ“<lB:ÔûßÕ*zÉoX>«5”ï_îõƒ’v¾Û £‚60‚20UdyµPÄ£»Î»½ú»3åŒÉJJ0U#0€Ÿ§] ^b]ƒôåÒe§S5ér0_UX0V0T R P†Nhttp://www.microsoft.com/pkiops/crl/Microsoft%20Time-Stamp%20PCA%202010(1).crl0l+`0^0\+0†Phttp://www.microsoft.com/pkiops/certs/Microsoft%20Time-Stamp%20PCA%202010(1).crt0Uÿ0 0U%0
++0	*†H†÷ ‚ @ZÛûX&Ëÿ¢ÒÛ6¯›g¤×¾æ“Œ®è’éXˆ¸½ÛFÙ×Wz%!ØdÜTm£ñƒ÷y9HŒ'¥ş§Ë0ìHÛvIÜ„Ì²p‡¿Ÿ¶íÌ·Ç 	Ñ-]×c™íûªXÇQçä½j¢¤y<¸Ï&Ù–Á…Ô7Ã8Š¨8®‚F™’™ôW<g¶G&=î.ß# =„‘ô×¼öåjÃ&\Z¤>]˜ÌË<ßZš'¦
+€gáYcHK1FW÷uºØISAŒÉwp¥Dnñf]\;^.OG²rx"6|ßF°’ÔZ“í}àñ¢d¢üúJìÚ+€Bñdb
+Ç­`˜~5z>‹‚Üß€ë­É8tı=B+~­¤"uä½,?â˜¡ÌÜ"k3ä¡ÁÜp}Ê]öS	gêg  •#1hTªq?–P>¨Û;I@ÆY”µX¨UK0…=é+ ãÌüµ1Á;m¹üõÌÄ.DHgË‚ËV$3Á(³ô"PÚ+ÔŸ‚"Y7T·À<¹Ö"p+hÒ |>Õ¸Â#áAÀ“D}©?¡ä9Päv÷6°?\0ÏnH¯Â (æÇD"…HÙZæ9ºQ»ô–ÇvCÕJ7ËÅ;“²ˆy:ÖŞn¬m+Âéhe‘YÅ9+Åü“’æŒ0‚q0‚Y 3   Åçk›I™     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100210930182225Z300930183225Z0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100‚"0	*†H†÷ ‚ 0‚
+‚ äá¦Lç´r!y¢Ë×$y½Õ‚ÓıîœÒ©lNuÈÊ5WölJàâ½¹>`3ÿ\OÇf÷•SqZâ~JZş¸6g…F#µÏw2Àè`}jRƒD·¦FkóÅvõ†PÜÁDÈq\Q17 
+8ní×Ø&S|9azÄªıri¯«¬ö6¾5&dÚ˜;º{3­€[~ŒRş¶èb%ÜjÏ]ôşSÏÖì…VMïİ¼¤ã‘²9,QœépiÊ6-p1È5(½ã´‡$ÃàÉ~µTÜúU˜mh;šF½í¤®z)7¬ËëƒEçFnÊ2ÕÀ†0\O,âb²Í¹âˆä–¬J»¾q©[g`Şø’‘=ı Ïs}AšFuÍÄ_4İ‰Öı¥ }~üÙEß¶r/Û}_€ºÛª~6ì6Lö+n¨Qè¿£Ñs¦M7t”4‚ğò·Gí§è™|?LÛ¯^ÂóÕØs=CNÁ39L¼Bh.ê„QFâÑ½jZasÊg¢^×(vâ3r×§ ğÂú
+×coÉ6d‹[ ¦ƒ!]_0t‘””Ø¹Pù‰aó65„GÛÜÑı²ÔÅkö\RQ]Û%º¯PzlÅrïùRÄ…“À<Û7Ç?x«E¶õ‡^ÚriÆ®{··>jâ.­ £‚İ0‚Ù0	+‚7 0#	+‚7*§RşdÄš¾‚‘<F5)Ïÿ/î0UŸ§] ^b]ƒôåÒe§S5ér0\U U0S0Q+‚7Lƒ}0A0?+3http://www.microsoft.com/pkiops/Docs/Repository.htm0U%0
++0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€ÕöVËè¢\bhÑ=”[×ÎšÄ0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0	*†H†÷ ‚ U}ü*­á,g1$[árKü©oê\¶>NGdx±“—=13µ9×Âq6?Údl|Ğu9m»1äÂûlÑ¡”"îéfg:SMİ˜º¶xØ6.œ©‚V °¾‰èiàº	î{ßjo¾)ËnØ?HuÙŞm‚õm#TäxSu$W¹İŸó=Æóhßeö¤Vª÷•¶(U'Ğ$½@ ¿¶]='à@–8¬÷ù)‰Ã¼°T…B³ü‹‰çğjÂBRuŠ6ÂÃas.,k{n?,	xé‘²©[ßI£t¼ì‘€Ò=æJ>f;O»†ú2Ù–ôö‘öÎÆtıöLro«u0Å4°zØPş
+Xİ@<ÇTmctH,±NG-Áq¿dù$¾smÊ	½³WITdÙs×[DZ‘kŸ¤(Üg($º8Kšnû!TkjEG©ñ·®Èè‰^OÒĞLvµWT	±iD~|¡alsş
+»ìAf=iıËÁAI~~“¾Ëø;ä·¿´Î>¥1Q„¼¿Á‚¢{‰pşçµĞ(‰6ÚºLù›ÿ
+é4ø$5g+à¸æŒ™Öá"êğ'B=%”ætt[jÑ>í~ 13}¼Ëé{¿8pDÑñÈ«:Š:bÙpcSMî‚m¥Áqj´U3X³¡pfò¡‚Ô0‚=0‚ ¡Ø¤Õ0Ò10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1-0+U$Microsoft Ireland Operations Limited1&0$UThales TSS ESN:8D41-4BF7-B3B71%0#UMicrosoft Time-Stamp Service¢#
+0+ á<ŠÌ| •=,Í9—”zB ƒ0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*†H†÷  æŠíƒ0"20220727064731Z20220728064731Z0t0:
++„Y
+1,0*0
+ æŠíƒ 0 ^0 Š0
+ æŒ? 06
++„Y
+1(0&0
++„Y
+ 
+0 ¡ ¡
+0 † 0	*†H†÷  G2ò=Sô>Ş¤Úè¹|(ˆN.R9ÔêüÀ÷·&ûs¬ºV&Õ"ÁwŸì	"µl<lèg¯©Ş«ê)‘fÚ}À&’)¹¦vº(ıü´± ‰šh>™s±”WJ(B¤ÜÙ|²¯3>e­|dX0^Ğ:]ä˜%Â,’–ÜÈJ1‚0‚	0“0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  ˆ.ÍÆAá¼*   ˆ0	`†He  ‚J0	*†H†÷	1*†H†÷	0/	*†H†÷	1" ië‡tÈ¾=K\§G’É÷…³Yİ>¾VÄm3Øf{™0ú*†H†÷	/1ê0ç0ä0½ féŞí¬7F„‚øÏìœÜÒ¥î-_À¡†²¦^ÒI@¥0˜0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  ˆ.ÍÆAá¼*   ˆ0" 9+Ádec¬ËÆ-†FÅ™¢­zbnîöEÂ" s0	*†H†÷ ‚ JïßüjUó9ÙğÁfµB‘ÇÏß&Ú?4´8-¨ Äë7NĞ¿\©×I¸Ò+b¤İ: yy§ ùO‹t5A<”–îĞ-¥-áñ‰Ês#G0ş¦›áÙö4œÙîR1Ú¾Åoo¶^
++Òû÷ÚO+V¸¤€¤à²Î¯%4Ä[l¤Êé^îrÈ*.5MwweÑÆÊÀ0[v#íØğVëEéÕ¼aZ£€ó­f±õjøÚ/¸İFÙ\–ä¨^Fïö×O¯|†»İñ†8Ù1…Ù‡‹ıWéŒ…ZÜŒüpÓ«¨Ò‚û¡ıWØÓEˆbÅ'3µ=×µVÓ 9çÜİxÉ~:yæ‡D†Ç¬û«ëÙ@?®O€·ƒ~VjcıÎ0ñ^98NMÒ¦³‹«t@pÒ÷ÔÉXØ_«Ö
+ÅwŞöènö´ß•Fç˜ÍkîæŠ¥ğ|iMj(½,¥üÏc?¬¢Vœ-«ğ›9m¾ğRµV†´:X¾a&³º|ÿaÎ[—ú7ş¡ğª®«hƒü¨õš³}ß¶ò<–Ég<±If{Çò
+<†$Æ<MŸ7p2P›\ˆkv
+ı
+¦uÏ&_iéŒîşaHE=œë³û‰	Óy@¬L–6l¶~K#Œ¡d/·ÀUÁVÂµ q0ù[0‚'Å
++‚71‚'µ0‚'±	*†H†÷ ‚'¢0‚'10	`†He 0\
++‚7 N0L0
++‚70	  ¢€ 010	`†He  á/[éC]Í†Ø({ü-@Ji7$Ã…8³œÔĞß ‚…0‚0‚ë 3  Ğçë|.öÎ#á    Ğ0	*†H†÷ 0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110220512204606Z230511204606Z0t10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMicrosoft Corporation0‚"0	*†H†÷ ‚ 0‚
+‚ ®1ñâ<=Jí[¢¤y”¨ì™t
+ ÉFÑi@0 CX•"±Î\¢É)9Ü˜°­Ì /×cİmÿ®§&£nÿnQ|ãîk<Ì&›ırŠœ7”9,é6¾I~5·ÏDm=^jÍ)Ú8öğ‚o˜©¿7“ÊìHrç+t†¨D€ÊF‘í•®XÀÔpĞe&Ë‘^CìQFÍ²)øOº¯
+Iÿİ$&áÂ&Cù}ùùt¹íÙ}I:fúØBµºæƒ•^Û'cŸŠ¯o¤V2^PC­%!¿ñMë»üná^ÍíúÀC­O^ÎˆÍË×<ağØ|òO×Óq pÒËÍ £‚‚0‚~0U%0
++‚7
++0UÎ=5Ğ969_‚A\pgÿÊ˜uã0TUM0K¤I0G1-0+U$Microsoft Ireland Operations Limited10U230217+4705330U#0€HndåPÓ‚ª77"µm¨Êu•0TUM0K0I G E†Chttp://www.microsoft.com/pkiops/crl/MicCodSigPCA2011_2011-07-08.crl0a+U0S0Q+0†Ehttp://www.microsoft.com/pkiops/certs/MicCodSigPCA2011_2011-07-08.crt0Uÿ0 0	*†H†÷ ‚ •%ÇAM<m)Ú¨ªp¥ÜÙú¥æ@ Š ºòàP©ÅŞ'"Ñõ)–TBàˆ¤¾ Œî>Ç¦—>ã)»3¼stß<šë–À"Œ$İ8)`$“0{ìÑ[ıfv¢®[îüE¸?»k‡ÙCø	+»‡LøÃ)^Xj²o©µPÿ¹C×ìã*¾‡´ÜîE«¾©·ê.ÚT¬/–ãkbyéW75ãÌtæ6Ù¡å/ác·¼N¤î–«Ãaj²ÿ[qÛİ„µÌÊ·éq_øBîÖÉÛfIİ	nvî—/:ã¢Ôˆ¢úä±ßÈGÈÁíÃÖUÎU^¬LPÛ5Ë–Ü`ºœL½xPGId±K¡IÎq†ÕËàÊIæEõşÔ n¨kF#iÕË™ÁÜÚR.rqØ7)
+IŠ ‚ŒÈ–Vë'–1Ó,¥ŸíÉŸÍ  ¬Åğ>Õ”¼ü¶w.l)w†_ÛXşïÃÛ*JeÈ²ª5Hú»»—Ñ¦¡[—o
+»e~ÒÒ,£…<ù”tæ5²^úÉãÚ×ÿiTdè¸ª)şjšrÔ¹ˆ¦7DFÿ9:z8qÀ°·w*\Órë¤¥:³¹'Ër	}€ÄGxáo+ÀnŒÒ·àmÁ…OÆša`&¥"eSZÀ‹·n)±½Š7Õ"Ö’nã0‚z0‚b 
+aÒ     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20110110708205909Z260708210909Z0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110‚"0	*†H†÷ ‚ 0‚
+‚ «ğúr.­Ønª‚M4ºò¶X!ŸB*kéZPª¸8IºÃİ7kÆØğ8Â™°È9Õ1BÓ‰yd‡~”`$l¯Iœéh^Òß›S²
+,Ã¯Ù©+®z	¯×–YÊ`éfvè2R&/ç«PÏ³D·]ØÄ.u«hóËmó:\¡ôFºà8d¬nd5x¦ c-Ó@“øãŞÕ\y¥I)ç¾ w¾”=ïûã+ZMV(¢zrà:·I^ØííC‘ƒÙ{²{†Ù>±Œ]è‰O„ò¡/Yä;-®3XÅ·>ş2Ó³=±²¯’8~Ò€,õNV‘!5%Ã9ndSºœ­#„Ëôº†÷_ğĞR¿Œ”‡¼À!t%_(¶Ì'(8%˜9J6Ï|±’®#§©fìajá(I_ˆâ%]Ó!K>RÄµW?$ğÑz[/Õ#ãp]QFw³ø á¼¬‚_ÛÀ³½ÔUKç9¡é#I¼¸D|EäÁÃrzàrç$ß¿F™ÅïÂWÛƒìMI0§«ßì[Ÿ¯üİ°fâÁ—{íÖíKçI)§(¦§}g€æŠbx_²/„×Wœ\¿w((ñímÃ(,@7OÁá…D‰Ä	LÅÔ¥C/t•÷nøx X,]`•š>O3„Ú°ˆŞNô–°¼F l˜ÒàÖˆŒ £‚í0‚é0	+‚7 0UHndåPÓ‚ª77"µm¨Êu•0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€r-:1C¹Náê§Ç1Ñ#‰40ZUS0Q0O M K†Ihttp://crl.microsoft.com/pki/crl/products/MicRooCerAut2011_2011_03_22.crl0^+R0P0N+0†Bhttp://www.microsoft.com/pki/certs/MicRooCerAut2011_2011_03_22.crt0ŸU —0”0‘	+‚7.0ƒ0?+3http://www.microsoft.com/pkiops/docs/primarycps.htm0@+042  L e g a l _ p o l i c y _ s t a t e m e n t . 0	*†H†÷ ‚ gò†¥˜àTy.ÓØtg"›–ác’™B–}ÒyÁe_.,>øÃrÑmƒş¾?è
+Ê;¿G©£óiÛc¿"5¥—]e„}‹FPUØ’|ÒKó<B‹RĞ°ıkã>.)›æ=¥Ôµw”9âédÉD=xz#ó}¦tƒôË&F*ÂŠ»¤©›íhúh.• *?*kXIc	inZ˜–äƒôÀóF+Şü;Ğ½5ïn%®å¯'íĞİó¯™(—˜M=ò‰ÖÃ2âğÅ-Î[´I9
+Æ
+ÂÆ­®å²ÙÛˆQEX82q'±ô'øŞ,: i˜²Y‰hno§·tÃ@¦*(>‚?MfÀ³Mõáo}E§vå@*e£Ã]Rb†Ãc6—†ßÚóøò¡š'áÍ¥—Ğî]cAã[œ‡>wÑ±u¾aaµğÜÆ¾ßAÇ(îŞe/ì—ö¡\–Ø Ö¡F½Yó—¥	KH™€Ğ )Å±›¥?Ew5ÆÒ¢¢Ÿzz"úH•«ûG#€õø¿k·K—âëuxìê7™yKÿÖ³#huæ¯úü‹ë€êi;¯ü0íLßßumc‘=ÑVNO¿€W"¡x2!zïA
+±?û¨Ì¤]Á¡ˆ›WqVNHEÀBÉ›v[
+€HkıyŸÁ½mmjÉRszPÍ1‚Ÿ0‚›0•0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20113  Ğçë|.öÎ#á    Ğ0	`†He  Á0
+*†H†÷	10	*†H†÷	1
++‚70
++‚710
++‚70/	*†H†÷	1" Jí1Ô›7pŠÔc“ôŸåµtPc=
+˜É‡ÖŸ_©vÉ{0B
++‚71402 € M i c r o s o f t¡€http://www.microsoft.com0	*†H†÷ ‚ §Mæ?“ğ¡æHZÜ.a{ÔÎşXúêeÎ[
+u¸KÂÂpNĞ¦Dz[WˆëwĞlP’û;NU]Q¬TamäéÃ-bá¿yQfòõ•ëî¥c
+˜×xDİr1I'Õ°Z;
+S~#ß€áMb¶Šv>…Oº¾"M>‚á 5%”¾ùâğ|§TÄ[Ühñ¢Ø$oPı39v†¢%)çw³{‡TÃî|IÖ:ğu?ãñË,¢Ìõ±4k÷Aˆ°XY¹“@{w¨ÍHÆH"üj@Ğ1)ù¢¦¦6«…Ôaù¸…«Éˆ9ş´Ş7ÇÈb}zNj¡‚0‚
++‚71‚0‚ş	*†H†÷ ‚ï0‚ë10	`†He 0‚Y*†H†÷	 ‚H‚D0‚@
++„Y
+010	`†He  '3;@èë|Ï§Ùj_oõ«2ÛH%‡áš‚İŠ£ùbŞtÔ1²20220727052121.635Z0€ô Ø¤Õ0Ò10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1-0+U$Microsoft Ireland Operations Limited1&0$UThales TSS ESN:8D41-4BF7-B3B71%0#UMicrosoft Time-Stamp Service ‚e0‚0‚ü 3  ˆ.ÍÆAá¼*   ˆ0	*†H†÷ 0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100211028192740Z230126192740Z0Ò10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1-0+U$Microsoft Ireland Operations Limited1&0$UThales TSS ESN:8D41-4BF7-B3B71%0#UMicrosoft Time-Stamp Service0‚"0	*†H†÷ ‚ 0‚
+‚ šç&‘ÅÇÈ:Õá/<Uâ`Ùqª4§¦ÊÚ¥…YÈaŒ»üÏW7ÖàÎrÍãÀW<N—
+t¤7†Ùtó÷)ÔMmŠµ´ÑT‡Å'š0‚¯à£.Zâ€w&KD~®Ãv€”±‡e¿ëƒõS‹±½Ú0éã}Õâµ E¼ØÎëƒÍ]Üç´ïµ]maÜK[BÔº@I0è6º÷×ì<qÙÃ.€ÿZ-¦ºS5HÍ‚ì"r<¦@€Ò	Õ¡Uğø²^ù:Õ¬_Û¶Óƒ‘ÿWô¤5ßaÌÎ«ü¶:0Ê¬»n7ØRç~zöèS5€„C}áé9L¾ÕÎÉ~ŒNg·qİøú´ı ÄH¬ıêØ:#Äñí®Œ¦"7ú^•´³^¿7¥=~±ÛÑSf÷šö*WVïŞZI™êÄfæ;]V³~…«İïèwåetòõ¸NSŸÅvø¦ÚŠ³ñhY	ãëe°ŸŒ~ÅN‰:ÿfpàhÆ‡Ÿ<èéHÜ
+OHM³$NÔñ¬³ò6ÑvÖé¶¹ËÌö4xL—äB¡Íkš2îN´Æb)]ˆäÃ´›YŠ¹@ ¢¯¸ãbğğ$.ÑØ_'M²[Ø×»áØ	ŠÏÏğ¿:¹q[äëÎ“<lB:ÔûßÕ*zÉoX>«5”ï_îõƒ’v¾Û £‚60‚20UdyµPÄ£»Î»½ú»3åŒÉJJ0U#0€Ÿ§] ^b]ƒôåÒe§S5ér0_UX0V0T R P†Nhttp://www.microsoft.com/pkiops/crl/Microsoft%20Time-Stamp%20PCA%202010(1).crl0l+`0^0\+0†Phttp://www.microsoft.com/pkiops/certs/Microsoft%20Time-Stamp%20PCA%202010(1).crt0Uÿ0 0U%0
++0	*†H†÷ ‚ @ZÛûX&Ëÿ¢ÒÛ6¯›g¤×¾æ“Œ®è’éXˆ¸½ÛFÙ×Wz%!ØdÜTm£ñƒ÷y9HŒ'¥ş§Ë0ìHÛvIÜ„Ì²p‡¿Ÿ¶íÌ·Ç 	Ñ-]×c™íûªXÇQçä½j¢¤y<¸Ï&Ù–Á…Ô7Ã8Š¨8®‚F™’™ôW<g¶G&=î.ß# =„‘ô×¼öåjÃ&\Z¤>]˜ÌË<ßZš'¦
+€gáYcHK1FW÷uºØISAŒÉwp¥Dnñf]\;^.OG²rx"6|ßF°’ÔZ“í}àñ¢d¢üúJìÚ+€Bñdb
+Ç­`˜~5z>‹‚Üß€ë­É8tı=B+~­¤"uä½,?â˜¡ÌÜ"k3ä¡ÁÜp}Ê]öS	gêg  •#1hTªq?–P>¨Û;I@ÆY”µX¨UK0…=é+ ãÌüµ1Á;m¹üõÌÄ.DHgË‚ËV$3Á(³ô"PÚ+ÔŸ‚"Y7T·À<¹Ö"p+hÒ |>Õ¸Â#áAÀ“D}©?¡ä9Päv÷6°?\0ÏnH¯Â (æÇD"…HÙZæ9ºQ»ô–ÇvCÕJ7ËÅ;“²ˆy:ÖŞn¬m+Âéhe‘YÅ9+Åü“’æŒ0‚q0‚Y 3   Åçk›I™     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100210930182225Z300930183225Z0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100‚"0	*†H†÷ ‚ 0‚
+‚ äá¦Lç´r!y¢Ë×$y½Õ‚ÓıîœÒ©lNuÈÊ5WölJàâ½¹>`3ÿ\OÇf÷•SqZâ~JZş¸6g…F#µÏw2Àè`}jRƒD·¦FkóÅvõ†PÜÁDÈq\Q17 
+8ní×Ø&S|9azÄªıri¯«¬ö6¾5&dÚ˜;º{3­€[~ŒRş¶èb%ÜjÏ]ôşSÏÖì…VMïİ¼¤ã‘²9,QœépiÊ6-p1È5(½ã´‡$ÃàÉ~µTÜúU˜mh;šF½í¤®z)7¬ËëƒEçFnÊ2ÕÀ†0\O,âb²Í¹âˆä–¬J»¾q©[g`Şø’‘=ı Ïs}AšFuÍÄ_4İ‰Öı¥ }~üÙEß¶r/Û}_€ºÛª~6ì6Lö+n¨Qè¿£Ñs¦M7t”4‚ğò·Gí§è™|?LÛ¯^ÂóÕØs=CNÁ39L¼Bh.ê„QFâÑ½jZasÊg¢^×(vâ3r×§ ğÂú
+×coÉ6d‹[ ¦ƒ!]_0t‘””Ø¹Pù‰aó65„GÛÜÑı²ÔÅkö\RQ]Û%º¯PzlÅrïùRÄ…“À<Û7Ç?x«E¶õ‡^ÚriÆ®{··>jâ.­ £‚İ0‚Ù0	+‚7 0#	+‚7*§RşdÄš¾‚‘<F5)Ïÿ/î0UŸ§] ^b]ƒôåÒe§S5ér0\U U0S0Q+‚7Lƒ}0A0?+3http://www.microsoft.com/pkiops/Docs/Repository.htm0U%0
++0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€ÕöVËè¢\bhÑ=”[×ÎšÄ0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0	*†H†÷ ‚ U}ü*­á,g1$[árKü©oê\¶>NGdx±“—=13µ9×Âq6?Údl|Ğu9m»1äÂûlÑ¡”"îéfg:SMİ˜º¶xØ6.œ©‚V °¾‰èiàº	î{ßjo¾)ËnØ?HuÙŞm‚õm#TäxSu$W¹İŸó=Æóhßeö¤Vª÷•¶(U'Ğ$½@ ¿¶]='à@–8¬÷ù)‰Ã¼°T…B³ü‹‰çğjÂBRuŠ6ÂÃas.,k{n?,	xé‘²©[ßI£t¼ì‘€Ò=æJ>f;O»†ú2Ù–ôö‘öÎÆtıöLro«u0Å4°zØPş
+Xİ@<ÇTmctH,±NG-Áq¿dù$¾smÊ	½³WITdÙs×[DZ‘kŸ¤(Üg($º8Kšnû!TkjEG©ñ·®Èè‰^OÒĞLvµWT	±iD~|¡alsş
+»ìAf=iıËÁAI~~“¾Ëø;ä·¿´Î>¥1Q„¼¿Á‚¢{‰pşçµĞ(‰6ÚºLù›ÿ
+é4ø$5g+à¸æŒ™Öá"êğ'B=%”ætt[jÑ>í~ 13}¼Ëé{¿8pDÑñÈ«:Š:bÙpcSMî‚m¥Áqj´U3X³¡pfò¡‚Ô0‚=0‚ ¡Ø¤Õ0Ò10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1-0+U$Microsoft Ireland Operations Limited1&0$UThales TSS ESN:8D41-4BF7-B3B71%0#UMicrosoft Time-Stamp Service¢#
+0+ á<ŠÌ| •=,Í9—”zB ƒ0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*†H†÷  æŠíƒ0"20220727064731Z20220728064731Z0t0:
++„Y
+1,0*0
+ æŠíƒ 0 ^0 Š0
+ æŒ? 06
++„Y
+1(0&0
++„Y
+ 
+0 ¡ ¡
+0 † 0	*†H†÷  G2ò=Sô>Ş¤Úè¹|(ˆN.R9ÔêüÀ÷·&ûs¬ºV&Õ"ÁwŸì	"µl<lèg¯©Ş«ê)‘fÚ}À&’)¹¦vº(ıü´± ‰šh>™s±”WJ(B¤ÜÙ|²¯3>e­|dX0^Ğ:]ä˜%Â,’–ÜÈJ1‚0‚	0“0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  ˆ.ÍÆAá¼*   ˆ0	`†He  ‚J0	*†H†÷	1*†H†÷	0/	*†H†÷	1" \Í,8­&YpèmÉü¥ Ã²w¦šWŠ9{u,LÍâ0ú*†H†÷	/1ê0ç0ä0½ féŞí¬7F„‚øÏìœÜÒ¥î-_À¡†²¦^ÒI@¥0˜0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  ˆ.ÍÆAá¼*   ˆ0" 9+Ádec¬ËÆ-†FÅ™¢­zbnîöEÂ" s0	*†H†÷ ‚ ŒÈÂ£÷®6ÑúT5ºç–šÁu¬²™ê™¶¸«Ÿf³\HÅò·v8ˆÑº­¼Dî
+éåo„_[èzi&Ùymm³ªÑ‹üXÈ\$ûÍ¥âäí›±¾M6¡ÚobÕÊ1Â<J2Ÿ€Ë‰İÃõt—¶[V~Tt?lÂ~²‹6›6ö:‡5i)Ñ~t‹‡“W©…Œ³\_ÍâMLÚ¯E‚ÎB†“>¤"‡]¢ŸmJ¸š_˜P«°øˆG›JØô¢TM¢ä¾Ô$#ÒqÑkëŒH2cô}ä1™ æ#«ïâ6·+„ØÙƒê#Ø§b ¬×ˆÏoğ¨¯võ
+ën¤x²Lq 9ôª<Ë	áyß’e*@ÃX
+Èø¤¤+ü pß™ªo×Õ‚ÀìøOv¤İeÆĞó¢Şbÿì¥bÉ‚Æs@Gp ©\DMŸo$­³öÙx\ò)ıÔæıH
+KB•øİ“Ïñ£GR»	âÿúœç<ãZˆƒR‡h*\äßÅ*·7Ø!Í­+/¼¤¯*¯%ÔıdÜéÏ‰Ÿ¿B¯yŞ´ĞLœrÈ{‹&µ °T8{íäÚë$7Bµ»?ÌÛßTöÑ¼T7Ìôİî4@`µdD¨5Mö²ôæX® íi—†Â8NÍKh8wÇPÉ`…Áv{dü nnÏ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            INDX( 	 wjR           (   8	  è      	 i o   e               ]º    € n     \º    ÒÇ§3²Ø;f4÷,ßØ;f4÷,ßØ;f4÷,ßØĞ      Ë               e x t e n s i o n . v s i x l a n g p a c k   ^º           \º    óøÇ§3²Ø64÷,ßØ64÷,ßØ64÷,ßØ @      =              ' M i c r o s o f t . C o d e C o v e r a g e . I O . r e s o u r c e s . d l l _º    È ¸     \º    ÔmÈ§3²Ø/´4÷,ßØ/´4÷,ßØ/´4÷,ßØ P      A              ; M i c r o s o f t . T e s t P l a t f o r m . C o m m u n i c a t i o n U t 	 l i t i e s . r e s o u r c e s . d l l `º    ¸ ¦     \º    Ä”È§3²Ø)5÷,ßØ)5÷,ßØ)5÷,ßØ P       A              2 M i c r o s o f t . T e s t P l a t f o r m . C o r e U t i l i t i e s . r e s o u r c e s . d l l   aº    À ª     \º    ¼»È§3²Øñv5÷,ßØñv5÷,ßØñv5÷,ßØ `      Q              4 M i c r o s o f t . T e s t P l a t f o r m . C r o s s P l a t E n g i n e . r e s o u r c e s . d l l       bº    °      \º    £	É§3²Øê5÷,ßØê5÷,ßØê5÷,ßØ @       ;              . M i c r o s 	 f t . T e s t P l a t f o r m . U t i l i t i e s . r e s o u r c e s . d l l   cº    Ø È     \º    0É§3²ØàÄ5÷,ßØàÄ5÷,ßØàÄ5÷,ßØ @      ?              C M i c r o s o f t . T e s t P l a t f o r m . V s T e s t C o n s o l e . T r a n s l a t i o n L a y e r . r e s o u r c e s . d l l dº    È ²     \º    ‘WÉ§3²ØØë5÷,ßØØë5÷,ßØØë5÷,ßØ @       =              8 M i c r o s o f t . V i s u a l S t u d i o . T e s t P l a t f o r m . C l i e n t . r e s o u r c e s . d l l       eº    È ²   	 \º    ƒ~É§3²ØÊ6÷,ßØÊ6÷,ßØÊ6÷,ßØ P      O              8 M i c r o s o f t . V i s u a l S t u d i o . T e s t P l a t f o r m . C o m m o n . r e s o u r c e s . d l l       fº    Ğ ¼     \º    oÌÉ§3²ØÂ96÷,ßØÂ96÷,ßØÂ96÷,ßØ `      [              = M i c r o s o f t . V i s u a l S t u d i o . T e s t P l a t f o r m . O b j e c t M o d e l . r e s o u r c e s . d l l     gº     ~     \º    dóÉ§3²Ø³d6÷,ßØ³d6÷,ßØ³d6÷,ßØ @      =               S e t t i n g s M i g r a t o r . r 	 s o u r c e s . d l l   hº    ˜ †     \º    [Ê§3²Ø®6÷,ßØ®6÷,ßØ®6÷,ßØ Ğ       Á              " v s t e s t . c o n s o l e . a r m 6 4 . r e s o u r c e s . d l l   iº     z     \º    FhÊ§3²Ø•Õ6÷,ßØ•Õ6÷,ßØ•Õ6÷,ßØ Ğ      Á               v s t e s t . c o n s o l e . r e s o u r c e s . d l l                                                                                                                                                                                                   	                                                                                                                                                         

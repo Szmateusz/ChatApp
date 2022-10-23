@@ -71,11 +71,24 @@ body {
     height:50px;
     padding:10px 2px 50px 20px;
     margin:10px 0px 10px 0px;
+
+    
     
 
 }
+#sidebar ul li a {
+    text-decoration: none;
+    color:cyan;
+}
 #sidebar ul li:hover {
         background-color: #4b4f4c;
+}
+
+#sidebar ul .sidebar_selected {
+    background-color: darkgrey;
+}
+#sidebar ul .sidebar_selected:hover{
+    background-color: grey;
 }
 
 .nav-hover:hover {

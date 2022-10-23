@@ -4,8 +4,14 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>E:\ASP.NET-App\Blog\Blog\bin\Release\net6.0\publish\</_PublishTargetUrl>
-    <History>True|2022-09-21T15:26:37.7849954Z;</History>
+    <_PublishTargetUrl>E:\tt</_PublishTargetUrl>
+    <History>True|2022-10-22T20:57:38.9773846Z;False|2022-10-22T22:54:53.4646037+02:00;True|2022-10-22T22:49:36.7530442+02:00;True|2022-09-21T17:26:37.7849954+02:00;</History>
     <LastFailureDetails />
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
   </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="Database">
+      <Value>Server=localhost\SQLEXPRESS01%3bInitial Catalog=DbBlog%3bIntegrated Security=True%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
 </Project>

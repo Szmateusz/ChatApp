@@ -1,0 +1,626 @@
+import numpy as np
+from numpy.testing import (
+    assert_, assert_equal, assert_array_equal, assert_almost_equal,
+    assert_array_almost_equal, assert_raises, assert_allclose
+    )
+
+import pytest
+
+# `poly1d` has some support for `bool_` and `timedelta64`,
+# but it is limited and they are therefore excluded here
+TYPE_CODES = np.typecodes["AllInteger"] + np.typecodes["AllFloat"] + "O"
+
+
+class TestPolynomial:
+    def test_poly1d_str_and_repr(self):
+        p = np.poly1d([1., 2, 3])
+        assert_equal(repr(p), 'poly1d([1., 2., 3.])')
+        assert_equal(str(p),
+                     '   2\n'
+                     '1 x + 2 x + 3')
+
+        q = np.poly1d([3., 2, 1])
+        assert_equal(repr(q), 'poly1d([3., 2., 1.])')
+        assert_equal(str(q),
+                     '   2\n'
+                     '3 x + 2 x + 1')
+
+        r = np.poly1d([1.89999 + 2j, -3j, -5.12345678, 2 + 1j])
+        assert_equal(str(r),
+                     '            3      2\n'
+                     '(1.9 + 2j) x - 3j x - 5.123 x + (2 + 1j)')
+
+        assert_equal(str(np.poly1d([-3, -2, -1])),
+                     '    2\n'
+                     '-3 x - 2 x - 1')
+
+    def test_poly1d_resolution(self):
+        p = np.poly1d([1., 2, 3])
+        q = np.poly1d([3., 2, 1])
+        assert_equal(p(0), 3.0)
+        assert_equal(p(5), 38.0)
+        assert_equal(q(0), 1.0)
+        assert_equal(q(5), 86.0)
+
+    def test_poly1d_math(self):
+        # here we use some simple coeffs to make calculations easier
+        p = np.poly1d([1., 2, 4])
+        q = np.poly1d([4., 2, 1])
+        assert_equal(p/q, (np.poly1d([0.25]), np.poly1d([1.5, 3.75])))
+        assert_equal(p.integ(), np.poly1d([1/3, 1., 4., 0.]))
+        assert_equal(p.integ(1), np.poly1d([1/3, 1., 4., 0.]))
+
+        p = np.poly1d([1., 2, 3])
+        q = np.poly1d([3., 2, 1])
+        assert_equal(p * q, np.poly1d([3., 8., 14., 8., 3.]))
+        assert_equal(p + q, np.poly1d([4., 4., 4.]))
+        assert_equal(p - q, np.poly1d([-2., 0., 2.]))
+        assert_equal(p ** 4, np.poly1d([1., 8., 36., 104., 214., 312., 324., 216., 81.]))
+        assert_equal(p(q), np.poly1d([9., 12., 16., 8., 6.]))
+        assert_equal(q(p), np.poly1d([3., 12., 32., 40., 34.]))
+        assert_equal(p.deriv(), np.poly1d([2., 2.]))
+        assert_equal(p.deriv(2), np.poly1d([2.]))
+        assert_equal(np.polydiv(np.poly1d([1, 0, -1]), np.poly1d([1, 1])),
+                     (np.poly1d([1., -1.]), np.poly1d([0.])))
+
+    @pytest.mark.parametrize("type_code", TYPE_CODES)
+    def test_poly1d_misc(self, type_code: str) -> None:
+        dtype = np.dtype(type_code)
+        ar = np.array([1, 2, 3], dtype=dtype)
+        p = np.poly1d(ar)
+
+        # `__eq__`
+        assert_equal(np.asarray(p), ar)
+        assert_equal(np.asarray(p).dtype, dtype)
+        assert_equal(len(p), 2)
+
+        # `__getitem__`
+        comparison_dct = {-1: 0, 0: 3, 1: 2, 2: 1, 3: 0}
+        for index, ref in comparison_dct.items():
+            scalar = p[index]
+            assert_equal(scalar, ref)
+            if dtype == np.object_:
+                assert isinstance(scalar, int)
+            else:
+                assert_equal(scalar.dtype, dtype)
+
+    def test_poly1d_variable_arg(self):
+        q = np.poly1d([1., 2, 3], variable='y')
+        assert_equal(str(q),
+                     '   2\n'
+                     '1 y + 2 y + 3')
+        q = np.poly1d([1., 2, 3], variable='lambda')
+        assert_equal(str(q),
+                     '        2\n'
+                     '1 lambda + 2 lambda + 3')
+
+    def test_poly(self):
+        assert_array_almost_equal(np.poly([3, -np.sqrt(2), np.sqrt(2)]),
+                                  [1, -3, -2, 6])
+
+        # From matlab docs
+        A = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+        assert_array_almost_equal(np.poly(A), [1, -6, -72, -27])
+
+        # Should produce real output for perfect conjugates
+        assert_(np.isrealobj(np.poly([+1.082j, +2.613j, -2.613j, -1.082j])))
+        assert_(np.isrealobj(np.poly([0+1j, -0+-1j, 1+2j,
+                                      1-2j, 1.+3.5j, 1-3.5j])))
+        assert_(np.isrealobj(np.poly([1j, -1j, 1+2j, 1-2j, 1+3j, 1-3.j])))
+        assert_(np.isrealobj(np.poly([1j, -1j, 1+2j, 1-2j])))
+        assert_(np.isrealobj(np.poly([1j, -1j, 2j, -2j])))
+        assert_(np.isrealobj(np.poly([1j, -1j])))
+        assert_(np.isrealobj(np.poly([1, -1])))
+
+        assert_(np.iscomplexobj(np.poly([1j, -1.0000001j])))
+
+        np.random.seed(42)
+        a = np.random.randn(100) + 1j*np.random.randn(100)
+        assert_(np.isrealobj(np.poly(np.concatenate((a, np.conjugate(a))))))
+
+    def test_roots(self):
+        assert_array_equal(np.roots([1, 0, 0]), [0, 0])
+
+    def test_str_leading_zeros(self):
+        p = np.poly1d([4, 3, 2, 1])
+        p[3] = 0
+        assert_equal(str(p),
+                     "   2\n"
+                     "3 x + 2 x + 1")
+
+        p = np.poly1d([1, 2])
+        p[0] = 0
+        p[1] = 0
+        assert_equal(str(p), " \n0")
+
+    def test_polyfit(self):
+        c = np.array([3., 2., 1.])
+        x = np.linspace(0, 2, 7)
+        y = np.polyval(c, x)
+        err = [1, -1, 1, -1, 1, -1, 1]
+        weights = np.arange(8, 1, -1)**2/7.0
+
+        # Check exception when too few points for variance estimate. Note that
+        # the estimate requires the number of data points to exceed
+        # degree + 1
+        assert_raises(ValueError, np.polyfit,
+                      [1], [1], deg=0, cov=True)
+
+        # check 1D case
+        m, cov = np.polyfit(x, y+err, 2, cov=True)
+        est = [3.8571, 0.2857, 1.619]
+        assert_almost_equal(est, m, decimal=4)
+        val0 = [[ 1.4694, -2.9388,  0.8163],
+                [-2.9388,  6.3673, -2.1224],
+                [ 0.8163, -2.1224,  1.161 ]]
+        assert_almost_equal(val0, cov, decimal=4)
+
+        m2, cov2 = np.polyfit(x, y+err, 2, w=weights, cov=True)
+        assert_almost_equal([4.8927, -1.0177, 1.7768], m2, decimal=4)
+        val = [[ 4.3964, -5.0052,  0.4878],
+               [-5.0052,  6.8067, -0.9089],
+               [ 0.4878, -0.9089,  0.3337]]
+        assert_almost_equal(val, cov2, decimal=4)
+
+        m3, cov3 = np.polyfit(x, y+err, 2, w=weights, cov="unscaled")
+        assert_almost_equal([4.8927, -1.0177, 1.7768], m3, decimal=4)
+        val = [[ 0.1473, -0.1677,  0.0163],
+               [-0.1677,  0.228 , -0.0304],
+               [ 0.0163, -0.0304,  0.0112]]
+        assert_almost_equal(val, cov3, decimal=4)
+
+        # check 2D (n,1) case
+        y = y[:, np.newaxis]
+        c = c[:, np.newaxis]
+        assert_almost_equal(c, np.polyfit(x, y, 2))
+        # check 2D (n,2) case
+        yy = np.concatenate((y, y), axis=1)
+        cc = np.concatenate((c, c), axis=1)
+        assert_almost_equal(cc, np.polyfit(x, yy, 2))
+
+        m, cov = np.polyfit(x, yy + np.array(err)[:, np.newaxis], 2, cov=True)
+        assert_almost_equal(est, m[:, 0], decimal=4)
+        assert_almost_equal(est, m[:, 1], decimal=4)
+        assert_almost_equal(val0, cov[:, :, 0], decimal=4)
+        assert_almost_equal(val0, cov[:, :, 1], decimal=4)
+
+        # check order 1 (deg=0) case, were the analytic results are simple
+        np.random.seed(123)
+        y = np.random.normal(size=(4, 10000))
+        mean, cov = np.polyfit(np.zeros(y.shape[0]), y, deg=0, cov=True)
+        # Should get sigma_mean = sigma/sqrt(N) = 1./sqrt(4) = 0.5.
+        assert_allclose(mean.std(), 0.5, atol=0.01)
+        assert_allclose(np.sqrt(cov.mean()), 0.5, atol=0.01)
+        # Without scaling, since reduced chi2 is 1, the result should be the same.
+        mean, cov = np.polyfit(np.zeros(y.shape[0]), y, w=np.ones(y.shape[0]),
+                               deg=0, cov="unscaled")
+        assert_allclose(mean.std(), 0.5, atol=0.01)
+        assert_almost_equal(np.sqrt(cov.mean()), 0.5)
+        # If we estimate our errors wrong, no change with scaling:
+        w = np.full(y.shape[0], 1./0.5)
+        mean, cov = np.polyfit(np.zeros(y.shape[0]), y, w=w, deg=0, cov=True)
+        assert_allclose(mean.std(), 0.5, atol=0.01)
+        assert_allclose(np.sqrt(cov.mean()), 0.5, atol=0.01)
+        # But if we do not scale, our estimate for the error in the mean will
+        # differ.
+        mean, cov = np.polyfit(np.zeros(y.shape[0]), y, w=w, deg=0, cov="unscaled")
+        assert_allclose(mean.std(), 0.5, atol=0.01)
+        assert_almost_equal(np.sqrt(cov.mean()), 0.25)
+
+    def test_objects(self):
+        from decimal import Decimal
+        p = np.poly1d([Decimal('4.0'), Decimal('3.0'), Decimal('2.0')])
+        p2 = p * Decimal('1.333333333333333')
+        assert_(p2[1] == Decimal("3.9999999999999990"))
+        p2 = p.deriv()
+        assert_(p2[1] == Decimal('8.0'))
+        p2 = p.integ()
+        assert_(p2[3] == Decimal("1.333333333333333333333333333"))
+        assert_(p2[2] == Decimal('1.5'))
+        assert_(np.issubdtype(p2.coeffs.dtype, np.object_))
+        p = np.poly([Decimal(1), Decimal(2)])
+        assert_equal(np.poly([Decimal(1), Decimal(2)]),
+                     [1, Decimal(-3), Decimal(2)])
+
+    def test_complex(self):
+        p = np.poly1d([3j, 2j, 1j])
+        p2 = p.integ()
+        assert_((p2.coeffs == [1j, 1j, 1j, 0]).all())
+        p2 = p.deriv()
+        assert_((p2.coeffs == [6j, 2j]).all())
+
+    def test_integ_coeffs(self):
+        p = np.poly1d([3, 2, 1])
+        p2 = p.integ(3, k=[9, 7, 6])
+        assert_(
+            (p2.coeffs == [1/4./5., 1/3./4., 1/2./3., 9/1./2., 7, 6]).all())
+
+    def test_zero_dims(self):
+        try:
+            np.poly(np.zeros((0, 0)))
+        except ValueError:
+            pass
+
+    def test_poly_int_overflow(self):
+        """
+        Regression test for gh-5096.
+        """
+        v = np.arange(1, 21)
+        assert_almost_equal(np.poly(v), np.poly(np.diag(v)))
+
+    def test_zero_poly_dtype(self):
+        """
+        Regression test for gh-16354.
+        """
+        z = np.array([0, 0, 0])
+        p = np.poly1d(z.astype(np.int64))
+        assert_equal(p.coeffs.dtype, np.int64)
+
+        p = np.poly1d(z.astype(np.float32))
+        assert_equal(p.coeffs.dtype, np.float32)
+
+        p = np.poly1d(z.astype(np.complex64))
+        assert_equal(p.coeffs.dtype, np.complex64)
+
+    def test_poly_eq(self):
+        p = np.poly1d([1, 2, 3])
+        p2 = np.poly1d([1, 2, 4])
+        assert_equal(p == None, False)
+        assert_equal(p != None, True)
+        assert_equal(p == p, True)
+        assert_equal(p == p2, False)
+        assert_equal(p != p2, True)
+
+    def test_polydiv(self):
+        b = np.poly1d([2, 6, 6, 1])
+        a = np.poly1d([-1j, (1+2j), -(2+1j), 1])
+        q, r = np.polydiv(b, a)
+        assert_equal(q.coeffs.dtype, np.complex128)
+        assert_equal(r.coeffs.dtype, np.complex128)
+        assert_equal(q*a + r, b)
+
+        c = [1, 2, 3]
+        d = np.poly1d([1, 2, 3])
+        s, t = np.polydiv(c, d)
+        assert isinstance(s, np.poly1d)
+        assert isinstance(t, np.poly1d)
+        u, v = np.polydiv(d, c)
+        assert isinstance(u, np.poly1d)
+        assert isinstance(v, np.poly1d)
+
+    def test_poly_coeffs_mutable(self):
+        """ Coefficients should be modifiable """
+        p = np.poly1d([1, 2, 3])
+
+        p.coeffs += 1
+        assert_equal(p.coeffs, [2, 3, 4])
+
+        p.coeffs[2] += 10
+        assert_equal(p.coeffs, [2, 3, 14])
+
+        # this never used to be allowed - let's not add features to deprecated
+        # APIs
+        assert_raises(AttributeError, setattr, p, 'coeffs', np.array(1))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              MZ       ÿÿ  ¸       @                                   ø   º ´	Í!¸LÍ!This program cannot be run in DOS mode.
+$       Dİr5 ¼f ¼f ¼f	Äf¼f¡Ëg¼f¡Ëg¼f¡Ëg¼f¡Ëg¼fİC×f¼f ¼fE¼fòËg¼fòËg¼fòËãf¼fòËg¼fRich ¼f        PE  d† `Èb        ğ "  R   :      ÜS        €            
+           à     ØÏ   `                                   0  P   €  È    À      °  L   Š  '   Ğ  ˜   y  T                           py  8           p                            .text   tQ      R                    `.rdata  %   p   &   V              @  @.data   ø          |              @  À.pdata  L   °      ~              @  @.rsrc       À      „              @  @.reloc  ˜    Ğ      ˆ              @  B                                                                                                                                                                                                                                                                                @SHƒì H‹ÂH‹ÙH½b  H‰HSWÀHHÿÖ`  H‹ÃHƒÄ [ÃÌHƒì(H‘b  H‰HƒÁÿ¬`  HƒÄ(ÃÌÌHƒy HÀb  HEAÃÌÌH‰\$WHƒì ‹ÚH‹ùHRb  H‰HƒÁÿm`  öÃtº   H‹Ïèë?  H‹ÇH‹\$0HƒÄ _ÃÌH‰\$H‰L$WHƒì ‹ÚH‹ùH	b  H‰HƒÁÿ$`  öÃtº   H‹Ïè¢?  H‹ÇH‹\$8HƒÄ _ÃH‰L$Hƒì(HÌa  H‰HƒÁÿç_  HƒÄ(ÃÌH‰L$H¬a  H‰WÀAHb  H‰AH¨a  H‰HÆa  H‰H‹ÁÃÌÌÌH‰\$H‰L$WHƒì ‹ÚH‹ùHaa  H‰HƒÁÿ|_  öÃtº   H‹Ïèú>  H‹ÇH‹\$8HƒÄ _ÃH‰L$Hƒì(H$a  H‰HƒÁÿ?_  HƒÄ(ÃÌHƒìHHL$ èJÿÿÿHÛz  HL$ èH  ÌH‰L$SHƒì H‹ÂH‹ÙHÙ`  H‰HSWÀHHÿò^  HÒ`  H‰Hğ`  H‰H‹ÃHƒÄ [ÃH‰L$SHƒì H‹ÂH‹ÙH`  H‰HSWÀHHÿ¦^  H†`  H‰H‹ÃHƒÄ [ÃÌÌHƒì(HÕ`  ÿÿ]  ÌÌÌH‰\$H‰T$WHƒì H‹Ùÿ4_  Hƒ{H‹ørH‹ƒ  HT$8A¸
+   H‹Ëÿˆ^  H;\$8uHÊ`  ÿ¼]  Ìƒ?"uHÏ`  ÿ¡]  ÌH‹\$0HƒÄ _ÃÌL‹ÜI‰[I‰s WHƒì L‹ÊH‹ù3öI‰sH…Òt#H‹MCH­a  I‹ÉÿH‹L$8…ÀHHÎH‰L$8H9t$8u»ÿÿ €ëLH‰t$@H‹L$8H‹HT$@ÿPX‹Ø…Àx H‹L$@H‹LGH,a  ÿ…À»   x‹ŞH‹L$@H…ÉtH‹ÿPH‹L$8H…ÉtH‹ÿR‹ÃH‹\$0H‹t$HHƒÄ _ÃH‰L$Hƒì(H‹	H…ÉtH‹ÿPHƒÄ(ÃÌÌÌH‰L$Hƒì(H‹	H…ÉtH‹ÿPHƒÄ(ÃÌÌÌ3ÀÃÌH‰\$H‰t$ WATAUAVAWHìp  H‹ï‹  H3ÄH‰„$h  L‹ÊH‰Œ$   3öH…Òu
+¸@ €é‚  H9qu
+¸   ér  H‰´$(  H‰´$8  H‰´$@  H‰´$8  A¾   L‰´$@  f‰´$(  HƒÊÿHÿÂfA94QuöHŒ$(  I;Öw!H‰”$8  HL‹ÃI‹ÑèG  f‰´(  ëè!  WÀóD$8H‰t$HA¸|   HT$8HŒ$(  èn  ‰t$4‰t$0D‹îH‰´$  H‰´$  H‰´$   H‰´$  L‰´$   f‰´$  L‹d$8L‰¤$ø   H‹D$@H‰D$hA¿   L;à„Ò  I‹ÔHŒ$H  è¡  WÀóD$PH‰t$`A¸=   HT$PHŒ$H  èÖ  H‹D$XH‹L$PH+ÁHƒààHƒø@u~H‹ÑHƒyrH‹L‹AIƒø…¥   L‰„$   LA^  L‰Œ$ˆ   H‰”$€   M…Àt.A·f9uxHƒÂH‰”$€   IƒÁL‰Œ$ˆ   IÿÈL‰„$   ëÍHƒÁ èqüÿÿ‰D$4‰D$pH‹L$PH…É„Õ  H‹|$XH‹ÙH‰Œ$è   H;ß„`  H‹ËèR  HƒÃ H‰œ$è   H‹L$PëÜH‹ÑHƒyrH‹L‹AM;ÆuhL‰„$¨   L]  L‰Œ$    H‰”$˜   M…Àt.A·f9u;HƒÂH‰”$˜   IƒÁL‰Œ$    IÿÈL‰„$¨   ëÍHƒÁ è¶ûÿÿ‰D$0‰D$té@ÿÿÿH‹ÑHƒyrH‹L‹AIƒø…Õ   L‰„$À   L]  L‰Œ$¸   H‰”$°   M…Àt2A·f9…¤   HƒÂH‰”$°   IƒÁL‰Œ$¸   IÿÈL‰„$À   ëÉHƒÁ H„$  H;Á„ºşÿÿL‹ÉHƒyrL‹	H‹QH;”$   w=H¼$  Hƒ¼$   HC¼$  H‰”$  HL‹ÃI‹ÑH‹ÏèD  f‰4;ébşÿÿHŒ$  è"  éPşÿÿH‹ÑHƒyrH‹L‹AIƒø
+…5şÿÿL‰„$Ø   L[\  L‰Œ$Ğ   H‰”$È   M…Àt2A·f9…şÿÿHƒÂH‰”$È   IƒÁL‰Œ$Ğ   IÿÈL‰„$Ø   ëÉHY ÿŠY  H‹øHƒ{rH‹‰0A¸
+   H”$à   H‹ËÿäX  D‹èH;œ$à   uHàZ  ÿ
+X  ƒ?"t	‰D$xé‡ıÿÿHİZ  ÿçW  H‹T$`H+ÑHƒâàH‰”$ğ   H‹ÁI;×r#HƒÂ'H‰”$ğ   H‹IøH+ÁHƒÀøHƒøvÿçX  è¢7  HD$PH‰0HD$XH‰0HD$`H‰0HŒ$H  è‘  IƒÄ L‰¤$ø   H‹D$hé%üÿÿH„$H  H‰D$hH”$  HŒ$H  è½  D‰l$ L‹ÈD‹D$0‹T$4H‹Œ$   è  D‹àH‹”$   Hƒúr9HU   H‹Œ$  H‹ÁI;×rHƒÂ'H‹IøH+ÁHƒÀøHƒøvÿ"X  ÌèÜ6  H‰´$  L‰´$   f‰´$  H‹\$8H…ÛtfH‹|$@H;ßtH‹Ëè¼
+  HƒÃ H;ßuïH‹\$8H‹T$HH+ÓHƒâàH‹ÃI;×rHƒÂ'H‹[øH+ÃHƒÀøHƒøvÿ«W  ÌH‹Ëèb6  WÀóD$8H‰t$HH‹”$@  Hƒúr9HU   H‹Œ$(  H‹ÁI;×rHƒÂ'H‹IøH+ÁHƒÀøHƒøvÿSW  Ìè6  A‹Äé'  H‹”$   A¿   Hƒúr9HU   H‹Œ$  H‹ÁI;×rHƒÂ'H‹IøH+ÁHƒÀøHƒøvÿşV  Ìè¸5  3öH‰´$  DvL‰´$   f‰´$  H‹\$8H…ÛtfH‹|$@H;ßtH‹Ëè’	  HƒÃ H;ßuïH‹\$8H‹T$HH+ÓHƒâàH‹ÃI;×rHƒÂ'H‹[øH+ÃHƒÀøHƒøvÿV  ÌH‹Ëè85  WÀóD$8H‰t$HH‹”$@  Hƒúr9HU   H‹Œ$(  H‹ÁI;×rHƒÂ'H‹IøH+ÁHƒÀøHƒøvÿ)V  Ìèã4  ¸W €f‰´$(  L‰´$@  H‰´$8  H‹Œ$h  H3Ìè.1  Lœ$p  I‹[@I‹sHI‹ãA_A^A]A\_ÃÌH‰\$UVWATAUAVAWH¬$`ÿÿÿHì   H‹òƒ  H3ÄH‰…   I‹ùD‹â‰T$@L‹ñL‰M3öD‹î‰t$DD‹şF9µ   DEøD‰|$HE…À„”  D;Àt
+»W €éQ  H‹IH‹E3ÉE3ÀAQÿP‹Ø…Àˆ3  H9w†s  WÀóD$hH‰t$xA¸;   HT$hH‹Ïè¬	  IƒÏÿL‹d$hH‹D$pH‰EˆL;à„·  I‹ÔHM è)  WÀóD$PH‰t$`A¸:   HT$PHM èb	  H‹L$PH‹QH¸şÿÿÿÿÿÿH+Â»   H;Ã‚4  HƒyrH‹	H‰T$0H‰L$(H‰\$ HM è  DëD‰l$DHU HMàè³
+  AƒåşD‰l$DHM è4  H‹D$XH‹T$PH+ÂHƒààHƒø@…›  HƒÂ HMÀèp  A¿   E‹ÏE3ÀHU@HMÀèR  H‹ÈHƒxrH‹L9xu M‹ÇH¨V  H+Ñ·f9u
+IÏL+Ãuïë@ŠŞHM@è²  „Û„”   IƒÉÿM‹ÇHU`HMÀèö  H‹ØHEÀH;ÃtkH‹UØHƒúr6HU   H‹MÀH‹ÁHú   rHƒÂ'H‹IøH+ÁHƒÀøHƒø‡ı  è62  H‰uĞ¸   H‰EØf‰uÀEÀKMĞH‰sH‰Cf‰3HM`è  ÿDS  H‹ğH]ÀHƒ}ØHC]Àƒ  A¸   HU€H‹Ëÿ¥R  L‹øH;]€„¦  ƒ>"„  H‹UØHƒúr6HU   H‹MÀH‹ÁHú   rHƒÂ'H‹IøH+ÁHƒÀøHƒø‡M  è1  3öH‰uĞHÇEØ   f‰uÀ^HMàHƒ}øHCMàH•€   ÿÇR  …Àx8‰u¹f‰u½@ˆu¿HÇE¨   …€   óE˜ÆE¸L‰}°I‹NH‹LE˜‹ÓÿP0H‹UøHƒúr6HU   H‹MàH‹ÁHú   rHƒÂ'H‹IøH+ÁHƒÀøHƒø‡Ä   èÓ0  H‰uğHÇEø   f‰uàH‹\$PH…ÛteH‹t$XH;ŞtH‹Ëè»  HƒÃ H;ŞuïH‹\$PH‹T$`H+ÓHƒâàH‹ÃHú   rHƒÂ'H‹[øH+ÃHƒÀøHƒøw_H‹Ëèd0  WÀóD$P3öH‰t$`HM è_  IƒÄ L;eˆé{üÿÿÿxQ  ÿqQ  H‰S  ÿ#P  ÌHcS  ÿP  ÿNQ  ÿGQ  H‹\$hH…ÛtlH‹t$pH;ŞtH‹Ëèş  HƒÃ H;ŞuïH‹\$hH‹T$xH+ÓHƒâàH‹ÃHú   rHƒÂ'H‹[øH+ÃHƒÀøHƒøvÿéP  ÌH‹Ëè /  WÀóD$h3öH‰t$xD‹d$@D‹|$H‰u¹f‰u½@ˆu¿HÇE¨   ´U  óE˜A½   ÆE¸HÇE°/I‹NH‹LE˜A‹ÕÿP0‹Ø…Àˆj  HÇE°   D‰m¬oU  óE˜D‰m¨fo^W  ó€   H…€   H‰E¸I‹NH‹LE˜A‹ÕÿP0‹Ø…Àˆ  WÀóE°L‰m¨ıR  óE˜I‹NH‹LE˜A‹ÕÿP0‹Ø…Àˆå   ‰u¹f‰u½@ˆu¿L‰m¨÷R  óE˜ÆE¸HÇE°=@I‹NH‹LE˜A‹ÕÿP0‹Ø…Àˆ£   H‰u¸L‰m¨œR  óE˜HÇE°   I‹NH‹LE˜A‹ÕÿP0‹Ø…ÀxpWÀóE°L‰m¨…T  óE˜I‹NH‹LE˜A‹ÕÿP0‹Ø…ÀxAWÀóE°L‰m¨6T  I‹NóE˜H‹LE˜A‹ÕÿP0…À‹ØxI‹NH‹E‹ÇA‹ÔÿPH‹ØH‹ÏèÜ  ‹ÃH‹   H3Ìè/*  H‹œ$ğ  HÄ   A_A^A]A\_^]Ã‰u¹f‰u½@ˆu¿H‰E¨ÎS  óE˜L‹èÆE¸HÇE°   H‹IH‹LE˜A‹ÕÿP0‹Ø…Àx‹L‰m°D‰m¬”S  D‰m¨‰t$@HD$@H‰E¸é8ÿÿÿèïÿÿÌH‰\$H‰t$WHƒì H‹ùH‹H…ÛtYH‹qëH‹Ëè  HƒÃ H;ŞuïH‹H‹WH+ÑHƒâàHú   rHƒÂ'L‹AøI+ÈHAøHƒøw&I‹ÈèË,  Hƒ' Hƒg Hƒg H‹\$0H‹t$8HƒÄ _ÃÿçM  ÌÌÌHƒì(H‹	H…ÉtH‹ÿPHƒÄ(ÃÌH‰\$H‰t$H‰T$WHƒì0I‹ÁH‹ú3ö‰t$ H‰2H‰rHÇB   f‰2H‹QI;Ğr^I+ĞH;ĞHBÂHƒyrH‹	NAH‹ÏHƒøwH‰GH L‹ÃI‹ÑèZ7  f‰4;ë	H‹Ğèo  ÇD$    H‹ÇH‹\$@H‹t$PHƒÄ0_Ãè®  ÌÌ@SHƒì H‹ÙH‹QHƒúr1HU   H‹	Hú   rHƒÂ'L‹AøI+ÈHAøHƒøwI‹Èè¨+  3ÀH‰CHÇC   f‰HƒÄ [ÃÿËL  ÌÌÌH‹ÄH‰XH‰hH‰pH‰x AVHƒì 3ÛH‹òH‰H‹ùH‰YH‰YHƒzL‹rrH‹2½   Iƒşsóé…   IîH¸şÿÿÿÿÿÿH;èHGèH¸ÿÿÿÿÿÿÿHMH;È‡€   HÉHù   r+HA'H;ÁvkH‹Èè‡'  H…ÀtHX'HƒãàH‰CøëÿL  ÌH…Étèc'  H‹ØNu   H‰H‹ÖH‹Ëèé5  L‰wH‹ÇH‰oH‹\$0H‹l$8H‹t$@H‹|$HHƒÄ A^Ãè¿ëÿÿÌÌÌHƒì(IÁàH‹ÂIø   rH‹JøIƒÀ'H+ÁHƒÀøHƒøwH‹ÁI‹ĞH‹ÈHƒÄ(éI*  ÿƒK  ÌÌÌHƒì(H%N  ÿ/J  ÌÌÌH‰\$H‰l$ VWAVHƒìPH‹“y  H3ÄH‰D$@A·èH‹òH‹ùE3öE‹ÆHƒyrH‹	H‹GH…ÀtH‹Ùf9+tcHƒÃHƒèuñHƒËÿI+ØL‹ËHT$ H‹Ïè3ıÿÿH‹VH;V„÷   L‰2L‰rL‰r HJL‰pHÇ@   fD‰0HƒF éĞ   H…Ût¢H+ÙHÑûé¥   L‹ËM+ÈHT$ H‹ÏèÎüÿÿH‹VH;Vt0L‰2L‰rL‰r HJL‰pHÇ@   fD‰0HƒF ëL‹ÀH‹Îè$  HL$ èıÿÿLCH‹ÏHƒrH‹H‹GL;Às#I+ÀJAtf9+tHƒÃHƒèuñë	H…Û…TÿÿÿHƒËÿHƒûÿ…QÿÿÿéçşÿÿL‹ÀH‹Îè¾  HL$ è·üÿÿH‹L$@H3Ìè%  L\$PI‹[0I‹k8I‹ãA^_^ÃÌH‰\$H‰L$WHƒì@L‹ÂH‹Ù3ÿ‰|$0H‹RI‹@H+ÂI‹ÈHƒør$LJM‰HIƒxrI‹·L  f‰QfB‰<IëHÇD$    º   èŞ  L‹ÀH‰;H‰{H‰{A AHKI‰xIÇ@   fA‰8ÇD$0   H‹ÃH‹\$XHƒÄ@_ÃÌÌH;Êt+H‰\$WHƒì H‹úH‹ÙH‹ËèËûÿÿHƒÃ H;ßuïH‹\$0HƒÄ _ÃÌÌÌH‹ÄH‰XH‰hH‰pH‰x ATAVAWHƒì H»şÿÿÿÿÿÿM‹áL‹úH‹ñH;Ó‡(  L‹qHƒÊH;ÓwI‹ÎH‹ÃHÑéH+ÁL;ğvH¸ÿÿÿÿÿÿÿH ë1J1H‹ÚH;ĞHBØH¸ÿÿÿÿÿÿÿHKH;È‡Ï   HÉHù   r.HA'H;Á†¶   H‹Èè‹#  3íH…À„œ   Hx'HƒçàH‰Gøë3íH…Ét
+èf#  H‹øëH‹ıH‰^I‹ÔK?L‰~L‹ÃH‹Ïèã1  f‰,;Iƒşr1H‹Ju   Hú   rL‹AøHƒÂ'I+ÈHAøHƒøw-I‹Èèq&  H‰>H‹ÆH‹\$@H‹l$HH‹t$PH‹|$XHƒÄ A_A^A\Ãÿ†G  ÌèxçÿÿÌè"èÿÿÌÌH‹ÄH‰XH‰hH‰pH‰x ATAVAWHƒì L‹t$`E3äL‹|$pH‹ñL‰!H‹ùL‰aA\$L‰aK,>H;ë†›   H‹ÅHÃH»şÿÿÿÿÿÿH;ÃvH¸ÿÿÿÿÿÿÿH ë2¹
+   H‹ØH;ÁH¸ÿÿÿÿÿÿÿHBÙHKH;È‡§   HÉHù   r/HA'H;Á†   H‹Èè"  H…ÀtHx'HƒçàH‰Gøëÿ¦F  ÌH…Ét
+èó!  H‹øëI‹üH‰>H‰^H)I  K6H‰nL‹ÃH‹Ïèi0  H‹T$hO?H;èW0  H‹\$@H‹ÆH‹t$PfD‰$oH‹l$HH‹|$XHƒÄ A_A^A\Ãè,æÿÿÌÌÌÌL‰D$SVWATAUAVAWHìÀ   L‹âL‹ùL‹òL+1H‹AH+HÁøIºÿÿÿÿÿÿÿI;Â„k  LHL‰Œ$  H‹II+HÁùH‹ÑHÑêI‹ÂH+ÂH;È‡9  H
+I‹ùI;ÁHCøI;ú‡"  L‹ïIÁåL‰¬$  H‰¼$   Iı   r3IM'I;Í†õ  èÒ   3ÛH…À„Ş  Hp'HƒæàH‰FøL‹„$  ë'3ÛM…ítI‹Íè¢   H‹ğL‹„$  ëH‹óH‰¼$   H‰t$hIƒæàI6H‰D$XHx H‰|$`H‰|$ H‰H‰XH‰XA  AHHI‰XA¹   M‰HfA‰H‰D$ I‹WI‹L;â……   H‰D$(H‰t$pH‹şH‰t$xL‰¼$€   H‹ÎL‹öH;Ât>H‰H‰YH‰Y HIH‰XL‰Hf‰Hy L‹÷H‰|$xHƒÀ H‰D$(H‹Ïë½H‰|$pH‰|$0I;ştH‹Ïè*÷ÿÿHƒÇ ëèé1  H‰D$8H‰´$ˆ   L‹öH‰´$   L‰¼$˜   H‹ÎL‹îI;ÄtAH‰H‰YH‰Y HIH‰XL‰Hf‰Lq M‹îL‰´$   HƒÀ H‰D$8I‹ÎëºL‰´$ˆ   L‰t$@M;õtI‹Îè™öÿÿIƒÆ ëèH‰t$ I‹OL‰d$HH‰¼$    H‰¼$¨   L‰¼$°   L‹÷A¹   H‹ÇL;átFH‰H‰XH‰XA$ AL$HI‰\$M‰L$fA‰$Hx L‹÷H‰¼$¨   IƒÄ L‰d$Hë²H‰¼$    H‰|$PI;ştH‹ÏèüõÿÿHƒÇ ëèL‹¬$  I‹?H…ÿtKI‹_ëH‹ÏèØõÿÿHƒÇ H;ûuïI‹I‹WH+ÑHƒâàHú   rHƒÂ'L‹AøI+ÈHAøHƒøw>I‹Èè‡!  I‰7H‹„$  HÁàHÆI‰GJ.I‰OH‹D$XHÄÀ   A_A^A]A\_^[Ãÿ‹B  Ìè}âÿÿÌè·  ÌÌÌH‰\$H‰l$H‰t$WATAUAVAWHƒì L‹qH¿şÿÿÿÿÿÿH‹ÇH‹ñI+ÆH;Â‚q  L‹yM$I‹ÔHƒÊH;×wI‹ÏH‹ÇHÑéH+ÁL;øvH¸ÿÿÿÿÿÿÿH ë1J9H‹úH;ĞHBøH¸ÿÿÿÿÿÿÿHOH;È‡  HÉHù   r.HA'H;Á†ø   H‹Èè  3íH…À„œ   HX'HƒãàH‰Cøë3íH…Ét
+èø  H‹ØëH‹İH‹D$pO6LğL‰fH‰~M,H‹ËL$ Iƒÿr\H‹>H‹×è_+  M‹ÄHşC  I‹ÍèM+  J}   fB‰,sHú   rH‹OøHƒÂ'H+ùHGøHƒøwH‹ùH‹Ïèà  ë&ÿA  ÌH‹Öè+  M‹ÄH¥C  I‹Íèô*  fB‰,sH‰H‹ÆH‹\$PH‹l$XH‹t$`HƒÄ A_A^A]A\_ÃèÈàÿÿÌèráÿÿÌÌHƒì(H…C  ÿo?  ÌÌÌH‰\$WHƒì H‹yH‹ëH‹ËèmóÿÿHƒÃ H;ßuïH‹\$0HƒÄ _ÃÌ‰H‹ÁÃÌÌHƒì(‹ÑHL$8èèÿÿÿH•[  HL$8èÿ(  ÌÌÌH‹	Hÿ%6?  ÌÌH‰\$H‰t$UWATAVAWH¬$pÿÿÿHì  H‹dn  H3ÄH‰…€   ‹úH‹ÙE3öD‰u)fD‰u-Dˆu/D‰t$\…Òtƒút¸Ã ¾€ @ë¸ã ¾   ë
+¸Ï ¾€@HÇE   ÎD  óEA¼   ÆE(H‰E H‹LEE|$ıA‹×ÿP0…Àˆ$  A;ÿ…b  ‘D  H¸) È    H‰EĞH‹D‰uÙfD‰uİDˆußóE¸L‰eÈÆEØLE¸A‹×H‹ËÿP0…ÀˆÔ  D‰u±fD‰uµDˆu·uB  óEL‰e H‰u¨ÆE°H‹LEA‹×H‹ËÿP0…Àˆ—  D‰u‰fD‰uDˆuC  óD$hL‰d$x¾ÿÿÿÿH‰u€ÆEˆH‹LD$hA‹×H‹ËÿP0…ÀˆR  D‰ufD‰uDˆuB  óEàL‰eğH‰uøÆE H‹LEàA‹×H‹ËÿP0…Àˆ  L‰uHD‰uQfD‰uUDˆuWB  óE0L‰e@ÆEPH‹LE0A‹×H‹ËÿP0…ÀˆØ  L‰upD‰uyfD‰u}DˆueB  óEXL‰ehÆExH‹LEXA‹×H‹ËÿP0…Àˆ›  fo E  óE¸foóD  óMÈHE¸H‰D$0HEØH‰D$8HT$0HL$hèé  ¾   …ÿ…µ   fo÷D  óEàÇEğ   HEàH‰D$0HEôH‰D$8HT$0HMè§  L‹M˜L‹EH‹T$pHL$hèo  H‹MH…É„  H‹E H+ÁHÁøH…    H‹ÁH;Ö‚ë   HƒÂ'H‹IøH+ÁHƒÀøHƒø†Ò   ÿ/=  …ÿ…İıÿÿ/A  HÇEĞ   é—ıÿÿA;ÿ…·   fo)D  óEàÇEğ   ¸   HMôI‹Ô‰AÇIÌI+×uóHEàH‰D$0HEH‰D$8HT$0HMèĞ
+  L‹M˜L‹EH‹T$pHL$hè˜  H‹MH…ÉtHH‹E H+ÁHÁøH…    H‹ÁH;ÖrHƒÂ'H‹IøH+ÁHƒÀøHƒøvÿd<  Ìè  WÀL‰u óED‰|$TNA  óD$@D‰d$PL‹D$pH‹D$hL+ÀIÁøD‰D$XH‰D$`H‹LD$@A‹×H‹ËÿP0‹ØH‹L$h…ÀyEH…Ét<H‹T$xH+ÑHƒâüH‹ÁH;ÖrHƒÂ'H‹IøH+ÁHƒÀøHƒøwEè‘  WÀóD$hL‰t$x‹ÃëJH…ÉtCH‹T$xH+ÑHƒâüH‹ÁH;ÖrHƒÂ'H‹IøH+ÁHƒÀøHƒøvÿ‹;  ÌèE  WÀóD$hL‰t$x3ÀH‹€   H3Ìè  Lœ$  I‹[8I‹s@I‹ãA_A^A\_]ÃÌÌH‰\$UVWATAUAVAWHl$ÙHìÀ   H‹ei  H3ÄH‰EL‹ÊH‹ÙE3íL‰mH…Òt!H‹LEH>  I‹ÉÿH‹M…ÀIHÍH‰ML9mu
+¾ÿÿ €éŠ  L‰m·H‹MH‹HU·ÿPX‹ğ…Àˆ^  LcH‹M·H‹M‹ÄH‚=  ÿ…Ày
+¾   é9  H‹MH‹HU¿ÿP8¾   …Àˆ  ƒ}¿…:  WÀE×ÇE×È   Hˆ?  ÿ:9  H‹øH‰EçH…À„i  L‰mÇL‰mŸNLEŸ‹ÖÿC9  H‹ØH‰EÇH…À„
+  H‹Èÿò8  …Àˆù  D‰m§LE§‹ÖH‹Ëÿï8  …Àˆ!  LE‡‹ÖH‹ËÿØ8  …Àˆ  LE‹‹ÖH‹Ëÿé8  …Àˆ  ‹E‹+E‡ƒÀ‰EŸD‹}§D‰}£H…Û„î  ŠCÀèöĞ@„Æ„‚  H‹Ëÿ’8  D‹ğ…Àx HUŸH‹Ëÿ†8  D‹ğH‹ËÿJ8  E…öDIğE…öˆI  LEŸ‹ÖH‹ËÿC8  …Àˆ˜  LEÃ‹ÖH‹ËÿT8  …Àˆ‰  ‹EÃ+EŸÆEwÿDğH…ÿ„ƒ   D‰m‡LE‡‹ÖH‹Ëÿù7  …Àˆ^  D‹}‡E;÷|_D‰m‹LE‹‹ÖH‹Ëÿı7  …Àˆô  D;u‹>E+÷McöH‹CJ‹ğH…Étÿ¦7  H‹Ïÿ•7  H‹ÈH…Àu¸ €ëH‹CJ‰ğA‹Åë¸W €…Àˆs  H‰]ßH‹M·H‹LM×º   DBÿP…ÀˆP  H…Ût H‹Ëÿ[7  …ÀxH‹ËÿF7  …ÀIIİH‰]ÇH‹Ïÿ#7  L‰mÏH‹MH‹HUÏÿPH…Àˆ°   L‰m¯H‹MÏH‹LE¯H{=  ÿ…Àˆ€   H‹M¯H‹H3<  ÿP…ÀxkH‹M¯H‹H~;  ÿP…ÀxVI‹$H‹E3ÉE3ÀAY‹ÓÿP…Àx<I‹$L‰mD‰mfD‰mDˆm¡;  óEïH‰]ÿÆEH‹LEï‹ÖÿP0…ÀxA‹õH‹M¯H…ÉtH‹ÿPH‹MÏH…ÉtH‹ÿPH‹M·H…ÉtH‹ÿPH‹MH…ÉtH‹ÿR‹ÆH‹MH3Ìèl  H‹œ$  HÄÀ   A_A^A]A\_^]ÃH…Ût H‹Ëÿ6  …ÀxH‹Ëÿö5  …ÀIIİH‰]ÇH‹ÏÿÓ5  ëˆ‹Èèföÿÿ¹ €è[öÿÿ‹ÈèSöÿÿÌ‹ÈèKöÿÿÌ‹ÈèCöÿÿÌ¹@ €è8öÿÿÌ‹Èè0öÿÿÌ‹Èè(öÿÿÌ‹Èè öÿÿÌÌÌÌH‰\$VWAWHƒìpH‹Äd  H3ÄH‰D$`H‹òL‹ù3ÿH…Òu
+¸@ €éú  H9yu
+¸   éê  ‰|$ HƒËÿD‹ËLË:  ‹ÓH‹Îÿp4  ƒøtC‰|$ D‹ËL…9  ‹ÓH‹ÎÿR4  ƒøu‹øë!‰|$ D‹ËLS:  ‹ÓH‹Îÿ04  ƒøu xÿ‹×I‹Oè™õÿÿ¹@ €= áDÁéh  H‰|$@H‰|$PH‰|$XH‰|$PHÇD$X   f‰|$@HÿÃf9<^u÷HL$@HƒûwH‰\$PHÛL‹ÃH‹Öè‡  f‰|@ëL‹ÎH‹Óè˜ìÿÿÿy5  H‹ğH\$@Hƒ|$XHC\$@‰8A¸
+   HT$8H‹ËÿÇ4  ‹ĞH;\$8uH7  ÿù3  ƒ>"uH7  ÿß3  ‰T$0I‹OH‹E3ÀÿPH‹ØH‹T$XHƒúr3HU   H‹L$@H‹ÁHú   rHƒÂ'H‹IøH+ÁHƒÀøHƒøwBè  ‹ÃëLH‹T$XHƒúr:HU   H‹L$@H‹ÁHú   rHƒÂ'H‹IøH+ÁHƒÀøHƒøvÿ‹4  ÌèE  3ÿ¸W €f‰|$@HÇD$X   H‰|$PH‹L$`H3Ìè–  H‹œ$    HƒÄpA__^ÃÌH‰\$H‰l$H‰t$ WAVAWHƒì M‹ğL‹úH‹ñH‹yH+9HÁÿ…ÿuGë=3ÉH‰L$@‹ß3ÒHƒÈÿH÷óHƒø rHÁãHûÿÿÿv1H‰L$@» €ÿ4  Hƒd$@ ‹ÃH‹\$HH‹l$PH‹t$XHƒÄ A_A^_Ã‹ËÿÙ3  H‹ÈH‰D$@H…Àt¿H‹èH‹H…Ût&L‹ÃH…Òtè‹  ëè7  ÿ3  Ç    ÿs3  3ÉH‰L$@I‰.A‰?H‹H‰F3ÛéxÿÿÿÌÌÌÌH‰L$SHƒì H‹ÙH‹	ÿv3  Hƒ# HƒÄ [ÃH‰L$SHƒì H‹ÙH‹	ÿV3  Hƒ# HƒÄ [ÃH‹ÄH‰XH‰hH‰pH‰x AVHƒì03ÛL‹òA‰I‹ùI‰I‹ğAƒÉÿ‰XèH‹éL™6  AÑI‹Îÿ1  ƒøu0HM(L‹ÇH‹Öèuşÿÿ…Àx3ÀH‹\$@H‹l$HH‹t$PH‹|$XHƒÄ0A^ÃAƒÉÿ‰\$ AÑL>7  I‹Îÿ½0  ƒøuÃHM@L‹ÇH‹Öè%şÿÿ…ÀHØ‹Ãë­@SHƒì H‹ÙH‹	ÿ†2  Hƒ# HƒÄ [Ã@SHƒì H‹ÙH‹	H…Ét?H‹SH+ÑHƒâüHú   rHƒÂ'L‹AøI+ÈHAøHƒøwI‹ÈèÊ  Hƒ# Hƒc Hƒc HƒÄ [Ãÿğ1  ÌÌÌÌH‰\$H‰l$L‰D$VWAVHƒì H‹ñHƒ! Hƒa Hƒa L‹2H‹jI+îH‹ıHÁÿHƒı‚œ   H¸ÿÿÿÿÿÿÿ?H;ø‡¥   HÁçHÿ   r/HO'H;Ï†…   èÏ  H‹ÈH…ÀtHƒÀ'HƒààH‰Høëÿ[1  ÌH…ÿt
+H‹Ïè¥  ë3ÀH‰H‰FHÇH‰FH‰t$PH‹L‹ÅI‹ÖH‹Ëè"  HH‰FHƒd$P HL$Pè   H‹ÆH‹\$@H‹l$HHƒÄ A^_^ÃèêĞÿÿÌè$ğÿÿÌÌÌÌ@SHƒì H‹ÙH‹	H…ÉtÿÑ/  …ÀxH‹ÿ¼/  …ÀxHƒ# HƒÄ [ÃÌÌHƒì(H‹ÂJ…    Hú   rH‹HøHƒÂ'H+ÁHƒÀøHƒøwH‹ÁH‹ÈHƒÄ(é8  ÿr0  ÌÌ@SHƒì H‹H…ÛtGH‹H…Ét?H‹SH+ÑHƒâüHú   rHƒÂ'L‹AøI+ÈHAøHƒøwI‹Èèé  Hƒ# Hƒc Hƒc HƒÄ [Ãÿ0  ÌÌÌL‰D$H‰T$SVWATAUAVAWHƒì@M‹ĞH‹ÚL‹éM+ÈL‰Œ$˜   M‹ùIÁÿL‰|$0HAH‰„$€   H‹9H‰|$ H‹0H‰t$(H‹QH‹ÂH+ÆHÁøM…ÿ„½  L;ø†Ë  H‹ÆH+ÇH‰D$(H‹ÈHÁùI»ÿÿÿÿÿÿÿ?I‹ÃH+ÁL;ø‡?  N9L‰D$0H+×HÁúH‹ÊHÑéI‹ÃH+ÁH;Ğ‡   HM‹ğI;ÀLCğM;ó‡	  N$µ    L‰´$ˆ   Iü   r:IL$'I;Ì†â  è\
+  H…À„(  Hx'HƒçàH‰GøL‹Œ$˜   L‹”$   ë,M…ätI‹Ìè(
+  H‹øL‹Œ$˜   L‹”$   ë3ÿL‰´$ˆ   H‰¼$€   L‹óL+t$ I‹ÆHÁøH‰„$˜   H‡M‹ÁI‹Òè€  IƒÿuH;ŞuL‹D$(H‹T$ H‹Ïèc  ë.M‹ÆH‹T$ H‹ÏèQ  H‹„$˜   IÇH‡H+óL‹ÆH‹Óè4  I‹M H…Ét1I‹UH+ÑHƒâüHú   rHƒÂ'L‹AøI+ÈHAøHƒøw1I‹Èè¼  I‰} H‹D$0H‡I‰EI<I‰EHƒÄ@A_A^A]A\_^[ÃÿÍ-  ÌL‹ÆL+ÃM‹ğIÁşN$½    M;şsKH‹şI+üM‹ÄH‹×H‹Îè›  I4I‰EH+ûH+÷L‹ÇH‹ÓH‹Îè  L‹„$˜   H‹”$   H‹Ëèf  ë5I<H‰|$0H‹ÓH‹ÏèP  J·I‰EL‹„$˜   H‹”$   H‹Ëè0  éJÿÿÿè`ìÿÿÌèÍÿÿÌÌH‰\$WHƒì H‹ÚI‹øH+ÙH‹ÑL‹ÃH‹Ïèü  HÁûHŸH‹\$0HƒÄ _ÃH‰\$WHƒì H‹ÚI‹øH+ÙH‹ÑL‹ÃH‹ÏèÈ  H;H‹\$0HƒÄ _ÃHƒì(M…Àu¸@ €ëaH‹H;ú2  uH‹BH;õ2  t2H‹H;I3  uH‹BH;D3  tH‹H;2  uH‹BH;‹2  uI‰H‹ÿP3Àë	Iƒ  ¸@ €HƒÄ(ÃÌÌ¸   ğÁAÿÀÃÌÌÌH‰\$WHƒì H‹ÙƒÏÿğÁyƒïu.H‰L$0H…Ét$HƒÁH‰L$0H‹	H…ÉtH‹ÿRº   H‹Ëè¬
+  ‹ÇH‹\$8HƒÄ _ÃÌÌÌH‰\$H‰t$WHƒì0I‹ùI‹ğM…Éu
+¸@ €é£   Iƒ! H…Òt
+¸€é   ¹   èó  H‹ØH‰D$XWÀ3ÀH‰CHh1  H‰HKH‰L$ Hƒ! ÇC   H‰\$(H‹L‹H›şÿÿL‹ÇH‹ÖH‹ËL;ÈuèˆşÿÿëAÿÑ‹øH‹H‹PHûşÿÿH‹ËH;ĞuèîşÿÿëÿÒ‹Çë¸ €H‹\$@H‹t$HHƒÄ0_ÃÌE3ÀHÿ%"+  ÌÌHƒì(M…Àu¸@ €ëHH‹H;61  uH‹BH;11  tH‹H;=1  uH‹BH;81  uI‰H‹ÿP3Àë	Iƒ  ¸@ €HƒÄ(ÃÌÌÌ¸   ğÁAÿÀÃÌÌÌ@SHƒì ƒËÿğÁYƒëuSè-	  ‹ÃHƒÄ [ÃÌHƒì(L‹ÉM…Àu
+¸@ €é˜   H‹H;1  uH‹BH;ÿ0  tH‹H;“0  uH‹BH;0  uI‹ÁëHH‹H;-0  uH‹BH;(0  uHƒÁëH‹H;v0  u-H‹BH;q0  u HƒÁI‹ÁH÷ØHÀH#ÁI‰ I‹ÉI‹ÿP3Àë	Iƒ  ¸@ €HƒÄ(ÃÌ¸   ğÁA ÿÀÃÌÌÌH‰\$WHƒì H‹ÙƒÏÿğÁy ƒïuH…Étè   WhH‹Ëè1  H‹\$0‹ÇHƒÄ _ÃH‰L$SHƒì H‹ÙH‹IPH…ÉtDH‹S`H+ÑHƒâàHú   rHƒÂ'L‹AøI+ÈHAøHƒø‡®   I‹ÈèÙ  HƒcP HƒcX Hƒc` H‹K8H…Ét@H‹SHH+ÑHƒâàHú   rHƒÂ'L‹AøI+ÈHAøHƒøwlI‹Èè  Hƒc8 Hƒc@ HƒcH HC0H‰D$8H‹H…ÉtH‹ÿPHC(H‰D$8H‹H…ÉtH‹ÿPHCH‰D$0H‹H…ÉtH‹ÿPHƒÄ [Ãÿm(  ÿf(  ÌÌH‰\$H‰t$WHƒì0I‹ùI‹ğM…Éu
+¸@ €éó   Iƒ! H…Òt
+¸€éà   ¹h   è{  H‹ØH‰D$X3ÒDBhH‹Èè·  H.  H‰H¬-  H‰CHq-  H‰CHKH‰L$ Hƒ! ÇC    HC(H‰D$ Hƒ  HC0H‰D$ Hƒ  Hƒc8 Hƒc@ HƒcH HƒcP HƒcX Hƒc` H‰\$(H‹L‹H+ıÿÿL‹ÇH‹ÖH‹ËL;ÈuèıÿÿëAÿÑ‹øH‹H‹PHÇıÿÿH‹ËH;ĞuèºıÿÿëÿÒ‹Çë¸ €H‹\$@H‹t$HHƒÄ0_ÃÌ¸   ÃÌÌH‰\$H‰t$WHƒì0I‹øH‹òM…Àu
+¸@ €é;  Iƒ  H‹H;2*  …‘   H‹AH;)*  …€   ¹   è9  H‹ØWÀ H¡-  H‰ÇC   H‰\$ H‹L‹H½ûÿÿL‹ÇH‹ÖH‹ËL;ÈuèªûÿÿëAÿÑ‹øH‹H‹PHüÿÿH‹ËH;ĞuèøûÿÿëÿÒ‹Çé    ¸ €é–   H‹H;I+  …   H‹AH;@+  ut¹   èœ  H‹ØWÀ Hd,  H‰ÇC   H‰\$(H‹L‹H ûÿÿL‹ÇH‹ÖH‹ËL;ÈuèûÿÿëAÿÑ‹øH‹H‹PHhûÿÿH‹ËH;Ğ…fÿÿÿèWûÿÿé^ÿÿÿ¸€H‹\$@H‹t$HHƒÄ0_ÃÌ@SHƒì H‹ÙH‹	H…Ét?H‹SH+ÑHƒâàHú   rHƒÂ'L‹AøI+ÈHAøHƒøwI‹ÈèB  Hƒ# Hƒc Hƒc HƒÄ [Ãÿh%  ÌÌÌÌHƒééêÿÿÌÌÌHƒééëúÿÿÌÌÌHƒéé“ûÿÿÌÌÌHƒééïéÿÿÌÌÌHƒééÇúÿÿÌÌÌHƒééKÇÿÿÌÌÌHƒéésûÿÿÌÌÌHƒéé3ÇÿÿÌÌÌHƒéé[ûÿÿÌÌÌHƒéé?ûÿÿÌÌÌé  ÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌff„     H;S  uHÁÁf÷ÁÿÿuÃHÁÉé2  ÌÌ@SHƒì H‹ÙëH‹ËèQ  …ÀtH‹ËèK  H…ÀtçHƒÄ [ÃHƒûÿtèc  ÌèeÄÿÿÌHƒì(è
+  …Àt!eH‹%0   H‹HëH;Èt3ÀğH±€S  uî2ÀHƒÄ(Ã°ë÷ÌÌÌHƒì(èÛ	  …Àtè.  ëèÛüÿÿ‹ÈèŞ  …Àt2Àëè×  °HƒÄ(ÃHƒì(3Éè=  „À•ÀHƒÄ(ÃÌÌÌHƒì(èó  „Àu2Àëèæ  „Àuèİ  ëì°HƒÄ(ÃHƒì(èË  èÆ  °HƒÄ(ÃÌÌÌH‰\$H‰l$H‰t$WHƒì I‹ùI‹ğ‹ÚH‹éè4	  …ÀuƒûuL‹Æ3ÒH‹ÍH‹Çÿ¾#  H‹T$X‹L$PH‹\$0H‹l$8H‹t$@HƒÄ _é  Hƒì(èï  …ÀtH€R  HƒÄ(é  èNÅÿÿ…Àuèÿ  HƒÄ(ÃHƒì(3Éè!  HƒÄ(é  @SHƒì ¶;R  …É»   DÃˆ+R  èî  èñ  „Àu2Àëèä  „Àu	3ÉèÙ  ëêŠÃHƒÄ [ÃÌÌÌ@SHƒì €=ğQ   ‹ÙugƒùwjèM  …Àt(…Ûu$HÚQ  è_  …ÀuHâQ  èO  …Àt.2Àë3fo-#  HƒÈÿó©Q  H‰²Q  ó²Q  H‰»Q  Æ…Q  °HƒÄ [Ã¹   èò  ÌÌHƒìL‹Á¸MZ  f9M°ÿÿuxHc€°ÿÿH=°ÿÿHÊ9PE  u_¸  f9AuTL+Â·AHQHĞ·AH€LÊH‰$I;Ñt‹JL;Ár
+‹BÁL;ÀrHƒÂ(ëß3ÒH…Òu2Àëƒz$ }2Àë
+°ë2Àë2ÀHƒÄÃ@SHƒì ŠÙè7  3Ò…Àt„ÛuH‡²P  HƒÄ [Ã@SHƒì €=§P   ŠÙt„Òuèj
+  ŠËèc
+  °HƒÄ [ÃÌÌÌéOüÿÿÌÌÌ@SHƒì H"  H‹ÙH‰öÂt
+º   èÖÿÿÿH‹ÃHƒÄ [ÃÌHƒì(…Òt9ƒêt(ƒêtƒút
+¸   HƒÄ(Ãè*ıÿÿëèûüÿÿ¶ÀHƒÄ(ÃI‹ĞHƒÄ(é   M…À•ÁHƒÄ(é  H‰\$H‰t$H‰|$ AVHƒì H‹òL‹ñ3Éèšıÿÿ„À„È   è!üÿÿŠØˆD$@@·ƒ=µO   …Å   Ç¥O     èlüÿÿ„ÀtOès  è  èE  Hæ   HÏ   è4	  …Àu)è	üÿÿ„Àt H®   HŸ   è	  ÇPO     @2ÿŠËè~şÿÿ@„ÿu?è  H‹ØHƒ8 t$H‹ÈèËıÿÿ„ÀtL‹Æº   I‹ÎH‹L‹2   AÿÑÿQO  ¸   ë3ÀH‹\$0H‹t$8H‹|$HHƒÄ A^Ã¹   èp  ÌÌÌH‰\$WHƒì0@Šù‹O  …À3ÀH‹\$@HƒÄ0_ÃÿÈ‰øN  èûÿÿŠØˆD$ ƒ=N  u7èüÿÿè.  è¥  ƒ%†N   ŠËè·ıÿÿ3Ò@ŠÏèÑıÿÿöØÛƒãèüÿÿ‹Ãë¢¹   èë  ÌH‹ÄH‰X L‰@‰PH‰HVWAVHƒì@I‹ğ‹úL‹ñ…Òu9tN  3Àéî   BÿƒøwEH‹Ä  H…Àu
+ÇD$0   ëÿ  ‹Ø‰D$0…À„²   L‹Æ‹×I‹Îè ıÿÿ‹Ø‰D$0…À„—   L‹Æ‹×I‹ÎèU÷ÿÿ‹Ø‰D$0ƒÿu6…Àu2L‹Æ3ÒI‹Îè9÷ÿÿH…ö•ÁèÆşÿÿH‹K  H…ÀtL‹Æ3ÒI‹Îÿ¨  …ÿtƒÿu@L‹Æ‹×I‹Îè.ıÿÿ‹Ø‰D$0…Àt)H‹  H…Àu	X‰\$0ëL‹Æ‹×I‹Îÿe  ‹Ø‰D$0ë3Û‰\$0‹ÃH‹\$xHƒÄ@A^_^ÃÌÌÌH‰\$H‰t$WHƒì I‹ø‹ÚH‹ñƒúuèã  L‹Ç‹ÓH‹ÎH‹\$0H‹t$8HƒÄ _éşÿÿÌÌÌ@SHƒì H‹Ù3Éÿû  H‹Ëÿê  ÿô  H‹Èº	 ÀHƒÄ [Hÿ%è  H‰L$Hƒì8¹   ÿÜ  …Àt¹   Í)HzM  è©   H‹D$8H‰aN  HD$8HƒÀH‰ñM  H‹JN  H‰»L  H‹D$@H‰¿M  Ç•L  	 ÀÇL     Ç™L     ¸   HkÀ H‘L  HÇ   ¸   HkÀ H‹K  H‰L ¸   HkÀH‹K  H‰L H   èÿşÿÿHƒÄ8ÃÌÌ@SVWHƒì@H‹ÙÿÓ  H‹³ø   3ÿE3ÀHT$`H‹ÎÿÁ  H…Àt9Hƒd$8 HL$hH‹T$`L‹ÈH‰L$0L‹ÆHL$pH‰L$(3ÉH‰\$ ÿ’  ÿÇƒÿ|±HƒÄ@_^[ÃÌÌÌHƒa HT  H‰AH9  H‰H‹ÁÃÌÌHƒìHHL$ èÒÿÿÿH6  HL$ è•  ÌH‰\$H‰t$WHƒì3À3É¢D‹ÁE3ÛD‹ÒAğntelAòineID‹Ë‹ğ3ÉACEĞ¢AñGenu‰$EÑ‰\$‹ù‰L$‰T$uPHƒçI  ÿ%ğ?ÿ=À t(=` t!=p t°ùüÿƒø w$H¹     H£ÁsD‹LP  AƒÈD‰AP  ëD‹8P  ¸   DHû;ğ|&3É¢‰$D‹Û‰\$‰L$‰T$ºã	s
+EÁD‰P  ÇSI     D‰PI  ºçƒ‘   D‰;I  »   ‰4I  ºçsyºçss3ÉĞHÁâ HĞH‰T$ H‹D$ "Ã:ÃuW‹I  ƒÈÇõH     ‰óH  AöÃ t8ƒÈ ÇÜH     ‰ÚH  ¸  ĞD#ØD;ØuH‹D$ $à<àuƒ»H  @‰±H  H‹\$(3ÀH‹t$0HƒÄ_ÃÌÌÌ3À9¬H  •ÀÃƒ%5O   ÃH‰\$UH¬$@ûÿÿHìÀ  ‹Ù¹   ÿ  …Àt‹ËÍ)¹   èÄÿÿÿ3ÒHMğA¸Ğ  è  HMğÿ)  H‹è   H•Ø  H‹ËE3Àÿ  H…Àt<Hƒd$8 Hà  H‹•Ø  L‹ÈH‰L$0L‹ÃHè  H‰L$(HMğH‰L$ 3ÉÿŞ  H‹…È  HL$PH‰…è   3ÒH…È  A¸˜   HƒÀH‰…ˆ   è  H‹…È  H‰D$`ÇD$P  @ÇD$T   ÿº  ƒøHD$PH‰D$@HEğ”ÃH‰D$H3Éÿy  HL$@ÿf  …Àu„ÛuHè¾şÿÿH‹œ$Ğ  HÄÀ  ]ÃÌÂ  ÌH‰\$ UH‹ìHƒì H‹G  H»2¢ß-™+  H;ÃutHƒe HMÿF  H‹EH‰Eÿ@  ‹ÀH1Eÿ<  ‹ÀHM H1Eÿ4  ‹E HMHÁà H3E H3EH3ÁH¹ÿÿÿÿÿÿ  H#ÁH¹3¢ß-™+  H;ÃHDÁH‰‘F  H‹\$HH÷ĞH‰ŠF  HƒÄ ]ÃH=M  Hÿ%¶  ÌÌH-M  éĞ   H1M  ÃH1M  ÃHƒì(èçÿÿÿHƒ$èæÿÿÿHƒHƒÄ(ÃÌHM  ÃH‰\$WHƒì H»&  H=´&  ëH‹H…Àtÿ  HƒÃH;ßréH‹\$0HƒÄ _ÃH‰\$WHƒì H&  H=ˆ&  ëH‹H…Àtÿà  HƒÃH;ßréH‹\$0HƒÄ _ÃÌÌÌÌÌÌÌÌÌÌÌÌÿ%Ò  ÿ%¤  ÿ%¦  ÿ%¨  ÿ%ª  ÿ%ô  ÿ%æ  ÿ%Ø  ÿ%  ÿ%  ÿ%6  ÿ%ğ  ÿ%â  ÿ%  ÿ%Î  ÿ%à  Hƒì(èßşÿÿHƒèŞşÿÿHƒ3ÀHƒÄ(ÃÌÌÌ°ÃÌ@SE‹H‹ÚAƒãøL‹ÉAö L‹ÑtA‹@McP÷ØLÑHcÈL#ÑIcÃJ‹H‹C‹HH‹CöDt¶DƒàğLÈL3ÊI‹É[éÁñÿÿÌH‹ÄH‰XH‰hH‰pH‰x AVHƒì I‹Y8H‹òM‹ğH‹éI‹ÑH‹ÎI‹ùLCèlÿÿÿ‹E$föØ¸   EÀA÷ØDÀD…CtL‹ÏM‹ÆH‹ÖH‹Íè¼şÿÿH‹\$0H‹l$8H‹t$@H‹|$HHƒÄ A^Ãÿ%+  ÿ%=  ÌÌÌÌÌÌÌÌÌÌÌff„     ÿàÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌff„     ÿ%  H‹Š0   é"´ÿÿH‹Š   éÖ´ÿÿH‹Š   é
+´ÿÿH‹Š0   é¾´ÿÿHŠ8   ér·ÿÿHŠ@   é†·ÿÿHŠ8   éz·ÿÿHŠ8   é~ÇÿÿHŠ@   érÇÿÿH‹Š0   éV·ÿÿH‹Š0   éZÇÿÿHŠ(  éÈÿÿHŠ8   é¶ÆÿÿHŠ  éîÇÿÿHŠH  éâÇÿÿHŠP   é’ÆÿÿH‹Šh   éÊÇÿÿH‰T$UHƒì0H‹êH¸        HƒÄ0]ÃÌH‹Š   é ÇÿÿHŠh   éPÆÿÿHŠ   éˆÇÿÿHŠà   é|ÇÿÿHŠÀ   épÇÿÿHŠ@  édÇÿÿHŠ`  éXÇÿÿ@UHƒì H‹ê‹EDƒà…ÀtƒeDşH   è5ÇÿÿHƒÄ ]Ã@UHƒì H‹ê‹E ƒà…Àtƒe şH‹MHèÇÿÿHƒÄ ]ÃHŠ    éıÆÿÿ@UHƒì H‹ê‹E0ƒà…Àtƒe0şH‹MPèİÆÿÿHƒÄ ]ÃHŠp   éCÓÿÿHŠˆ   é7ÓÿÿHŠ    é+ÓÿÿH‰T$UHƒì H‹êH‹U`H‹M è±ÊÿÿL‹…   H‹UhèñÇÿÿ3Ò3ÉèPüÿÿHŠh   éSáÿÿHŠ   éGáÿÿHŠ(   ésµÿÿHŠP   é‡µÿÿHŠ€   éÓÿÿHŠ`   é{âÿÿHŠh   écµÿÿHŠH   éWµÿÿHŠ(   éKµÿÿHŠ(   éOÅÿÿHŠP   éCÅÿÿHŠh   é7ÅÿÿHŠH   é+ÅÿÿHŠ@   é×ÅÿÿHŠ@   é›ßÿÿHŠ@   é¯ßÿÿHŠ@   éwàÿÿH‹Š0   é—ßÿÿH‹Š0   é_àÿÿHŠP   éKâÿÿH‰T$UHƒì H‹êL‹…ˆ   H‹•€   èçáÿÿ3Ò3Éè6ûÿÿH‰T$UHƒì H‹êH‹ˆ   H‹…€   H‰3Ò3ÉèûÿÿH‰T$SUWHƒì H‹êH‹ˆ   H‹}0HûH»L‹ÃèåÿÿL»HûH‹€   H‹è;åÿÿH‹E(H‰3Ò3Éè»úÿÿH‰T$SUHƒì(H‹êL‹…ˆ   H‹€   H‹H‹M0èÎäÿÿH‹E(H‰3Ò3ÉèúÿÿH‹Š0   HƒÁéØ³ÿÿH‹ŠX   HƒÁéÈ³ÿÿH‹Š    éÌÃÿÿH‰T$UHƒì H‹êH¸        HƒÄ ]ÃÌH‹Š0   HƒÁé³ÿÿH‹Š0   HƒÁ(é~³ÿÿH‹Š0   HƒÁ0én³ÿÿH‹Š0   HƒÁ8éëÿÿH‹Š0   HƒÁPé~ëÿÿH‹Š8   éRÃÿÿH‹ŠX   HƒÁé2³ÿÿH‹ŠX   HƒÁ(é"³ÿÿH‹ŠX   HƒÁ0é³ÿÿH‹ŠX   HƒÁ8é2ëÿÿH‹ŠX   HƒÁPé"ëÿÿ@UH‹êH‹3É8  À”Á‹Á]ÃÌ@UHƒì H‹êŠM@HƒÄ ]é(ïÿÿÌ@UHƒì H‹êŠM èïÿÿHƒÄ ]ÃÌ@UHƒì H‹êHƒÄ ]éwíÿÿÌ@UHƒì0H‹êH‹‹H‰L$(‰T$ L`ïÿÿL‹Ep‹UhH‹M`è¸ìÿÿHƒÄ0]ÃÌ                                                                                                                                            X      ²“      Æ“      à“      ô“      ”      .”      B”      V”      r”      æ”      Ì”      ¶”       ”      †”              “      ü’      Ö’                    €      €      €      €      €      €(      €      €      €        ü”      ”      ®      •      Æ      Ş      ô      ş              ~              N‘      D‘      X‘              Â‘      ¶‘      ®‘              X’      6’      ’      d’      Ş‘      Ì‘      N’      ’‘      l‘      b‘      ø‘              `“      ‚“      r“      N“              ÜX €   ÜX €   à[ €    \ €    \ €                                   ÀZ €                                                   ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ { €   P €           P¡ €   ğ¡ €   x{ €   h €   T €   ğ{ €   ¬ €   T €   bad allocation  p| €   T €   T €   Unknown exception       bad array new length    string too long invalid stoi argument   stoi argument out of range      invalid stoul argument  stoul argument out of range     invalid stoll argument  stoll argument out of range     p i d   p r o f i l e   A d d i t i o n a l E T W P r o v i d e r s     C l r R u n D o w n     }   {   0 x     invalid string position vector too long ÜçâÚ¸b BƒàCØVx!Ú>É%£@mY•™Š¹cógGº].Ò£MàfqÿÜ×µm‚z¦³ÆGM·R+‰bD)#<á¼ÌN“ÙÌ.î'ä        +èNZCÃ3BƒrKK^–#<á¼ÌN“ÙÌ.î'äÛ1:r¶@¸ñ´±jÛ_TP r o f i l e M o d e _ P e r f M e t r i c s   Ú>É%£@mY•™Š¹cógNˆ)˜X/ĞMˆn>+{‹„        C p u T o o l . C o u n t e r s . C o l l e c t i o n E n a b l e d     ŠŸùSpJ­fÖ"Ø¹†T×?v†pşM•ëÀFúôÊldHèB«~ÑÅåË÷>ÙÑòáEO™CÒEşl èóñ–b÷ÒLÙhì%ÂÇ"P r o f i l e M o d e _ R e f e r e n c e S e t         P r o f i l e M o d e _ W a r m u p     C p u T o o l . C o u n t e r s . U s e r M a r k s     Aáb=ê Fµ9Òj²
+
+ßldHèB«~ÑÅåË­J2Òš‚ `¨i9Û1:r¶@¸ñ´±jÛ_TD i a g n o s t i c s H u b . C o u n t e r s . P r o c e s s . C P U   ÉwÚpc@€Cî"‹Ä”L €   |L €   ÄL €   ˆL €   ¸L €   ¬> €   pL €   ĞL €   ¬L €   dL €    L €   0; €   ô €   E €   „E €   ”E €   ô €   ô €   ø €   ô €   Ò*9ÁËĞªM„¢·@Èó"ĞF €   0G €   @G €   dI €   ÄF €           À      F©yz_G¥òµÑ¥7‡       À      FI| ı+O¬{|wü†ı”dG €   H €   (H €   €6 €   ô €   ‡J»¤…‘H·şk(ÑÁ°YĞF €   0G €   @G €   ìE €   ÄF €                                
+                                     `Èb          P}  Pc      `Èb          Ô}  Ôc      `Èb       ¸  è}  èc              8                                                                                        €                   r €    r €                                                                                                                                  ô| €                   r €   (r €   0r €   8r €                                                                                                      à   ({   {                             @{          P{              à           ÿÿÿÿ    @   ({                         `    {  x{                             ¸{          È{              `           ÿÿÿÿ    @    {                         8   |  ğ{                             0|          H|  È{                  8          ÿÿÿÿ    @   |                         ˆ   ˜|  p|                             °|          Ğ|  H|  È{                      ˆ          ÿÿÿÿ    @   ˜|             €€}  4   @}     ‰E  ¤E  5G  IG  H  8H  Ò\  é]  _  7_  __  ²_  `     Ü<  \  Ü  RSDSrmÀŠÕ¹K–’\ƒ¡ê   D:\dbs\sh\ddvsm\0708_092050_0\cmd\13\out\binaries\amd64ret\bin\amd64\PerfWatsonAgent\PerfWatsonAgent.pdb                     GCTL   ĞK  .text$mn    Ğ[  6   .text$mn$00 \  n  .text$x  p    .idata$5    r  0   .00cfg  @r     .CRT$XCA    Hr     .CRT$XCZ    Pr     .CRT$XIA    Xr     .CRT$XIC    `r     .CRT$XIZ    hr     .CRT$XPA    pr     .CRT$XPZ    xr     .CRT$XTA    €r     .CRT$XTZ    r  p  .rdata   {  ô  .rdata$r    ô|  \   .rdata$voltmd   P}  P  .rdata$zzzdbg    €     .rtc$IAA    ¨€     .rtc$IZZ    °€     .rtc$TAA    ¸€     .rtc$TZZ    À€     .xdata  à‹  P  .xdata$x    0  P   .edata  €  ´   .idata$2    4     .idata$3    H    .idata$4    X  ¸  .idata$6        8   .data   8   ¨   .data$r à       .data$rs     ¡  ø  .bss     °  L  .pdata   À  `   .rsrc$01    `À     .rsrc$02                                     20`Z  Ğ€  @Õ€     B  `Z  Ğ€  
+ 
+4 
+2p`Z  Ğ€   4 2p`Z    H  Õ€  4  `	 	B  `Z       `Z  <  HE  R  4  <ô    B   4 2p`Z  p  Hy  Õ€  ô  `<4  `  	 	B  `Z  p   ‚  
+ 
+20`Z  °  H¹  Æ  4  `<ô  `  ^  
+ 
+20`Z  à  H  é    ^  B   4 2p d	 4 2p`Z  ‚  %‚  P‚  
+ä#  p:Ô  pj´  p˜ Bä#  €rÔ  € !AÈq‘  8P&l"    	 	B  `Z  p‚  Hy‚  Õ€  Ô  `<ä#  `  	 	B  `Z  ˜‚  H¡‚  Õ€  ä#  `, d7 46 . ğàĞÀp  @[  Ğ‚  k  İ‚  ƒ  ƒ  
+œ$  ¡:X#  p2œ$  !8
+œ$  !:X#   ¨´œ$  Ğ
+ƒ  Ò\  -"  A¦n
+µ
+„	
+¸Fˆ¾à Öà    
+ 
+RP0 4> 4 ğàĞ
+Àp`P  @[  pƒ  ’  yƒ  ¼ƒ  œ$  A:X#  Ğ2œ$  :X#   6D]  *œ$  ’œ$  :œ$  :œ$  rœ$  4  ”Æv2
+®d4lPè˜± Ş,8Ù hÌ
+  2P d 4 2p`Z  Ğ€   d
+ 4 Rp`Z  ,„  5„  ;„  m]    ü6   
+ t	 d T 4 2à! T 4 ’àp`@[  |„  B   …„  Œ„  
+œ$  @  Ü‚ HŒ ´   4 rp`Z  °„  ¹„  ¿„  Ÿ]    Q    t d
+ T	 4 2ğàÀ	  ğàĞ
+Àp`0  `Z  …  …  (…  6…  
+
+1  à:1  !r1  ° 0…   é]    y¸œz¨|¾@   
+ 
+2P d T 4
+ 2ğàĞÀp
+ 
+4 
+2p2 !d: !49 !2 ğàÀpP  @[  ¤…  ‚  ­…  »…  
+|?  Ğ2|?  A  á	„0˜ 8®0Y * 4"  ğàĞ
+Àp`P  @[  ø…  ²   †  †  r
+ä#  P:Ô  Pj´  P˜ Bä#   rÔ    !AÈq‘ğÁáªp1  :à@  ÀñaQqåä#  ĞUÔ  ĞÁÁ±Ñzä#  ªÔ  Ø!A±±¡ÁáQQAaññá	!‘‘	¡	&  nL(5"$u"J44@q4    p"J$$  4 Ò	ğp`@[  ä†  c   ñ†  ú†  
+‡  
+œ$  €08‡  Ò\  9  …¸ 
+ d T
+ 4	 2ğàp`Z  4‡  =‡  R‡  
+
+`?  €:Œ>  €jl>  €˜   xP N 
+ 
+20`Z  l‡  Hu‡  Õ€  Œ>  `<`?  `  
+ 
+20`Z  ”‡  H‡  Õ€  `?  `
+ t d
+ T	 4 Rà 20 T	 4 2àp``Z  à‡  é‡  ğ‡  
+XA     Ù>  rğàĞÀp`0`Z  ˆ  !ˆ  (ˆ  Pˆ   (0  >ˆ  Dˆ  
+Jˆ   _   __   ²_    é¸ Õ4 8
+2     2pP0`Z  xˆ  †ˆ  Šˆ  ˜ˆ  ’ˆ   7_   8  BP0  `Z  ´ˆ  †ˆ  Šˆ  Âˆ   6   
+ 
+4 
+2p`Z  àˆ  éˆ  Õ€  ì_  4ä#  `    d	 4 Rp`Z  ‰  ‰  +‰  @‰  ä#  @>ü_  h 3‰  8   `  	
+  nj
+  
+ 
+20`Z  \‰  He‰  ’‰  6`  .F`  .V`  .f`  .v`  ¤ä#  püä#  piä#  `  š’00 <  d	 4 Rp`Z  ¼‰  É‰  ø‰  Š  ä#  @>’`  ,ä#  @^¢`  ,ä#  @^²`  .Â`  .Ò`  Ñ  Š  8   `  I  nš(
+
+    d	 4 Rp`Z  8Š  EŠ  JŠ  fŠ     YŠ  YŠ  8   `  ı
+  ’R èR           	 "  fZ     §O  1P  â`  1P   P   d T 4 2p t	 d 4 2àfZ     DQ  ³Q  ú`      R  !R  ú`      
+ 
+4 
+RpfZ     [R  zR  a      PR  ’R  *a      ›R  ¦R  a      ›R  §R  *a      	 4 ràp`fZ     İR  ÃS  >a  ÃS   RP d 4 2p	 	b   rp`0 d 4 p 4º ¸ P   4	 2P           0          ô       Œ                     `Œ  ˆŒ                 8Œ  `Œ  ˆŒ                      ˆ       ÿÿÿÿ       à                 8       ÿÿÿÿ       ,                  `       ÿÿÿÿ                          œ      Œ                      ¸       ÿÿÿÿ                                                        ĞŒ                      `Èb    b           X  \  `  ”J  n    Exports.dll DllGetClassObject H          p   p  €          ‘  8q  8          2‘  ğp            r’  Hq  Ğ          ”’  ˆq  °          ¶’  hq  È          @“  €p  0          š“  èq  è          ¤“   p                      X      ²“      Æ“      à“      ô“      ”      .”      B”      V”      r”      æ”      Ì”      ¶”       ”      †”              “      ü’      Ö’                    €      €      €      €      €      €(      €      €      €        ü”      ”      ®      •      Æ      Ş      ô      ş              ~              N‘      D‘      X‘              Â‘      ¶‘      ®‘              X’      6’      ’      d’      Ş‘      Ì‘      N’      ’‘      l‘      b‘      ø‘              `“      ‚“      r“      N“              ’ CompareStringOrdinal  KERNEL32.dll    __CxxFrameHandler4  " __std_exception_destroy ! __std_exception_copy   __C_specific_handler   _CxxThrowException  > memset  % __std_type_info_destroy_list  VCRUNTIME140_1.dll  VCRUNTIME140.dll  n wcstol  s wcstoul p wcstoll ! _errno  9 _invalid_parameter_noinfo_noreturn  8 _invalid_parameter_noinfo  free   _callnewh  malloc  ? _seh_filter_dll  _configure_narrow_argv  3 _initialize_narrow_environment  4 _initialize_onexit_table  " _execute_onexit_table  _cexit  6 _initterm 7 _initterm_e api-ms-win-crt-convert-l1-1-0.dll api-ms-win-crt-runtime-l1-1-0.dll api-ms-win-crt-heap-l1-1-0.dll  ?_Xinvalid_argument@std@@YAXPEBD@Z  ?_Xout_of_range@std@@YAXPEBD@Z  ?_Xlength_error@std@@YAXPEBD@Z  MSVCP140.dll   CLSIDFromString ~ CoTaskMemAlloc   CoTaskMemFree \ CoLockObjectExternal  ole32.dll OLEAUT32.dll  ­RtlCaptureContext ´RtlLookupFunctionEntry  »RtlVirtualUnwind  UnhandledExceptionFilter  PSetUnhandledExceptionFilter GetCurrentProcess nTerminateProcess  pIsProcessorFeaturePresent jIsDebuggerPresent 0QueryPerformanceCounter GetCurrentProcessId GetCurrentThreadId  İGetSystemTimeAsFileTime TInitializeSListHead < memcpy  = memmove                                                                                                                                                                                                                                                 ÿÿÿÿ    2¢ß-™+  Í] ÒfÔÿÿ      /        ø             ¨r €           .?AVbad_alloc@std@@     ¨r €           .?AVexception@std@@     ¨r €           .?AVbad_array_new_length@std@@  ¨r €           .?AVCAtlException@ATL@@ ¨r €           .?AVtype_info@@                                                                                                                                                                                                                                                                    3  À€  4  R  Ø€  h  «  è€  ¬  ô  ü€  ô         Q  0  T  œ  \  œ  ¿  ˆ  À  à  ˜  à  ,     ,  n  Ğ  p  ‚  ğ  „  ó  ø  ô  ´  ‚  ´  Ñ  `‚  Ô  ñ  ˆ‚  ø  ï  ¨‚  ğ  X#  Hƒ  X#  â#  üƒ  ä#  û#  ğ  ü#  ›$  „  œ$  ş$  À€   %  &  D„  &  F&  ğ  H&  Z&  ğ  \&  (  \„  (  ³(  œ„  ´(  å(  ø  è(  O*  È„  P*  •+  È„  ˜+  J/  ä„  L/  ÿ0  T…   1  1  ğ  1  C1  p…  L1  n1  ğ  |1  ~6  |…  €6  -;  Ğ…  0;  {=  È†  |=  i>  ‡  l>  Œ>  \‡  Œ>  ¬>  „‡  ¬>  `?  ¤‡  `?  |?  ¼‡  |?  Ù?  À€  Ü?  İ@  Ä‡  à@  A  ¼‡  A  WA  ğ  XA  ºA  À€  ¼A  §D  ø‡  ¨D  ÜD  p…  ÜD  E  p…  E  ‚E  ğ  ”E  éE  Ìˆ  ìE  ÃF  øˆ  ĞF  -G  ğ  @G  cG  ¼‡  dG  H  ğ  (H  dH  p…  dH  cI  L‰  dI  ‹J  ¤‰  ”J  L   Š  L  aL  À€   M  M  xŠ   M  \M  ¼‡  \M  •M  ğ  ˜M  ÌM  ğ  ÌM  áM  ğ  äM  N  ğ  N  !N  ğ  $N  „N  ¤Š  „N  ´N  ğ  ´N  ÈN  ğ  ÈN  O  ¼‡  O  ŸO  ¼‡   O  8P  |Š  8P  \P  ¼‡  \P  …P  ¼‡  P  »P  ¼‡  ¼P  Q  ğ  Q  "R  ¸Š  $R  ¨R  ôŠ  ¨R  ÙS  H‹  ÜS  T  x‹  T  PT  ¼‡  PT  "U  ˆ‹  $U  •U  ‹  ¸U  ØU  ˜  ØU  yW  œ‹  W  ÛX  ¬‹  àX  ŒY  ¼‹  ¸Y  ÓY  ğ  ÜY  Z  p…  Z  TZ  p…  ÀZ  İZ  ğ  äZ  ?[  Ô‹  @[  ¿[  D„  à[  â[  È‹   \  \  Ğ‹  Ò\  ğ\  @ƒ  D]  m]  ôƒ  m]  “]  ôƒ  Ÿ]  Å]  ôƒ  é]  ^  L…  _  7_  L…  7_  __  L…  __  ²_  dˆ  ²_  ì_   ˆ  `  6`  L…  â`  ú`  œŠ  ú`  a  ôƒ  a  *a  ôƒ  *a  >a  ôƒ  >a  ta  p‹                                                                                                                                                                                                          €                  0  €               	  H   `À                      4   V S _ V E R S I O N _ I N F O     ½ïş      R Ä   R Ä?                             S t r i n g F i l e I n f o   Ü   0 4 0 9 0 4 b 0   L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   n #  F i l e D e s c r i p t i o n     P e r f W a t s o n   S t a n d a r d C o l l e c t o r   A g e n t     \   F i l e V e r s i o n     1 7 . 0 . 3 2 7 0 8 . 8 2   b u i l t   b y :   D 1 7 . 3   H   I n t e r n a l N a m e   P e r f W a t s o n A g e n t . D L L   € .  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   A l l   r i g h t s   r e s e r v e d .   P   O r i g i n a l F i l e n a m e   P e r f W a t s o n A g e n t . D L L   T   P r o d u c t N a m e     M i c r o s o f t ®   V i s u a l   S t u d i o ®   @   P r o d u c t V e r s i o n   1 7 . 0 . 3 2 7 0 8 . 8 2   D    V a r F i l e I n f o     $    T r a n s l a t i o n     	° p  „   ¢¢ ¢(¢0¢X¢ ¢¨¢¸¢À¢È¢Ğ¢Ø¢à¢è¢ğ¢£££H§P§X§`§h§p§x§€§ˆ§§˜§ §¨§°§¸§À§È§Ğ§Ø§à§ø§ ¨¨¨¨`¨h¨p¨x¨€¨˜¨ ¨¨¨°¨¸¨È©à©è©pªˆªª˜ª ª       8 ` ˆ ¸ à                                                                                                                                                                                                                                                                                                                                                                           '    0‚'	*†H†÷ ‚'r0‚'n10	`†He 0\
++‚7 N0L0
++‚70	  ¢€ 010	`†He  î¤a­c"I¢Jh¸—È¶å…oNÅåî­ ‚0‚ÿ0‚ç 3  R‹3ªø•ó9Û    R0	*†H†÷ 0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110210902183259Z220901183259Z0t10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMicrosoft Corporation0‚"0	*†H†÷ ‚ 0‚
+‚ ĞäÏ³õûÛ¯äô#«¨ô4“¨ÔªÕB£»‚WqÉ%É:Ö/ŒLJÈ¢íˆ±¶'®ğ_5@«“¦â‡¾-üÒìãq¾¦³M Aª°CPb"{6ğßóB5}oN/¾Š·E©slëÜÖûº“ë¿Ò4Õ/Ä­ìƒØNİõã]/¤J|ÉğD—ø]ñœÀ¿Ã
+y\æÛŞlÕYÚz2ˆS„
+n À­¥ÛÈ¾`Du$î¦TÇã‹¯ÍhFrGhËÖÍ‘)£3òâ3NØ0êmÃlã8{c!SÖP>r?~g+Â¼¹®Gû|«†Üñt|@†IA*~ÙN¦ÚWM £‚~0‚z0U%0
++‚7L+0U5’ZA‹Øk°·¶Nî|FyÑ0PUI0G¤E0C1)0'U Microsoft Operations Puerto Rico10U230012+4675970U#0€HndåPÓ‚ª77"µm¨Êu•0TUM0K0I G E†Chttp://www.microsoft.com/pkiops/crl/MicCodSigPCA2011_2011-07-08.crl0a+U0S0Q+0†Ehttp://www.microsoft.com/pkiops/certs/MicCodSigPCA2011_2011-07-08.crt0Uÿ0 0	*†H†÷ ‚ I7¹,dL@aÔÛ@—°b¼,g`_Z™øGY1†Ğ)«èˆR-tLÄ]AÜâGÒ¿‘Ç)’ó\_íŒ˜K‰¡	CGåK®ßğõ#ßÀ=W–¢coÉ¢NÖdS€š3Ñ4Ñ§Éè;—IS‰8E¨O¶hë:ú‚ zQ 4’‘µ‘ºŠ¸²0æY ÇÒ²ùÙ®Ãv/.Lˆ*ŸŒo1c£Á¾øà·ØĞJg>¶wQ¿º¯)á\•Ñ]L½ Ş‡òµ£Ã"j»º³şÅÊ£‹yD¸½1áõ8/íÄ&.­vÒ[KÔXøããÿ§&Ù¦¾»bÈnôõÑwv&=ŸÜbjíÊuj´AˆZ´¨AzÆ8`Ó+­Úš3Y±ŒÓë3èu‚4k½€Â¹fçeu8kYÓ (’ÚĞ*É1+¾­8^–´ûÎÓüõT\ÚŸíªINşô»KBãGŒ7q#ã¸Û¬¼·ı€Ü‡”j3¹Öò„~Ì^2¬
+[ >MX´µ‘©ô±Ú‰[¡%Á$23’+=ìFë©%÷Rº2aşv/í¢U:İkÅÖzÃÆëc'ŸtüâßÍâE¸ß9!Ç²dïvPú[„Œ¾l’]rMw2æà8ğª6âOéÆñÏ."ÆÙy½<Iæ2¨Õi0‚z0‚b 
+aÒ     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20110110708205909Z260708210909Z0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20110‚"0	*†H†÷ ‚ 0‚
+‚ «ğúr.­Ønª‚M4ºò¶X!ŸB*kéZPª¸8IºÃİ7kÆØğ8Â™°È9Õ1BÓ‰yd‡~”`$l¯Iœéh^Òß›S²
+,Ã¯Ù©+®z	¯×–YÊ`éfvè2R&/ç«PÏ³D·]ØÄ.u«hóËmó:\¡ôFºà8d¬nd5x¦ c-Ó@“øãŞÕ\y¥I)ç¾ w¾”=ïûã+ZMV(¢zrà:·I^ØííC‘ƒÙ{²{†Ù>±Œ]è‰O„ò¡/Yä;-®3XÅ·>ş2Ó³=±²¯’8~Ò€,õNV‘!5%Ã9ndSºœ­#„Ëôº†÷_ğĞR¿Œ”‡¼À!t%_(¶Ì'(8%˜9J6Ï|±’®#§©fìajá(I_ˆâ%]Ó!K>RÄµW?$ğÑz[/Õ#ãp]QFw³ø á¼¬‚_ÛÀ³½ÔUKç9¡é#I¼¸D|EäÁÃrzàrç$ß¿F™ÅïÂWÛƒìMI0§«ßì[Ÿ¯üİ°fâÁ—{íÖíKçI)§(¦§}g€æŠbx_²/„×Wœ\¿w((ñímÃ(,@7OÁá…D‰Ä	LÅÔ¥C/t•÷nøx X,]`•š>O3„Ú°ˆŞNô–°¼F l˜ÒàÖˆŒ £‚í0‚é0	+‚7 0UHndåPÓ‚ª77"µm¨Êu•0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€r-:1C¹Náê§Ç1Ñ#‰40ZUS0Q0O M K†Ihttp://crl.microsoft.com/pki/crl/products/MicRooCerAut2011_2011_03_22.crl0^+R0P0N+0†Bhttp://www.microsoft.com/pki/certs/MicRooCerAut2011_2011_03_22.crt0ŸU —0”0‘	+‚7.0ƒ0?+3http://www.microsoft.com/pkiops/docs/primarycps.htm0@+042  L e g a l _ p o l i c y _ s t a t e m e n t . 0	*†H†÷ ‚ gò†¥˜àTy.ÓØtg"›–ác’™B–}ÒyÁe_.,>øÃrÑmƒş¾?è
+Ê;¿G©£óiÛc¿"5¥—]e„}‹FPUØ’|ÒKó<B‹RĞ°ıkã>.)›æ=¥Ôµw”9âédÉD=xz#ó}¦tƒôË&F*ÂŠ»¤©›íhúh.• *?*kXIc	inZ˜–äƒôÀóF+Şü;Ğ½5ïn%®å¯'íĞİó¯™(—˜M=ò‰ÖÃ2âğÅ-Î[´I9
+Æ
+ÂÆ­®å²ÙÛˆQEX82q'±ô'øŞ,: i˜²Y‰hno§·tÃ@¦*(>‚?MfÀ³Mõáo}E§vå@*e£Ã]Rb†Ãc6—†ßÚóøò¡š'áÍ¥—Ğî]cAã[œ‡>wÑ±u¾aaµğÜÆ¾ßAÇ(îŞe/ì—ö¡\–Ø Ö¡F½Yó—¥	KH™€Ğ )Å±›¥?Ew5ÆÒ¢¢Ÿzz"úH•«ûG#€õø¿k·K—âëuxìê7™yKÿÖ³#huæ¯úü‹ë€êi;¯ü0íLßßumc‘=ÑVNO¿€W"¡x2!zïA
+±?û¨Ì¤]Á¡ˆ›WqVNHEÀBÉ›v[
+€HkıyŸÁ½mmjÉRszPÍ1‚s0‚o0•0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20113  R‹3ªø•ó9Û    R0	`†He  ®0	*†H†÷	1
++‚70
++‚710
++‚70/	*†H†÷	1" \2Ú+tÑSÜp 'ÌõÀaËvÎb¯æ.!ÛØb¶90B
++‚71402 € M i c r o s o f t¡€http://www.microsoft.com0	*†H†÷ ‚ DK±ş¯ÃŒ•«Ñ•Áç7ŠƒôLl«.
+š3‹ù/O¼6z–?ƒ¼ÜiCŞ[½ˆc¯ŸÖıòŠ¯zçHĞ™r,“û+¯ 8ÿ¬Å„~ëâFëI‡(5@õ”¥xwi.FÄ’ÿJ¦Oì×5üwBØ›µJÏ
+_ênÇI‘ ÒØfÈĞaÉ…C^wÍWV°ú˜¤mq7¤C6üLÙgq–ŒÆt™¥^Y2d­t¢ı¦ˆfúÃ,ÿày~æ±N‚“>/~¡¸˜ÊfoI­¨‰ÉÓ'q÷…¦±ÿğµŸZÊfLböI¶¯E.á}Ğ¥äM¼&/&pİ¡‚ı0‚ù
++‚71‚é0‚å	*†H†÷ ‚Ö0‚Ò10	`†He 0‚Q*†H†÷	 ‚@‚<0‚8
++„Y
+010	`†He  +a·Zœ»ØŒNš$?_ĞwUcP.†èÕ%TYr¥½b´»‰QH20220708164957.635Z0€ô Ğ¤Í0Ê10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:49BC-E37A-233C1%0#UMicrosoft Time-Stamp Service ‚T0‚0‚ô 3  —ÏYœk‰x?   —0	*†H†÷ 0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100211202190514Z230228190514Z0Ê10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:49BC-E37A-233C1%0#UMicrosoft Time-Stamp Service0‚"0	*†H†÷ ‚ 0‚
+‚ í JêJAMóğıË+Uœ¿X’ŒÔÀ¬ò„2¢Q:X%™|ğ³k§“â˜ï„µÉbåhdH£ä³aIÛÓéÊf„b›‚Ÿ‡LVbÎK•Şæ“eà÷RŒM²1ãˆ`Ç¥;'æ@ƒ•óÄäs°¤ş¾Å15àÖ1n³±+ŠS¯Z/³œÊMúTÌ‚*1Í0¾»VfL$»m}oaT¡:ô*eI1
+‘ŞÌæÄtôöÎ§‡Ş4,ûœÉÔìñ"4eqI‹¾WA¦‘i+´Çpf 1­Òa˜ĞÄlƒ9ÎÉÛI¹Ş­Ï+IÆãº¬p7Ïb«õù©ÇÍpßŞDûYâë¤~}x«@é»>¤kmï…}…¿&²´hô¹¢®1qI±Ÿ°}Ù4FËyaíW>D!0}ŠõsâS’d·Ÿúo¿Ûóİ£o ñŞÎMİKç‰
+#[pS`’æ­G¢ş~®fM?»ºÎƒ÷·ÁÕš–ÿø¶°\1TsìÉ¬v¼lş©°ôy²Ø¶!1¿¸IáûJw½ãc‡xÓîÃ’%p!‡UÉH„QF±ùÒˆW±®ëºã«”•¯•MK†İ¸êK±a#xaé1è¿ÿ|]ñÜYãa¿9+çâûP\H¸*ú¿ˆÿÃó$vîïs„F+i§hà‘ı2vwìÔå q £‚60‚20UmÏÏ(ë0n–UÑ±¾İ~½ `0U#0€Ÿ§] ^b]ƒôåÒe§S5ér0_UX0V0T R P†Nhttp://www.microsoft.com/pkiops/crl/Microsoft%20Time-Stamp%20PCA%202010(1).crl0l+`0^0\+0†Phttp://www.microsoft.com/pkiops/certs/Microsoft%20Time-Stamp%20PCA%202010(1).crt0Uÿ0 0U%0
++0	*†H†÷ ‚ HØaÒ$í3{!rß‡‚î°õ4oL”°5Á„@ÑõOëƒz­ÜÜz{¿¸BŒªt·÷ƒ”Qáèd¾o•VQòúYÜê­(jrdø;ÜØ lÑKgÊŠUnØ+¦£z®ÊF¤uè«¼7]×ÀÂÂd È&ÿË1$¦ÈäüÚÙëRx˜Ú<»¹u¸M!°À*Õ¸¯C­ß@‰ëùZ˜&öÑoô=néz¡â‡%úgÇ}’<|/»<Ç³Ÿ
+?ü˜To¥PX;*í]‹–@4ÃHs5AOß§„UÔpx×=GÊª&ëuúoEtGÎĞ÷x©ÀbÌÎ1H´“‘zAíRâİ¸:.zc³F‚£ŸÑ”p£6DƒƒìUî¦k~Ëüâ“6:¦zM­Á¼ÿë†‹àµG„3ícI‹yCÅdú˜(àQ•ç‘CÀÏ Ëê®;Ç©ÊHĞ}öÊ¬‡Îvå¦ÕëEøù0şß;t>v!nìh"ª7^š>~”l›kS7Ñçì+­½ÁkiÒ]7fôR$±2`x„ÜŠ)uZ³…	Ø‹ÇéJã8#l@™9¶–X¹ıxKÃ¯ä@ûÒâ¾;/Ğğºõ¾;Wyh{ØÀ„CÎ’a1´*(Ø7òO¥Òö0‚q0‚Y 3   Åçk›I™     0	*†H†÷ 0ˆ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100210930182225Z300930183225Z0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100‚"0	*†H†÷ ‚ 0‚
+‚ äá¦Lç´r!y¢Ë×$y½Õ‚ÓıîœÒ©lNuÈÊ5WölJàâ½¹>`3ÿ\OÇf÷•SqZâ~JZş¸6g…F#µÏw2Àè`}jRƒD·¦FkóÅvõ†PÜÁDÈq\Q17 
+8ní×Ø&S|9azÄªıri¯«¬ö6¾5&dÚ˜;º{3­€[~ŒRş¶èb%ÜjÏ]ôşSÏÖì…VMïİ¼¤ã‘²9,QœépiÊ6-p1È5(½ã´‡$ÃàÉ~µTÜúU˜mh;šF½í¤®z)7¬ËëƒEçFnÊ2ÕÀ†0\O,âb²Í¹âˆä–¬J»¾q©[g`Şø’‘=ı Ïs}AšFuÍÄ_4İ‰Öı¥ }~üÙEß¶r/Û}_€ºÛª~6ì6Lö+n¨Qè¿£Ñs¦M7t”4‚ğò·Gí§è™|?LÛ¯^ÂóÕØs=CNÁ39L¼Bh.ê„QFâÑ½jZasÊg¢^×(vâ3r×§ ğÂú
+×coÉ6d‹[ ¦ƒ!]_0t‘””Ø¹Pù‰aó65„GÛÜÑı²ÔÅkö\RQ]Û%º¯PzlÅrïùRÄ…“À<Û7Ç?x«E¶õ‡^ÚriÆ®{··>jâ.­ £‚İ0‚Ù0	+‚7 0#	+‚7*§RşdÄš¾‚‘<F5)Ïÿ/î0UŸ§] ^b]ƒôåÒe§S5ér0\U U0S0Q+‚7Lƒ}0A0?+3http://www.microsoft.com/pkiops/Docs/Repository.htm0U%0
++0	+‚7
+ S u b C A0U†0Uÿ0ÿ0U#0€ÕöVËè¢\bhÑ=”[×ÎšÄ0VUO0M0K I G†Ehttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0†>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0	*†H†÷ ‚ U}ü*­á,g1$[árKü©oê\¶>NGdx±“—=13µ9×Âq6?Údl|Ğu9m»1äÂûlÑ¡”"îéfg:SMİ˜º¶xØ6.œ©‚V °¾‰èiàº	î{ßjo¾)ËnØ?HuÙŞm‚õm#TäxSu$W¹İŸó=Æóhßeö¤Vª÷•¶(U'Ğ$½@ ¿¶]='à@–8¬÷ù)‰Ã¼°T…B³ü‹‰çğjÂBRuŠ6ÂÃas.,k{n?,	xé‘²©[ßI£t¼ì‘€Ò=æJ>f;O»†ú2Ù–ôö‘öÎÆtıöLro«u0Å4°zØPş
+Xİ@<ÇTmctH,±NG-Áq¿dù$¾smÊ	½³WITdÙs×[DZ‘kŸ¤(Üg($º8Kšnû!TkjEG©ñ·®Èè‰^OÒĞLvµWT	±iD~|¡alsş
+»ìAf=iıËÁAI~~“¾Ëø;ä·¿´Î>¥1Q„¼¿Á‚¢{‰pşçµĞ(‰6ÚºLù›ÿ
+é4ø$5g+à¸æŒ™Öá"êğ'B=%”ætt[jÑ>í~ 13}¼Ëé{¿8pDÑñÈ«:Š:bÙpcSMî‚m¥Áqj´U3X³¡pfò¡‚Ë0‚40ø¡Ğ¤Í0Ê10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1%0#UMicrosoft America Operations1&0$UThales TSS ESN:49BC-E37A-233C1%0#UMicrosoft Time-Stamp Service¢#
+0+ a@Ò°˜I4ÍMvƒF1MÁÖcÑ ƒ0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100	*†H†÷  ærW$0"20220708151132Z20220709151132Z0t0:
++„Y
+1,0*0
+ ærW$ 0 ¥0 0
+ æs¨¤ 06
++„Y
+1(0&0
++„Y
+ 
+0 ¡ ¡
+0 † 0	*†H†÷  
+‰´Û³T51YRŒø€!ü1i;OI×PıÂ	~g’‚-U¥ÿ;ÀÏ¶”™,J¬†÷Ğß'+Î9n{3>9ô›‚Aª’·Ù³O)ô÷$Ù~QxTÜ @Å¶WR.z±åÇıƒGR8}m¿¾â•Ô
+n«]¨
+.jJæBŞ1‚0‚	0“0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  —ÏYœk‰x?   —0	`†He  ‚J0	*†H†÷	1*†H†÷	0/	*†H†÷	1" ¶Jã?
+Nl¨ÜYÇf.fİ?Jí»§d®ş3Û¬iÿ0ú*†H†÷	/1ê0ç0ä0½ [{Ú•z8şÅIó1|t>od¨,<.Cıx¦¿0˜0€¤~0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20103  —ÏYœk‰x?   —0" ’nƒ­bMn¢5èm6ø¢ÊwaÖÂIº¢ûH$„Ü‹È0	*†H†÷ ‚ ®)öÿ…îEşñ*´}sCÅR‚@Ú‚ù#Æ‰._½p_E·Å${iğbP;C¾YÍÏÑÅ¯*aù{YE® ¶®¶b”ïr':¿h>ë#”¢Bï(àûW$Ò™;ªïq‹<²6Œë?l
+[º ÛåXÎª¯ï-'¤eğµ0O'é
+Il¢~öŒaL¦V@²^5²ìzG€|ê²Ìji QùMŒ}_w3K	Úaş£uúM%²Y”§A²™ešÅ´ïu1˜é|ìjh,àaÔ`Î¼-gl“è=Å+0}¬s3ıF=àÜÃ{Öc¯ ×ıå£Ù‹©l”…gÓƒDì58Ì“ƒ±Åûa99ä	(°·ö®¯l ãMá#*ÜÍ;´Ëj	"†˜\ rÒF	:ŞïÆY"àª™‘›*Ï¬óg>¼üEw-Å•ŒB”ºíà–ß¿!şjR“ÂÚÁ9›gñ,ˆUXGy\³ŸÀÂÀ©½ÔD/2O$g*\ïÉ¦‚oÍŒoÄ^xö¾¢O%°VRàÆâŒŒ‡‡-Q¬_A•Ï™Ï1ÏT²yâÕ¦
+YèPÏµğ¿µn!§Àª¼ú*g¨ìÁ”"V” T­LZ^¥õk¹äøë,Â)å6j69Q¢LOçXÌ#d¥à·¸ÁİqÕÇ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <!--
+***********************************************************************************************
+Microsoft.NET.Build.Extensions.NETFramework.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- Add NETStandard references if targetframeworkversion supports netstandard2.0 (net461 or later) -->
+    <ImplicitlyExpandNETStandardFacades Condition="'$(ImplicitlyExpandNETStandardFacades)' == '' AND '$(_TargetFrameworkVersionWithoutV)' &gt;= '4.6.1'">true</ImplicitlyExpandNETStandardFacades>
+  </PropertyGroup>
+
+  <UsingTask TaskName="GetDependsOnNETStandard" AssemblyFile="$(MicrosoftNETBuildExtensionsTasksAssembly)" />
+  <UsingTask TaskName="NETBuildExtensionsError" AssemblyFile="$(MicrosoftNETBuildExtensionsTasksAssembly)" />
+  <UsingTask TaskName="NETBuildExtensionsWarning" AssemblyFile="$(MicrosoftNETBuildExtensionsTasksAssembly)" />
+  <UsingTask TaskName="AddFacadesToReferences" AssemblyFile="$(MicrosoftNETBuildExtensionsTasksAssembly)" />
+
+  <Target Name="ImplicitlyExpandNETStandardFacades"
+          Condition="'$(ImplicitlyExpandNETStandardFacades)' == 'true'"
+          BeforeTargets="_HandlePackageFileConflicts;ResolveAssemblyReferences">
+
+    <ItemGroup>
+      <_CandidateNETStandardReferences Include="@(Reference);@(_ResolvedProjectReferencePaths)" />
+      <_InboxNETStandardFolders Include="$(TargetFrameworkDirectory)" />
+    </ItemGroup>
+
+    <!-- determine if NETStandard.dll is supported inbox for this TargetFramework -->
+    <PropertyGroup Condition="'$(NETStandardInbox)' == ''">
+      <NETStandardInbox Condition="Exists('%(_InboxNETStandardFolders.Identity)\netstandard.dll')">true</NETStandardInbox>
+    </PropertyGroup>
+
+    <!-- determine if any references depend on NETStandard -->
+
+    <!-- Check metadata of _ResolvedProjectReferencePaths items.  This handles the case where we are doing a design-time build and a referenced project
+         hasn't been built yet, so there is no corresponding assembly on disk for the GetDependsOnNETStandard task to examine.
+
+         More context: https://github.com/dotnet/sdk/issues/1403
+         -->
+    <PropertyGroup Condition="'$(DependsOnNETStandard)' == '' AND '$(NETStandardInbox)' != 'true'">
+      <DependsOnNETStandard Condition="('%(_ResolvedProjectReferencePaths.TargetFrameworkIdentifier)' == '.NETStandard') And ('%(_ResolvedProjectReferencePaths.TargetFrameworkVersion)' >= '1.5')">true</DependsOnNETStandard>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'@(_CandidateNETStandardReferences)' != ''">
+      <!-- Use an intermediate property to simplify condition.  Run GetDependsOnNETStandard if either: -->
+      <!-- 1. The .NET Standard 2.0 support need to be injected -->
+      <_RunGetDependsOnNETStandard Condition="'$(DependsOnNETStandard)' == '' AND '$(NETStandardInbox)' != 'true'">true</_RunGetDependsOnNETStandard>
+      <!-- 2. The target framework is .NET 4.7.1, which needs to special case some shims -->
+      <_RunGetDependsOnNETStandard Condition="'$(DependsOnNETStandard)' == '' AND '$(_TargetFrameworkVersionWithoutV)' == '4.7.1'">true</_RunGetDependsOnNETStandard>
+    </PropertyGroup>
+
+    <GetDependsOnNETStandard Condition="'$(_RunGetDependsOnNETStandard)' == 'true'"
+                             References="@(_CandidateNETStandardReferences)">
+      <Output TaskParameter="DependsOnNETStandard" PropertyName="DependsOnNETStandard" />
+    </GetDependsOnNETStandard>
+
+    <!-- prevent using an older SDK version with NETStandard2.0 references -->
+    <PropertyGroup>
+      <_UsingOldSDK Condition="'$(UsingMicrosoftNETSdk)' != 'true' AND ('$(TargetFramework)' != '' OR '$(TargetFrameworks)' != '')">true</_UsingOldSDK>
+    </PropertyGroup>
+    <NETBuildExtensionsError Condition="'$(DependsOnNETStandard)' == 'true' AND '$(NETStandardInbox)' != 'true' AND '$(_UsingOldSDK)' == 'true'"
+                             ResourceName="UnsupportedSDKVersionForNetStandard20"/>
+
+    <!--
+      .NET 4.7.1 has support for .NET Standard 2.0 built-in, so most of the facades aren't necessary.  However, the assembly versions of a few set of assemblies
+      do not yet match the ones shipped in the support package for .NET Standard 2.0 on .NET 4.7 and below. This means that .NET 4.7 or lower libraries might have
+      references to higher versions of these assemblies than are available in-box in .NET 4.7, leading to assembly loading errors. So if there is a dependency on
+      netstandard.dll, we include DLLs for .NET 4.7.1 from the support package to avoid these errors.
+      -->
+    <ItemGroup Condition="'$(_TargetFrameworkVersionWithoutV)' == '4.7.1'">
+      <_NETStandardLibraryNETFrameworkLib Include="$(MSBuildThisFileDirectory)\net471\lib\*.dll" Condition="'$(DependsOnNETStandard)' == 'true'"/>
+    </ItemGroup>
+
+    <!-- if any reference depends on netstandard and it is not inbox, add references and implementation assemblies for netstandard2.0  -->
+    <ItemGroup Condition="'$(DependsOnNETStandard)' == 'true' AND '$(NETStandardInbox)' != 'true' AND '$(_TargetFrameworkVersionWithoutV)' &lt; '4.7.1'">
+      <_NETStandardLibraryNETFrameworkLib Condition="'$(_TargetFrameworkVersionWithoutV)' &gt;= '4.7'"
+                                          Include="$(MSBuildThisFileDirectory)net47\lib\*.dll" />
+      <_NETStandardLibraryNETFrameworkLib Condition="'$(_TargetFrameworkVersionWithoutV)' &gt;= '4.6.2'"
+                                          Include="$(MSBuildThisFileDirectory)net462\lib\*.dll"
+                                          Exclude="@(_NETStandardLibraryNETFrameworkLib->'$(MSBuildThisFileDirectory)net462\lib\%(FileName).dll')" />
+      <_NETStandardLibraryNETFrameworkLib Condition="'$(_TargetFrameworkVersionWithoutV)' &gt;= '4.6.1'"
+                                          Include="$(MSBuildThisFileDirectory)net461\lib\*.dll"
+                                          Exclude="@(_NETStandardLibraryNETFrameworkLib->'$(MSBuildThisFileDirectory)net461\lib\%(FileName).dll')" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'@(_NETStandardLibraryNETFrameworkLib)' != ''">
+
+      <!-- Put each facade assembly in two separate items: Reference with Private set to false, which means it won't be
+           copied locally, and ReferenceCopyLocalPaths, which will be copied locally.  The reason for this split is to
+           workaround https://github.com/dotnet/core-setup/issues/2981 by ensuring that the facades are written
+           to the deps.json with a type of "referenceassembly" instead of "reference".
+
+           The exception is netfx.force.conflicts.dll, which shouldn't be copied local.  So it isn't included in
+           ReferenceCopyLocalPaths.
+
+           When we add the Reference items, we use the simple name as the ItemSpec, and refer to the full path
+           to the DLL via the HintPath metadata.  This is so that if we're replacing a simple Reference,
+           the OriginalItemSpec of the resolved reference will match to the Reference that was replaced,
+           and VS won't show a warning icon on the reference.  See https://github.com/dotnet/sdk/issues/1499
+           -->
+
+      <ReferenceCopyLocalPaths Include="@(_NETStandardLibraryNETFrameworkLib)" Condition="'%(FileName)' != 'netfx.force.conflicts'"/>
+
+      <_UpdatedReference Remove="@(_UpdatedReference)" />
+    </ItemGroup>
+
+    <!-- Facade assemblies should override simple name references.  However, we want to preserve custom metadata
+         on those simple name references (for example for aliases).  That's what this task does. -->
+    <AddFacadesToReferences References="@(Reference)"
+                            Facades="@(_NETStandardLibraryNETFrameworkLib)"
+                            Condition="'@(_NETStandardLibraryNETFrameworkLib)' != ''">
+      <Output TaskParameter="UpdatedReferences" ItemName="_UpdatedReference" />
+    </AddFacadesToReferences>
+
+    <ItemGroup Condition="'@(_NETStandardLibraryNETFrameworkLib)' != ''">
+      <Reference Remove="@(Reference)" />
+      <Reference Include="@(_UpdatedReference)" />
+      <_UpdatedReference Remove="@(_UpdatedReference)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- There was issue in .NET 4.7.1 where System.IO.Compression.ZipFile was not correctly in the unification table.
+       A workaround to issues that caused was to add a binding redirect for

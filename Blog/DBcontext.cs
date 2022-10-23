@@ -26,7 +26,6 @@ namespace Blog
                .HasOne<Room>(a => a.RoomSender)
                .WithMany(d => d.Messages)
                .HasForeignKey(d => d.RoomId);
-
         }
         
     }

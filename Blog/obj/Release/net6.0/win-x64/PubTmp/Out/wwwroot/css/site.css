@@ -1,0 +1,225 @@
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 14px;
+    
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+
+body {
+    color: darkgrey;
+    margin-bottom: 10px;
+    font-family: 'Shadows Into Light', cursive;
+    font-size: 1.4em;
+    
+}
+
+.navbar {
+    font-size: 80%;
+    background-color: darkgrey !important;
+    height: 30px;
+}
+
+.navbar-nav {
+    margin-left:900px;
+    font-weight:700;
+
+}
+
+
+#sidebar {
+    position: fixed;
+    Top: 0px;
+    left: 0px;
+    bottom:100px;
+
+    height:auto;
+    width: 15%;
+    float: left;
+    margin-left: 0px;
+    margin-top: 10%;
+    
+    overflow-y:scroll;
+
+
+}
+#messagesBox{
+    margin-left:150px;
+    padding:20px;
+    border:1px solid grey;
+    
+}
+
+#main {
+    margin: 0px 60px 0px 60px;
+    text-align: center;
+    width: 70%;
+    float: left;
+   
+}
+
+
+
+#sidebar ul li{
+    font-size:20px;
+    height:50px;
+    padding:10px 2px 50px 20px;
+    margin:10px 0px 10px 0px;
+    
+
+}
+#sidebar ul li:hover {
+        background-color: #4b4f4c;
+}
+
+.sidebar_selected {
+    background-color: lightgray;
+}
+#sidebar ul li .sidebar_selected:hover{
+    background-color: red !important;
+}
+
+.nav-hover:hover {
+    background-color: #4b4f4c !important;
+}
+
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+@import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
+
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+.time{
+    font-size:15px;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+
+
+
+.footer {
+    font-size:80%;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 30px;
+    line-height: 30px; /* Vertically center the text there */
+
+    margin-top:0px;
+}
+
+
+/* Chat containers */
+#chat .container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 30px;
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    font-family: "Open Sans", serif;
+}
+
+#chat .sender {
+    font-size: 0.8em;
+    font-weight: bold;
+    font-family: 'Shadows Into Light', cursive;
+}
+
+/* Darker chat container */
+#chat .darker {
+    border-color: #fff;
+    background-color: #007bff;
+}
+
+/* Clear floats */
+#chat .container::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Style images */
+#chat .container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+
+    /* Style the right image */
+    #chat .container img.right {
+        float: right;
+        margin-left: 20px;
+        margin-right: 0;
+    }
+
+/* Style time text */
+#chat .time-right {
+    float: right;
+    color: #aaa;
+}
+
+/* Style time text */
+#chat .time-left {
+    float: left;
+    color: #999;
+}
+
+#box {
+    overflow-y: scroll;
+    height: 490px;
+    margin: 0px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+
+.customScroll::-webkit-scrollbar {
+    width: 2px;
+}
+
+.customScroll::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.customScroll::-webkit-scrollbar-thumb {
+    background-color: darkseagreen;
+    outline: 1px solid slategrey;
+}

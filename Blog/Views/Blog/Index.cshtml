@@ -1,8 +1,12 @@
-﻿@model IEnumerable<Blog.Models.Message>
+﻿@model IEnumerable<Room>;
 @{
 	var userName = User.Identity.Name;
 	var RoomId = ViewData["currentRoom"];
 
+	Room room = Model.FirstOrDefault(r => r.Id.Equals(RoomId));
+	var messageList = room.Messages;
+	
+	
 }
 
 <div id="messagesBox"><h1>Pokój rozmów </h1>
@@ -12,14 +16,16 @@
 		<div class="row customScroll" id="box">
 			<div class="col-md-12" id="chat">
 				@if(Model!=null)
-				{
-					
-					@foreach(var message in Model.OrderBy(m=>m.When))
+			{
+				
+				if(messageList!=null){
+					@foreach (Message message in messageList)
 					{
-						
-					   string containerClass, timePosition, textAlign, contcolor, offset;
 
-					   if(userName == message.UserName)
+
+						string containerClass, timePosition, textAlign, contcolor, offset;
+
+						if (userName == message.UserName)
 						{
 							containerClass = "container darker";
 							timePosition = "time-right text-light time";
@@ -44,7 +50,7 @@
 
 									<p class="sender @textAlign">@message.UserName</p>
 									<p class="@textAlign">@message.Text</p>
-								<span class="@timePosition">@message.When.ToString("dd/MM/yyyy HH/mm")</span>
+									<span class="@timePosition">@message.When.ToString("dd/MM/yyyy HH/mm")</span>
 
 								</div>
 
@@ -53,6 +59,8 @@
 						</div>
 
 					}
+				}
+				
 					<hr />
 					<center>Nowe Wiadomości</center>
 					

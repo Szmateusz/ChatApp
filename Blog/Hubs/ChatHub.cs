@@ -9,7 +9,11 @@ namespace Blog.Hubs
             await Clients.All.SendAsync("receiveMessage", message);
 
         public async Task SendMessageToGroup(string groupId, string message) =>
+
             await Clients.Group(groupId).SendAsync(message);
+
+
+
 
     }
 }

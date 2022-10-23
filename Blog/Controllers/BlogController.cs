@@ -35,19 +35,19 @@ namespace Blog.Controllers
             {
                 ViewBag.CurrentUserName = currentUser.UserName;
             }
-           
-           // var messages = await _context.Messages.ToListAsync();
-            IEnumerable<Message> messages = _context.Messages.Where(r => r.RoomId.Equals(currentRoom));
 
-            IList<Room> roomsList  = await _context.Rooms.ToListAsync();
 
             
+            IEnumerable<Room> roomsList =  _context.Rooms.ToList();
+
+            var room = roomsList.FirstOrDefault(r=>r.Id==currentRoom);
+            room.Messages = await _context.Messages.Where(m=>m.RoomId==room.Id).ToListAsync();
             
-            ViewData["rooms"] = roomsList;
             ViewData["currentRoom"] = currentRoom;
 
             
-            return View(messages);
+            return View(roomsList);
+
         }
 
         public async Task<IActionResult> Create(Message message)

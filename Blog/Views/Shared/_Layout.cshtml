@@ -1,5 +1,7 @@
-﻿@{
-    IList<Room> Rooms = (IList<Room>)ViewData["rooms"];
+﻿@model IEnumerable<Room>;
+@{
+    var currentId = ViewData["currentRoom"];
+
 }
 <!DOCTYPE html>
 <html lang="pl">
@@ -15,9 +17,12 @@
     
     
         <header>
+            
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                
+
+                <h3 class="text-white">@User.Identity.Name</h3>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -40,10 +45,12 @@
         <div class="customScroll "id="sidebar">
             <hr />
             <ul class="list-unstyled components">
-                @foreach(var r in Rooms){
-                    
-                    <li>
-                        @Html.ActionLink(r.Name, "SelectGroup", new { roomId = r.Id }, new {@class = "nav-link"})
+                @foreach(var r in Model){
+                    string klasa = "nav-link";
+                    @if (r.Id.Equals(currentId)){ klasa = "sidebar_selected"; }
+
+                    <li class="@klasa">
+                        @Html.ActionLink(r.Name, "SelectGroup", new { roomId = r.Id })
                     </li>
 
                 }
@@ -61,11 +68,10 @@
     <aside>
         <div id="chatbar">
             <ul class="list-unstyled components">
-               @foreach(var r in Rooms.Where(i=>i.Id.Equals(6))){
-                  foreach(var m in r.Messages){
-                      <li>@m.Text</li>
-                  }
-               }
+              <li>asd</li>
+              <li>asd</li>
+              <li>asd</li>
+
             </ul>
         </div>
     </aside>

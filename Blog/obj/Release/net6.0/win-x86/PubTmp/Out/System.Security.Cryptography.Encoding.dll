@@ -1,0 +1,2045 @@
+/*=--------------------------------------------------------------------------=
+ * ocdb.h
+ *=--------------------------------------------------------------------------=
+ * defines the interfaces and constants for use with the OLE Controls Data
+ * binding interfaces.
+ *
+ * Copyright (c) Microsoft Corporation, All Rights Reserved.
+ *
+ *
+ *
+ */
+#ifndef __OCDB_H_
+
+#undef Delete
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* LPDBSTRs are MultiByte in 16bits, and Unicode in 32bits.
+ */
+#if !defined(OLE2ANSI)
+
+#define LPDBSTR                     LPWSTR
+#define DBCHAR                      WCHAR
+#define ldbstrlen(str)              AtlStrLen(str)
+#define ldbstrcpy(a, b)             wcscpy((a), (b))
+#define ldbstrcpy_s(a, sa, b)       wcscpy_s((a), (sa), (b))
+#define ldbstrcpyn(a, b, n)         wcsncpy((a), (b), (n))
+#define ldbstrcpyn_s(a, sa, b, n)   wcsncpy_s((a), (sa), (b), (n))
+#define ldbstrcmp(a, b)             wcscmp((a), (b))
+#define ldbstrcat(a, b)             wcscat((a), (b))
+#define ldbstrcat_s(a, b)           wcscat_s((a), (sa), (b))
+#define ldbstrcmpi(a, b)            wcsicmp((a),(b))
+#define DBTEXT(quote)               L##quote
+
+#else
+
+#define LPDBSTR                     LPSTR
+#define DBCHAR                      char
+#define ldbstrlen(str)              AtlStrLen(str)
+#define ldbstrcpy(a, b)             lstrcpy((a), (b))
+#define ldbstrcpy_s(a, sa, b)       lstrcpy((a), (b))
+#define ldbstrcpyn(a, b, n)         lstrcpyn((a), (b), (n))
+#define ldbstrcpyn_s(a, sa, b, n)   lstrcpyn((a), (b), (n))
+#define ldbstrcmp(a, b)             lstrcmp((a), (b))
+#define ldbstrcat(a, b)             lstrcat((a), (b))
+#define ldbstrcat_s(a, sa, b)       lstrcat((a), (b))
+#define ldbstrcmpi(a,b)             lstrcmpi((a),(b))
+#define DBTEXT(quote)               quote
+
+#endif /* !OLE2ANSI */
+
+typedef LPDBSTR FAR *  LPLPDBSTR;
+
+
+/* Many systems don't have BLOBs defined.
+ */
+#ifndef _tagBLOB_DEFINED
+#define _tagBLOB_DEFINED
+#define _BLOB_DEFINED
+#define _LPBLOB_DEFINED
+
+typedef struct tagBLOB {
+
+	ULONG cbSize;
+	BYTE *pBlobData;
+
+} BLOB, *LPBLOB;
+
+#endif
+
+/*----------------------------------------------------------------------------
+ *
+ *  dbvar.h
+ *
+ *----------------------------------------------------------------------------
+ */
+#ifndef _DBCOLUMNID_DEFINED
+#define _DBCOLUMNID_DEFINED
+typedef enum tagDBCOLKIND
+  {
+	DBCOLKIND_GUID_NAME = 0,
+	DBCOLKIND_GUID_NUMBER = 1,
+		DBCOLKIND_NAME = 2
+  }
+DBCOLKIND;
+
+#define GUID_NAMEONLY   {0x88c8d398,0x863c,0x101b,{0xac,0x3b,0x00,0xaa,0x00,0x44,0x77,0x3d}}
+#define GUID_NUMBERONLY {0x88c8d399,0x863c,0x101b,{0xac,0x3b,0x00,0xaa,0x00,0x44,0x77,0x3d}}
+
+typedef struct tagDBCOLUMNID
+  {
+  GUID guid;
+  DBCOLKIND dwKind;
+union
+	{
+	LONG lNumber;
+	LPDBSTR lpdbsz;
+	}
+  ;
+  }
+DBCOLUMNID;
+#endif   /* ndef _COLUMNID_DEFINED */
+
+#ifdef OLD_DEFS
+#ifndef _DBVARENUM_DEFINED
+#define _DBVARENUM_DEFINED
+enum DBVARENUM
+  {
+	DBTYPE_EMPTY = 0,
+	DBTYPE_NULL = 1,
+	DBTYPE_I2 = 2,
+	DBTYPE_I4 = 3,
+	DBTYPE_R4 = 4,
+	DBTYPE_R8 = 5,
+	DBTYPE_CY = 6,
+	DBTYPE_DATE = 7,
+	DBTYPE_BOOL = 11,
+	DBTYPE_UI2 = 18,
+	DBTYPE_UI4 = 19,
+		DBTYPE_I8 = 20,
+		DBTYPE_UI8 = 21,
+	DBTYPE_HRESULT = 25,
+	DBTYPE_LPSTR = 30,
+	DBTYPE_LPWSTR = 31,
+	DBTYPE_FILETIME = 64,
+	DBTYPE_BLOB = 65,
+	DBTYPE_UUID = 72,
+	DBTYPE_DBEXPR = 503,
+	DBTYPE_COLUMNID = 507,
+	DBTYPE_BYTES = 508,
+	DBTYPE_CHARS = 509,
+	DBTYPE_WCHARS = 510,
+	DBTYPE_ANYVARIANT = 511
+  }
+;
+#endif   /* ndef _DBVARENUM_DEFINED */
+#else
+#define DBTYPE_COLUMNID 507
+#endif
+
+#define DBTYPE_EXT      0x100
+
+typedef struct tagDBVARIANT DBVARIANT;
+
+struct FARSTRUCT tagDBVARIANT{
+	VARTYPE vt;
+	unsigned short wReserved1;
+	unsigned short wReserved2;
+	unsigned short wReserved3;
+	union {
+	  unsigned char bVal;        /* VT_UI1               */
+	  short    iVal;             /* VT_I2                */
+	  long     lVal;             /* VT_I4                */
+	  float    fltVal;           /* VT_R4                */
+	  double       dblVal;           /* VT_R8                */
+	  VARIANT_BOOL xbool;             /* VT_BOOL              */
+	  SCODE    scode;            /* VT_ERROR             */
+	  CY       cyVal;            /* VT_CY                */
+	  DATE     date;             /* VT_DATE              */
+	  BSTR     bstrVal;          /* VT_BSTR              */
+	  IUnknown     FAR* punkVal;     /* VT_UNKNOWN           */
+	  IDispatch    FAR* pdispVal;    /* VT_DISPATCH          */
+	  SAFEARRAY    FAR* parray;      /* VT_ARRAY|*           */
+
+	  unsigned char FAR *pbVal;      /* VT_BYREF|VT_UI1      */
+	  short    FAR* piVal;       /* VT_BYREF|VT_I2       */
+	  long     FAR* plVal;       /* VT_BYREF|VT_I4       */
+	  float    FAR* pfltVal;     /* VT_BYREF|VT_R4       */
+	  double       FAR* pdblVal;     /* VT_BYREF|VT_R8       */
+	  VARIANT_BOOL FAR* pbool;       /* VT_BYREF|VT_BOOL     */
+	  SCODE    FAR* pscode;      /* VT_BYREF|VT_ERROR    */
+	  CY       FAR* pcyVal;      /* VT_BYREF|VT_CY       */
+	  DATE     FAR* pdate;       /* VT_BYREF|VT_DATE     */
+	  BSTR     FAR* pbstrVal;    /* VT_BYREF|VT_BSTR     */
+	  IUnknown  FAR* FAR* ppunkVal;  /* VT_BYREF|VT_UNKNOWN  */
+	  IDispatch FAR* FAR* ppdispVal; /* VT_BYREF|VT_DISPATCH */
+	  SAFEARRAY FAR* FAR* pparray;   /* VT_BYREF|VT_ARRAY|*  */
+	  VARIANT      FAR* pvarVal;     /* VT_BYREF|VT_VARIANT  */
+
+	  void     FAR* byref;       /* Generic ByRef        */
+
+	  // types new to DBVARIANTs
+	  //
+	  BLOB         blob;             /* VT_BLOB              */
+	  DBCOLUMNID  *pColumnid;        /* DBTYPE_COLUMNID      */
+	  LPSTR        pszVal;           /* VT_LPSTR             */
+	  LPWSTR       pwszVal;          /* VT_LPWSTR            */
+	  LPWSTR FAR  *ppwszVal;         /* VT_LPWSTR|VT_BYREF   */
+	  BLOB FAR    *pblob;            /* VT_BYREF|VT_BLOB     */
+	  DBCOLUMNID **ppColumnid;       /* VT_BYREF|DBTYPE_COLID*/
+	  DBVARIANT   *pdbvarVal;        /* VT_BYREF|DBTYPE_VARIANT */
+	}
+#if defined(NONAMELESSUNION)
+	u
+#endif
+	;
+};
+
+/*----------------------------------------------------------------------------
+ *
+ *  dbs.h
+ *
+ *----------------------------------------------------------------------------
+ */
+typedef enum tagDBROWFETCH
+  {
+	DBROWFETCH_DEFAULT = 0,
+	DBROWFETCH_CALLEEALLOCATES = 1,
+	DBROWFETCH_FORCEREFRESH = 2
+  }
+DBROWFETCH;
+
+typedef struct tagDBFETCHROWS
+  {
+  ULONG_PTR      cRowsRequested;
+  DWORD      dwFlags;
+  VOID HUGEP *pData;
+  VOID HUGEP *pVarData;
+  ULONG_PTR      cbVarData;
+  ULONG_PTR      cRowsReturned;
+  }
+DBFETCHROWS;
+
+#define DB_NOMAXLENGTH   (DWORD)0
+#define DB_NOVALUE       (DWORD)0xFFFFFFFF
+#define DB_NULL          (DWORD)0xFFFFFFFF
+#define DB_EMPTY         (DWORD)0xFFFFFFFE
+#define DB_USEENTRYID    (DWORD)0xFFFFFFFD
+#define DB_CANTCOERCE    (DWORD)0xFFFFFFFC
+#define DB_TRUNCATED     (DWORD)0xFFFFFFFB
+#define DB_UNKNOWN       (DWORD)0xFFFFFFFA
+#define DB_NOINFO        (DWORD)0xFFFFFFF9
+
+#ifdef OLD_DEFS
+typedef enum tagDBBINDING
+  {
+	DBBINDING_DEFAULT = 0,
+	DBBINDING_VARIANT = 1,
+	DBBINDING_ENTRYID = 2
+  }
+DBBINDING;
+#else
+typedef enum _DBBINDING
+  {
+	DBBINDING_DEFAULT = 0,
+	DBBINDING_VARIANT = 1,
+	DBBINDING_ENTRYID = 2
+  }
+_DBBINDING;
+#endif
+
+typedef enum tagDBBINDTYPE
+  {
+		DBBINDTYPE_DATA    = 0,
+	DBBINDTYPE_ENTRYID = 1,
+	DBBDINTYPE_EITHER  = 2,
+	DBBINDTYPE_BOTH    = 3
+  }
+DBBINDTYPE;
+
+typedef struct tagDBCOLUMNBINDING
+  {
+  DBCOLUMNID columnID;
+  ULONG obData;
+  ULONG cbMaxLen;
+  ULONG obVarDataLen;
+  ULONG obInfo;
+  DWORD dwBinding;
+  DWORD dwDataType;
+  }
+DBCOLUMNBINDING;
+
+typedef struct tagDBBINDPARAMS
+  {
+  ULONG cbMaxLen;
+  DWORD dwBinding;
+  DWORD dwDataType;
+  ULONG cbVarDataLen;
+  DWORD dwInfo;
+  void *pData;
+  }
+DBBINDPARAMS;
+
+#define CID_NUMBER_INVALID            -1
+#define CID_NUMBER_AUTOINCREMENT       0
+#define CID_NUMBER_BASECOLUMNNAME      1
+#define CID_NUMBER_BASENAME            2
+#define CID_NUMBER_BINARYCOMPARABLE    3
+#define CID_NUMBER_BINDTYPE            4
+#define CID_NUMBER_CASESENSITIVE       5
+#define CID_NUMBER_COLLATINGORDER      6
+#define CID_NUMBER_COLUMNID            7
+#define CID_NUMBER_CURSORCOLUMN        8
+#define CID_NUMBER_DATACOLUMN          9
+#define CID_NUMBER_DEFAULTVALUE        10
+#define CID_NUMBER_ENTRYIDMAXLENGTH    11
+#define CID_NUMBER_FIXED               12
+#define CID_NUMBER_HASDEFAULT          13
+#define CID_NUMBER_MAXLENGTH           14
+#define CID_NUMBER_MULTIVALUED         15
+#define CID_NUMBER_NAME                16
+#define CID_NUMBER_NULLABLE            17
+#define CID_NUMBER_PHYSICALSORT        18
+#define CID_NUMBER_NUMBER              19
+#define CID_NUMBER_ROWENTRYID          20
+#define CID_NUMBER_SCALE               21
+#define CID_NUMBER_SEARCHABLE          22
+#define CID_NUMBER_TYPE                23
+#define CID_NUMBER_UNIQUE              24
+#define CID_NUMBER_UPDATABLE           25
+#define CID_NUMBER_VERSION             26
+#define CID_NUMBER_STATUS              27
+
+/* c and C++ have different meanings for const.
+ */
+#ifdef __cplusplus
+#define EXTERNAL_DEFN    extern const
+#else
+#define EXTERNAL_DEFN    const
+#endif /* __cplusplus */
+
+
+
+#define _DBCIDGUID {0xfe284700L,0xd188,0x11cd,{0xad,0x48, 0x0,0xaa, 0x0,0x3c,0x9c,0xb6}}
+#ifdef DBINITCONSTANTS
+
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMNID_INVALID         = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, -1};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_AUTOINCREMENT     = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 0};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BASECOLUMNNAME    = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 1};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BASENAME          = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 2};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BINARYCOMPARABLE  = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 3};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BINDTYPE          = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 4};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_CASESENSITIVE     = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 5};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_COLLATINGORDER    = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 6};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_COLUMNID          = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 7};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_CURSORCOLUMN      = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 8};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_DATACOLUMN        = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 9};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_DEFAULTVALUE      = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 10};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_ENTRYIDMAXLENGTH  = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 11};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_FIXED             = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 12};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_HASDEFAULT        = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 13};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_MAXLENGTH         = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 14};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_MULTIVALUED       = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 15};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_NAME              = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 16};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_NULLABLE          = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 17};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_PHYSICALSORT      = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 18};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_NUMBER            = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 19};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_ROWENTRYID        = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 20};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_SCALE             = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 21};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_SEARCHABLE        = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 22};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_TYPE              = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 23};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_UNIQUE            = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 24};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_UPDATABLE         = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 25};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_VERSION           = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 26};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_STATUS            = {_DBCIDGUID, DBCOLKIND_GUID_NUMBER, 27};
+#else
+extern const DBCOLUMNID NEAR COLUMNID_INVALID;
+extern const DBCOLUMNID NEAR COLUMN_AUTOINCREMENT;
+extern const DBCOLUMNID NEAR COLUMN_BASECOLUMNNAME;
+extern const DBCOLUMNID NEAR COLUMN_BASENAME;
+extern const DBCOLUMNID NEAR COLUMN_BINARYCOMPARABLE;
+extern const DBCOLUMNID NEAR COLUMN_BINDTYPE;
+extern const DBCOLUMNID NEAR COLUMN_CASESENSITIVE;
+extern const DBCOLUMNID NEAR COLUMN_COLLATINGORDER;
+extern const DBCOLUMNID NEAR COLUMN_COLUMNID;
+extern const DBCOLUMNID NEAR COLUMN_CURSORCOLUMN;
+extern const DBCOLUMNID NEAR COLUMN_DATACOLUMN;
+extern const DBCOLUMNID NEAR COLUMN_DEFAULTVALUE;
+extern const DBCOLUMNID NEAR COLUMN_ENTRYIDMAXLENGTH;
+extern const DBCOLUMNID NEAR COLUMN_FIXED;
+extern const DBCOLUMNID NEAR COLUMN_HASDEFAULT;
+extern const DBCOLUMNID NEAR COLUMN_MAXLENGTH;
+extern const DBCOLUMNID NEAR COLUMN_MULTIVALUED;
+extern const DBCOLUMNID NEAR COLUMN_NAME;
+extern const DBCOLUMNID NEAR COLUMN_NULLABLE;
+extern const DBCOLUMNID NEAR COLUMN_PHYSICALSORT;
+extern const DBCOLUMNID NEAR COLUMN_NUMBER;
+extern const DBCOLUMNID NEAR COLUMN_ROWENTRYID;
+extern const DBCOLUMNID NEAR COLUMN_SCALE;
+extern const DBCOLUMNID NEAR COLUMN_SEARCHABLE;
+extern const DBCOLUMNID NEAR COLUMN_TYPE;
+extern const DBCOLUMNID NEAR COLUMN_UNIQUE;
+extern const DBCOLUMNID NEAR COLUMN_UPDATABLE;
+extern const DBCOLUMNID NEAR COLUMN_VERSION;
+extern const DBCOLUMNID NEAR COLUMN_STATUS;
+#endif
+
+#define BMK_NUMBER_BMKTEMPORARY    0
+#define BMK_NUMBER_BMKTEMPORARYREL 1
+#define BMK_NUMBER_BMKCURSOR       2
+#define BMK_NUMBER_BMKCURSORREL    3
+#define BMK_NUMBER_BMKSESSION      4
+#define BMK_NUMBER_BMKSESSIONREL   5
+#define BMK_NUMBER_BMKPERSIST      6
+#define BMK_NUMBER_BMKPERSISTREL   7
+
+
+#define DBBMKGUID_OCDB {0xf6304bb0L,0xd188,0x11cd,{0xad,0x48, 0x0,0xaa, 0x0,0x3c,0x9c,0xb6}}
+#ifdef DBINITCONSTANTS
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKTEMPORARY      = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 0};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKTEMPORARYREL   = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 1};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKCURSOR         = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 2};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKCURSORREL      = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 3};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKSESSION        = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 4};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKSESSIONREL     = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 5};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKPERSIST        = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 6};
+EXTERNAL_DEFN DBCOLUMNID NEAR COLUMN_BMKPERSISTREL     = {DBBMKGUID_OCDB, DBCOLKIND_GUID_NUMBER, 7};
+#else
+extern const DBCOLUMNID NEAR COLUMN_BMKINVALID;
+extern const DBCOLUMNID NEAR COLUMN_BMKTEMPORARY;
+extern const DBCOLUMNID NEAR COLUMN_BMKTEMPORARYREL;
+extern const DBCOLUMNID NEAR COLUMN_BMKCURSOR;
+extern const DBCOLUMNID NEAR COLUMN_BMKCURSORREL;
+extern const DBCOLUMNID NEAR COLUMN_BMKSESSION;
+extern const DBCOLUMNID NEAR COLUMN_BMKSESSIONREL;
+extern const DBCOLUMNID NEAR COLUMN_BMKPERSIST;
+extern const DBCOLUMNID NEAR COLUMN_BMKPERSISTREL;
+#endif
+
+#define DB_BMK_SIZE        sizeof(BYTE)
+#ifdef DBINITCONSTANTS
+#ifdef OLD_DEFS
+EXTERNAL_DEFN BYTE NEAR DBBMK_INVALID   = 0x0;
+#endif
+EXTERNAL_DEFN BYTE NEAR DBBMK_CURRENT   = 0x1;
+EXTERNAL_DEFN BYTE NEAR DBBMK_BEGINNING = 0x2;
+EXTERNAL_DEFN BYTE NEAR DBBMK_END       = 0x3;
+#else
+#ifdef OLD_DEFS
+extern const BYTE NEAR DBBMK_INVALID;
+#endif
+extern const BYTE NEAR DBBMK_CURRENT;
+extern const BYTE NEAR DBBMK_BEGINNING;
+extern const BYTE NEAR DBBMK_END;
+#endif
+
+typedef enum tagDBCOLUMNBINDOPTS
+  {
+	DBCOLUMNBINDOPTS_REPLACE = 0,
+	DBCOLUMNBINDOPTS_ADD = 1
+  }
+DBCOLUMNBINDOPTS;
+
+typedef enum tagDBUPDATELOCK
+  {
+	DBUPDATELOCK_PESSIMISTIC = 0,
+	DBUPDATELOCK_OPTIMISTIC = 1
+  }
+DBUPDATELOCK;
+
+typedef enum tagDBCOLUMNDATA
+  {
+	DBCOLUMNDATA_UNCHANGED = 0,
+	DBCOLUMNDATA_CHANGED = 1,
+		DBCOLUMNDATA_UNKNOWN = 2
+  }
+DBCOLUMNDATA;
+
+typedef enum tagDBROWACTION
+  {
+	DBROWACTION_IGNORE = 0,
+	DBROWACTION_UPDATE = 1,
+	DBROWACTION_DELETE = 2,
+	DBROWACTION_ADD = 3,
+	DBROWACTION_LOCK = 4,
+	DBROWACTION_UNLOCK = 5
+  }
+DBROWACTION;
+
+typedef enum tagDBUPDATEABLE
+  {
+	DBUPDATEABLE_UPDATEABLE = 0,
+	DBUPDATEABLE_NOTUPDATEABLE = 1,
+	DBUPDATEABLE_UNKNOWN = 2
+  }
+DBUPDATEABLE;
+
+#ifdef OLD_DEFS
+typedef struct tagDBROWSTATUS
+  {
+  HRESULT hrStatus;
+  BLOB Bookmark;
+  }
+DBROWSTATUS;
+#endif
+
+typedef enum tagDBEVENTWHATS
+  {
+	DBEVENT_CURRENT_ROW_CHANGED = 1,
+	DBEVENT_CURRENT_ROW_DATA_CHANGED = 2,
+	DBEVENT_NONCURRENT_ROW_DATA_CHANGED = 4,
+	DBEVENT_SET_OF_COLUMNS_CHANGED = 8,
+	DBEVENT_ORDER_OF_COLUMNS_CHANGED = 16,
+	DBEVENT_SET_OF_ROWS_CHANGED = 32,
+	DBEVENT_ORDER_OF_ROWS_CHANGED = 64,
+	DBEVENT_METADATA_CHANGED = 128,
+	DBEVENT_ASYNCH_OP_FINISHED = 256,
+	DBEVENT_FIND_CRITERIA_CHANGED = 512,
+  }
+DBEVENTWHATS;
+
+typedef enum tagDBREASON
+  {
+	DBREASON_DELETED = 1,
+	DBREASON_INSERTED = 2,
+	DBREASON_MODIFIED = 3,
+	DBREASON_REMOVEDFROMCURSOR = 4,
+	DBREASON_MOVEDINCURSOR = 5,
+	DBREASON_MOVE = 6,
+	DBREASON_FIND = 7,
+	DBREASON_NEWINDEX = 8,
+	DBREASON_ROWFIXUP = 9,
+	DBREASON_RECALC = 10,
+	DBREASON_REFRESH = 11,
+	DBREASON_NEWPARAMETERS = 12,
+	DBREASON_SORTCHANGED = 13,
+	DBREASON_FILTERCHANGED = 14,
+	DBREASON_QUERYSPECCHANGED = 15,
+	DBREASON_SEEK = 16,
+	DBREASON_PERCENT = 17,
+	DBREASON_FINDCRITERIACHANGED = 18,
+	DBREASON_SETRANGECHANGED = 19,
+	DBREASON_ADDNEW = 20,
+	DBREASON_MOVEPERCENT = 21,
+	DBREASON_BEGINTRANSACT = 22,
+	DBREASON_ROLLBACK = 23,
+	DBREASON_COMMIT = 24,
+	DBREASON_CLOSE = 25,
+	DBREASON_BULK_ERROR = 26,
+	DBREASON_BULK_NOTTRANSACTABLE = 27,
+	DBREASON_BULK_ABOUTTOEXECUTE = 28,
+	DBREASON_CANCELUPDATE = 29,
+	DBREASON_SETCOLUMN = 30,
+	DBREASON_EDIT = 31,
+	DBREASON_UNLOAD = 32
+  }
+#ifdef OLD_DEFS
+DBREASON
+#else
+_DBREASON;
+#endif
+
+// Arg1 values for DBREASON_FIND
+typedef enum tagDBFINDTYPES
+  {
+  DB_FINDFIRST = 1,
+  DB_FINDLAST = 2,
+  DB_FINDNEXT = 3,
+  DB_FINDPRIOR = 4,
+  DB_FIND = 5
+  }
+DBFINDTYPES;
+
+typedef struct tagDBNOTIFYREASON
+  {
+  DWORD dwReason;
+  DBVARIANT arg1;
+  DBVARIANT arg2;
+  }
+DBNOTIFYREASON;
+
+//#define DB_E_BADBINDINFO           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e00)
+//#define DB_E_BADBOOKMARK           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e01)
+//#define DB_E_BADCOLUMNID           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e02)
+#define OCDB_E_BADCRITERIA           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e03)
+#define OCDB_E_BADENTRYID            MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e04)
+#define OCDB_E_BADFRACTION           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e05)
+//#define DB_E_BADINDEXID            MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e06)
+#define OCDB_E_BADQUERYSPEC          MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e07)
+#define OCDB_E_BADSORTORDER          MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e08)
+//#define DB_E_BADVALUES             MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e09)
+#define OCDB_E_CANTCOERCE            MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e0a)
+#define OCDB_E_CANTLOCK              MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e0b)
+#define OCDB_E_COLUMNUNAVAILABLE     MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e0c)
+#define OCDB_E_DATACHANGED           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e0d)
+#define OCDB_E_INVALIDCOLUMNORDINAL  MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e0e)
+#define OCDB_E_INVALIDINTERFACE      MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e0f)
+#define OCDB_E_LOCKFAILED            MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e10)
+#define OCDB_E_ROWDELETED            MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e11)
+#define OCDB_E_ROWTOOSHORT           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e12)
+//#define DB_E_SCHEMAVIOLATION       MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e13)
+#define OCDB_E_SEEKKINDNOTSUPPORTED  MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e14)
+#define OCDB_E_UPDATEINPROGRESS      MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e15)
+#define OCDB_E_USEENTRYID            MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e16)
+#define OCDB_E_STATEERROR            MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e17)
+#define OCDB_E_BADFETCHINFO          MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e18)
+#define OCDB_E_NOASYNC               MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e19)
+#define OCDB_E_ENTRYIDOPEN           MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e1a)
+#define OCDB_E_BUFFERTOOSMALL        MAKE_SCODE(SEVERITY_ERROR,   FACILITY_ITF, 0x0e1b)
+#define OCDB_S_BUFFERTOOSMALL        MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec0)
+#define OCDB_S_CANCEL                MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec1)
+#define OCDB_S_DATACHANGED           MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec2)
+#define OCDB_S_ENDOFCURSOR           MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec3)
+#define OCDB_S_ENDOFRESULTSET        MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec4)
+#define OCDB_S_OPERATIONCANCELLED    MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec5)
+#define OCDB_S_QUERYINTERFACE        MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec6)
+#define OCDB_S_WORKINGASYNC          MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec7)
+//#define DB_S_COULDNTCOERCE         MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec8)
+#define OCDB_S_MOVEDTOFIRST          MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ec9)
+#define OCDB_S_CURRENTROWUNCHANGED   MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0eca)
+#define OCDB_S_ROWADDED              MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ecb)
+#define OCDB_S_ROWUPDATED            MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ecc)
+#define OCDB_S_ROWDELETED            MAKE_SCODE(SEVERITY_SUCCESS, FACILITY_ITF, 0x0ecd)
+
+/*----------------------------------------------------------------------------
+ *
+ *  ICursor
+ *
+ *----------------------------------------------------------------------------
+ */
+/* Forward declaration */
+//typedef interface ICursor ICursor;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+/* C++ Language Binding */
+//extern "C" const IID IID_ICursor;
+
+interface ICursor : public IUnknown
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE GetColumnsCursor
+	(
+	REFIID riid,
+	IUnknown **ppvColumnsCursor,
+	ULONG_PTR *pcRows
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE SetBindings
+	(
+	ULONG_PTR cCol,
+	DBCOLUMNBINDING rgBoundColumns[],
+	ULONG_PTR cbRowLength,
+	DWORD dwFlags
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE GetBindings
+	(
+	ULONG_PTR *pcCol,
+	DBCOLUMNBINDING *prgBoundColumns[],
+	ULONG_PTR *pcbRowLength
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE GetNextRows
+	(
+	LARGE_INTEGER udlRowsToSkip,
+	DBFETCHROWS *pFetchParams
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE Requery
+	(
+		void
+	) = 0;
+
+};
+
+#else
+
+/* C Language Binding */
+//extern const IID IID_ICursor;
+
+typedef struct ICursorVtbl
+{
+
+	HRESULT (STDMETHODCALLTYPE FAR *QueryInterface)
+	(
+		ICursor FAR *this,
+	REFIID riid,
+	void **ppvObject
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *AddRef)
+	(
+		ICursor FAR *this
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *Release)
+	(
+		ICursor FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetColumnsCursor)
+	(
+		ICursor FAR *this,
+	REFIID riid,
+	IUnknown **ppvColumnsCursor,
+	ULONG_PTR *pcRows
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *SetBindings)
+	(
+		ICursor FAR *this,
+	ULONG_PTR cCol,
+	DBCOLUMNBINDING rgBoundColumns[],
+	ULONG_PTR cbRowLength,
+	DWORD dwFlags
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetBindings)
+	(
+		ICursor FAR *this,
+	ULONG_PTR *pcCol,
+	DBCOLUMNBINDING *prgBoundColumns[],
+	ULONG_PTR *pcbRowLength
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetNextRows)
+	(
+		ICursor FAR *this,
+	LARGE_INTEGER udlRowsToSkip,
+	DBFETCHROWS *pFetchParams
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Requery)
+	(
+		ICursor FAR *this
+	);
+
+} ICursorVtbl;
+
+interface ICursor
+{
+	ICursorVtbl FAR *lpVtbl;
+} ;
+
+#ifdef COBJMACROS
+
+#define ICursor_QueryInterface(pI, riid, ppvObject) \
+	(*(pI)->lpVtbl->QueryInterface)((pI), riid, ppvObject)
+
+#define ICursor_AddRef(pI) \
+	(*(pI)->lpVtbl->AddRef)((pI))
+
+#define ICursor_Release(pI) \
+	(*(pI)->lpVtbl->Release)((pI))
+
+#define ICursor_GetColumnsCursor(pI, riid, ppvColumnsCursor, pcRows) \
+	(*(pI)->lpVtbl->GetColumnsCursor)((pI), riid, ppvColumnsCursor, pcRows)
+
+#define ICursor_SetBindings(pI, cCol, rgBoundColumns, cbRowLength, dwFlags) \
+	(*(pI)->lpVtbl->SetBindings)((pI), cCol, rgBoundColumns, cbRowLength, dwFlags)
+
+#define ICursor_GetBindings(pI, pcCol, prgBoundColumns, pcbRowLength) \
+	(*(pI)->lpVtbl->GetBindings)((pI), pcCol, prgBoundColumns, pcbRowLength)
+
+#define ICursor_GetNextRows(pI, udlRowsToSkip, pFetchParams) \
+	(*(pI)->lpVtbl->GetNextRows)((pI), udlRowsToSkip, pFetchParams)
+
+#define ICursor_Requery(pI) \
+	(*(pI)->lpVtbl->Requery)((pI))
+
+#endif /* COBJMACROS */
+
+#endif
+
+/*----------------------------------------------------------------------------
+ *
+ *  ICursorMove
+ *
+ *----------------------------------------------------------------------------
+ */
+/* Forward declaration */
+//typedef interface ICursorMove ICursorMove;
+
+typedef enum tagDBCLONEOPTS
+  {
+	DBCLONEOPTS_DEFAULT = 0,
+	DBCLONEOPTS_SAMEROW = 1
+  }
+DBCLONEOPTS;
+
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+/* C++ Language Binding */
+//extern "C" const IID IID_ICursorMove;
+
+interface ICursorMove : public ICursor
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE Move
+	(
+	ULONG cbBookmark,
+	void *pBookmark,
+	LARGE_INTEGER dlOffset,
+	DBFETCHROWS *pFetchParams
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE GetBookmark
+	(
+	DBCOLUMNID *pBookmarkType,
+	ULONG cbMaxSize,
+	ULONG *pcbBookmark,
+	void *pBookmark
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE Clone
+	(
+	DWORD dwFlags,
+	REFIID riid,
+	IUnknown **ppvClonedCursor
+	) = 0;
+
+};
+
+#else
+
+/* C Language Binding */
+//extern const IID IID_ICursorMove;
+
+typedef struct ICursorMoveVtbl
+{
+
+	HRESULT (STDMETHODCALLTYPE FAR *QueryInterface)
+	(
+		ICursorMove FAR *this,
+	REFIID riid,
+	void **ppvObject
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *AddRef)
+	(
+		ICursorMove FAR *this
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *Release)
+	(
+		ICursorMove FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetColumnsCursor)
+	(
+		ICursorMove FAR *this,
+	REFIID riid,
+	IUnknown **ppvColumnsCursor,
+	ULONG_PTR *pcRows
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *SetBindings)
+	(
+		ICursorMove FAR *this,
+	ULONG_PTR cCol,
+	DBCOLUMNBINDING rgBoundColumns[],
+	ULONG_PTR cbRowLength,
+	DWORD dwFlags
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetBindings)
+	(
+		ICursorMove FAR *this,
+	ULONG_PTR *pcCol,
+	DBCOLUMNBINDING *prgBoundColumns[],
+	ULONG_PTR *pcbRowLength
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetNextRows)
+	(
+		ICursorMove FAR *this,
+	LARGE_INTEGER udlRowsToSkip,
+	DBFETCHROWS *pFetchParams
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Requery)
+	(
+		ICursorMove FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Move)
+	(
+		ICursorMove FAR *this,
+	ULONG cbBookmark,
+	void *pBookmark,
+	LARGE_INTEGER dlOffset,
+	DBFETCHROWS *pFetchParams
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetBookmark)
+	(
+		ICursorMove FAR *this,
+	DBCOLUMNID *pBookmarkType,
+	ULONG cbMaxSize,
+	ULONG *pcbBookmark,
+	void *pBookmark
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Clone)
+	(
+		ICursorMove FAR *this,
+	DWORD dwFlags,
+	REFIID riid,
+	IUnknown **ppvClonedCursor
+	);
+
+} ICursorMoveVtbl;
+
+interface ICursorMove
+{
+	ICursorMoveVtbl FAR *lpVtbl;
+} ;
+
+#ifdef COBJMACROS
+
+#define ICursorMove_QueryInterface(pI, riid, ppvObject) \
+	(*(pI)->lpVtbl->QueryInterface)((pI), riid, ppvObject)
+
+#define ICursorMove_AddRef(pI) \
+	(*(pI)->lpVtbl->AddRef)((pI))
+
+#define ICursorMove_Release(pI) \
+	(*(pI)->lpVtbl->Release)((pI))
+
+#define ICursorMove_GetColumnsCursor(pI, riid, ppvColumnsCursor, pcRows) \
+	(*(pI)->lpVtbl->GetColumnsCursor)((pI), riid, ppvColumnsCursor, pcRows)
+
+#define ICursorMove_SetBindings(pI, cCol, rgBoundColumns, cbRowLength, dwFlags) \
+	(*(pI)->lpVtbl->SetBindings)((pI), cCol, rgBoundColumns, cbRowLength, dwFlags)
+
+#define ICursorMove_GetBindings(pI, pcCol, prgBoundColumns, pcbRowLength) \
+	(*(pI)->lpVtbl->GetBindings)((pI), pcCol, prgBoundColumns, pcbRowLength)
+
+#define ICursorMove_GetNextRows(pI, udlRowsToSkip, pFetchParams) \
+	(*(pI)->lpVtbl->GetNextRows)((pI), udlRowsToSkip, pFetchParams)
+
+#define ICursorMove_Requery(pI) \
+	(*(pI)->lpVtbl->Requery)((pI))
+
+#define ICursorMove_Move(pI, cbBookmark, pBookmark, dlOffset, pFetchParams) \
+	(*(pI)->lpVtbl->Move)((pI), cbBookmark, pBookmark, dlOffset, pFetchParams)
+
+#define ICursorMove_GetBookmark(pI, pBookmarkType, cbMaxSize, pcbBookmark, pBookmark) \
+	(*(pI)->lpVtbl->GetBookmark)((pI), pBookmarkType, cbMaxSize, pcbBookmark, pBookmark)
+
+#define ICursorMove_Clone(pI, dwFlags, riid, ppvClonedCursor) \
+	(*(pI)->lpVtbl->Clone)((pI), dwFlags, riid, ppvClonedCursor)
+#endif /* COBJMACROS */
+
+#endif
+
+/*----------------------------------------------------------------------------
+ *
+ *  ICursorScroll
+ *
+ *----------------------------------------------------------------------------
+ */
+/* Forward declaration */
+//typedef interface ICursorScroll ICursorScroll;
+
+typedef enum tagDBCURSORPOPULATED
+  {
+	DBCURSORPOPULATED_FULLY = 0,
+	DBCURSORPOPULATED_PARTIALLY = 1
+  }
+DBCURSORPOPULATED;
+
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+/* C++ Language Binding */
+//extern "C" const IID IID_ICursorScroll;
+
+interface ICursorScroll : public ICursorMove
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE Scroll
+	(
+	ULONG ulNumerator,
+	ULONG ulDenominator,
+	DBFETCHROWS *pFetchParams
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE GetApproximatePosition
+	(
+	ULONG cbBookmark,
+	void *pBookmark,
+	ULONG *pulNumerator,
+	ULONG *pulDenominator
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE GetApproximateCount
+	(
+	LARGE_INTEGER *pudlApproxCount,
+	DWORD *pdwFullyPopulated
+	) = 0;
+
+};
+
+#else
+
+/* C Language Binding */
+//extern const IID IID_ICursorScroll;
+
+typedef struct ICursorScrollVtbl
+{
+
+	HRESULT (STDMETHODCALLTYPE FAR *QueryInterface)
+	(
+		ICursorScroll FAR *this,
+	REFIID riid,
+	void **ppvObject
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *AddRef)
+	(
+		ICursorScroll FAR *this
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *Release)
+	(
+		ICursorScroll FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetColumnsCursor)
+	(
+		ICursorScroll FAR *this,
+	REFIID riid,
+	IUnknown **ppvColumnsCursor,
+	ULONG *pcRows
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *SetBindings)
+	(
+		ICursorScroll FAR *this,
+	ULONG cCol,
+	DBCOLUMNBINDING rgBoundColumns[],
+	ULONG cbRowLength,
+	DWORD dwFlags
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetBindings)
+	(
+		ICursorScroll FAR *this,
+	ULONG *pcCol,
+	DBCOLUMNBINDING *prgBoundColumns[],
+	ULONG *pcbRowLength
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetNextRows)
+	(
+		ICursorScroll FAR *this,
+	LARGE_INTEGER udlRowsToSkip,
+	DBFETCHROWS *pFetchParams
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Requery)
+	(
+		ICursorScroll FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Move)
+	(
+		ICursorScroll FAR *this,
+	ULONG cbBookmark,
+	void *pBookmark,
+	LARGE_INTEGER dlOffset,
+	DBFETCHROWS *pFetchParams
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetBookmark)
+	(
+		ICursorScroll FAR *this,
+	DBCOLUMNID *pBookmarkType,
+	ULONG cbMaxSize,
+	ULONG *pcbBookmark,
+	void *pBookmark
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Clone)
+	(
+		ICursorScroll FAR *this,
+	DWORD dwFlags,
+	REFIID riid,
+	IUnknown **ppvClonedCursor
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Scroll)
+	(
+		ICursorScroll FAR *this,
+	ULONG ulNumerator,
+	ULONG ulDenominator,
+	DBFETCHROWS *pFetchParams
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetApproximatePosition)
+	(
+		ICursorScroll FAR *this,
+	ULONG cbBookmark,
+	void *pBookmark,
+	ULONG *pulNumerator,
+	ULONG *pulDenominator
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetApproximateCount)
+	(
+		ICursorScroll FAR *this,
+	LARGE_INTEGER *pudlApproxCount,
+	DWORD *pdwFullyPopulated
+	);
+
+} ICursorScrollVtbl;
+
+interface ICursorScroll
+{
+	ICursorScrollVtbl FAR *lpVtbl;
+} ;
+
+#ifdef COBJMACROS
+
+#define ICursorScroll_QueryInterface(pI, riid, ppvObject) \
+	(*(pI)->lpVtbl->QueryInterface)((pI), riid, ppvObject)
+
+#define ICursorScroll_AddRef(pI) \
+	(*(pI)->lpVtbl->AddRef)((pI))
+
+#define ICursorScroll_Release(pI) \
+	(*(pI)->lpVtbl->Release)((pI))
+
+#define ICursorScroll_GetColumnsCursor(pI, riid, ppvColumnsCursor, pcRows) \
+	(*(pI)->lpVtbl->GetColumnsCursor)((pI), riid, ppvColumnsCursor, pcRows)
+
+#define ICursorScroll_SetBindings(pI, cCol, rgBoundColumns, cbRowLength, dwFlags) \
+	(*(pI)->lpVtbl->SetBindings)((pI), cCol, rgBoundColumns, cbRowLength, dwFlags)
+
+#define ICursorScroll_GetBindings(pI, pcCol, prgBoundColumns, pcbRowLength) \
+	(*(pI)->lpVtbl->GetBindings)((pI), pcCol, prgBoundColumns, pcbRowLength)
+
+#define ICursorScroll_GetNextRows(pI, udlRowsToSkip, pFetchParams) \
+	(*(pI)->lpVtbl->GetNextRows)((pI), udlRowsToSkip, pFetchParams)
+
+#define ICursorScroll_Requery(pI) \
+	(*(pI)->lpVtbl->Requery)((pI))
+
+#define ICursorScroll_Move(pI, cbBookmark, pBookmark, dlOffset, pFetchParams) \
+	(*(pI)->lpVtbl->Move)((pI), cbBookmark, pBookmark, dlOffset, pFetchParams)
+
+#define ICursorScroll_GetBookmark(pI, pBookmarkType, cbMaxSize, pcbBookmark, pBookmark) \
+	(*(pI)->lpVtbl->GetBookmark)((pI), pBookmarkType, cbMaxSize, pcbBookmark, pBookmark)
+
+#define ICursorScroll_Clone(pI, dwFlags, riid, ppvClonedCursor) \
+	(*(pI)->lpVtbl->Clone)((pI), dwFlags, riid, ppvClonedCursor)
+
+#define ICursorScroll_Scroll(pI, ulNumerator, ulDenominator, pFetchParams) \
+	(*(pI)->lpVtbl->Scroll)((pI), ulNumerator, ulDenominator, pFetchParams)
+
+#define ICursorScroll_GetApproximatePosition(pI, cbBookmark, pBookmark, pulNumerator, pulDenominator) \
+	(*(pI)->lpVtbl->GetApproximatePosition)((pI), cbBookmark, pBookmark, pulNumerator, pulDenominator)
+
+#define ICursorScroll_GetApproximateCount(pI, pudlApproxCount, pdwFullyPopulated) \
+	(*(pI)->lpVtbl->GetApproximateCount)((pI), pudlApproxCount, pdwFullyPopulated)
+#endif /* COBJMACROS */
+
+#endif
+
+/*----------------------------------------------------------------------------
+ *
+ *  ICursorUpdateARow
+ *
+ *----------------------------------------------------------------------------
+ */
+/* Forward declaration */
+//typedef interface ICursorUpdateARow ICursorUpdateARow;
+
+typedef enum tagDBEDITMODE
+  {
+	DBEDITMODE_NONE = 1,
+	DBEDITMODE_UPDATE = 2,
+	DBEDITMODE_ADD = 3
+  }
+DBEDITMODE;
+
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+/* C++ Language Binding */
+//extern "C" const IID IID_ICursorUpdateARow;
+
+interface ICursorUpdateARow : public IUnknown
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE BeginUpdate
+	(
+	DWORD dwFlags
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE SetColumn
+	(
+	DBCOLUMNID *pcid,
+	DBBINDPARAMS *pBindParams
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE GetColumn
+	(
+	DBCOLUMNID *pcid,
+	DBBINDPARAMS *pBindParams,
+	DWORD *pdwFlags
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE GetEditMode
+	(
+	DWORD *pdwState
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE Update
+	(
+	DBCOLUMNID *pBookmarkType,
+	ULONG *pcbBookmark,
+	void **ppBookmark
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE Cancel
+	(
+		void
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE Delete
+	(
+	void
+	) = 0;
+
+};
+
+#else
+
+/* C Language Binding */
+//extern const IID IID_ICursorUpdateARow;
+
+typedef struct ICursorUpdateARowVtbl
+{
+
+	HRESULT (STDMETHODCALLTYPE FAR *QueryInterface)
+	(
+		ICursorUpdateARow FAR *this,
+	REFIID riid,
+	void **ppvObject
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *AddRef)
+	(
+		ICursorUpdateARow FAR *this
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *Release)
+	(
+		ICursorUpdateARow FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *BeginUpdate)
+	(
+		ICursorUpdateARow FAR *this,
+	DWORD dwFlags
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *SetColumn)
+	(
+		ICursorUpdateARow FAR *this,
+	DBCOLUMNID *pcid,
+	DBBINDPARAMS *pBindParams
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetColumn)
+	(
+		ICursorUpdateARow FAR *this,
+	DBCOLUMNID *pcid,
+	DBBINDPARAMS *pBindParams,
+	DWORD *pdwFlags
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetEditMode)
+	(
+		ICursorUpdateARow FAR *this,
+	DWORD *pdwState
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Update)
+	(
+		ICursorUpdateARow FAR *this,
+	DBCOLUMNID *pBookmarkType,
+	ULONG *pcbBookmark,
+	void **ppBookmark
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Cancel)
+	(
+		ICursorUpdateARow FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Delete)
+	(
+		ICursorUpdateARow FAR *this
+	);
+
+} ICursorUpdateARowVtbl;
+
+interface ICursorUpdateARow
+{
+	ICursorUpdateARowVtbl FAR *lpVtbl;
+} ;
+
+#ifdef COBJMACROS
+
+#define ICursorUpdateARow_QueryInterface(pI, riid, ppvObject) \
+	(*(pI)->lpVtbl->QueryInterface)((pI), riid, ppvObject)
+
+#define ICursorUpdateARow_AddRef(pI) \
+	(*(pI)->lpVtbl->AddRef)((pI))
+
+#define ICursorUpdateARow_Release(pI) \
+	(*(pI)->lpVtbl->Release)((pI))
+
+#define ICursorUpdateARow_BeginUpdate(pI, dwFlags) \
+	(*(pI)->lpVtbl->BeginUpdate)((pI), dwFlags)
+
+#define ICursorUpdateARow_SetColumn(pI, pcid, pBindParams) \
+	(*(pI)->lpVtbl->SetColumn)((pI), pcid, pBindParams)
+
+#define ICursorUpdateARow_GetColumn(pI, pcid, pBindParams, pdwFlags) \
+	(*(pI)->lpVtbl->GetColumn)((pI), pcid, pBindParams, pdwFlags)
+
+#define ICursorUpdateARow_GetEditMode(pI, pdwState) \
+	(*(pI)->lpVtbl->GetEditMode)((pI), pdwState)
+
+#define ICursorUpdateARow_Update(pI, pBookmarkType, pcbBookmark, ppBookmark) \
+	(*(pI)->lpVtbl->Update)((pI), pBookmarkType, pcbBookmark, ppBookmark)
+
+#define ICursorUpdateARow_Cancel(pI) \
+	(*(pI)->lpVtbl->Cancel)((pI))
+
+#define ICursorUpdateARow_Delete(pI) \
+	(*(pI)->lpVtbl->Delete)((pI))
+
+
+#endif /* COBJMACROS */
+
+#endif
+
+/*----------------------------------------------------------------------------
+ *
+ *  ICursorFind
+ *
+ *----------------------------------------------------------------------------
+ */
+/* Forward declaration */
+//typedef interface ICursorFind ICursorFind;
+
+typedef enum tagDBFINDFLAGS
+  {
+	DBFINDFLAGS_FINDNEXT = 1,
+	DBFINDFLAGS_FINDPRIOR = 2,
+	DBFINDFLAGS_INCLUDECURRENT = 4
+  }
+DBFINDFLAGS;
+
+#ifdef OLD_DEFS
+typedef enum tagDBSEEKFLAGS
+  {
+	DBSEEK_LT    = 1,
+	DBSEEK_LE    = 2,
+	DBSEEK_EQ    = 3,       // EXACT EQUALITY
+	DBSEEK_GT    = 4,
+	DBSEEK_GE    = 5,
+	DBSEEK_PARTIALEQ = 6             // only for strings
+  }
+DBSEEKFLAGS;
+#endif
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+/* C++ Language Binding */
+//extern "C" const IID IID_ICursorFind;
+
+interface ICursorFind : public IUnknown
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE FindByValues
+	(
+	ULONG            cbBookmark,
+	LPVOID           pBookmark,
+	DWORD            dwFindFlags,
+	ULONG            cValues,
+		DBCOLUMNID       rgColumns[],
+	DBVARIANT        rgValues[],
+	DWORD            rgdwSeekFlags[],
+		DBFETCHROWS FAR *pFetchParams
+	) = 0;
+};
+
+#else
+
+/* C Language Binding */
+//extern const IID IID_ICursorFind;
+
+typedef struct ICursorFindVtbl
+{
+
+	HRESULT (STDMETHODCALLTYPE FAR *QueryInterface)
+	(
+		ICursorFind FAR *this,
+	REFIID riid,
+	void **ppvObject
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *AddRef)
+	(
+		ICursorFind FAR *this
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *Release)
+	(
+		ICursorFind FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *FindByValues)
+	(
+		ICursorFind FAR *this,
+	ULONG            cbBookmark,
+	LPVOID           pBookmark,
+	DWORD            dwFindFlags,
+	ULONG            cValues,
+		DBCOLUMNID       rgColumns[],
+	DBVARIANT        rgValues[],
+	DWORD            rgdwSeekFlags[],
+		DBFETCHROWS      pFetchParams
+	);
+
+
+} ICursorFindVtbl;
+
+interface ICursorFind
+{
+	ICursorFindVtbl FAR *lpVtbl;
+} ;
+
+#ifdef COBJMACROS
+
+#define ICursorFind_QueryInterface(pI, riid, ppvObject) \
+	(*(pI)->lpVtbl->QueryInterface)((pI), riid, ppvObject)
+
+#define ICursorFind_AddRef(pI) \
+	(*(pI)->lpVtbl->AddRef)((pI))
+
+#define ICursorFind_Release(pI) \
+	(*(pI)->lpVtbl->Release)((pI))
+
+#define ICursorFind_FindByValues(pI, cbB, pB, dwFF, cV, rgC, rgV, rgSF, pF) \
+	(*(pI)->lpVtbl->FindByValues)((pI), cbB, pB, dwFF, cB, rgC, rgV, rgSF, pF)
+
+#endif /* COBJMACROS */
+
+#endif
+
+
+/*----------------------------------------------------------------------------
+ *
+ *  IEntryID
+ *
+ *----------------------------------------------------------------------------
+ */
+/* Forward declaration */
+//typedef interface IEntryID IEntryID;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+/* C++ Language Binding */
+//extern "C" const IID IID_IEntryID;
+
+interface IEntryID : public IUnknown
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE GetInterface
+	(
+	ULONG cbEntryID,
+	void *pEntryID,
+		DWORD dwFlags,
+		REFIID riid,
+	IUnknown **ppvObj
+	) = 0;
+
+};
+
+#else
+
+/* C Language Binding */
+//extern const IID IID_IEntryID;
+
+typedef struct IEntryIDVtbl
+{
+
+	HRESULT (STDMETHODCALLTYPE FAR *QueryInterface)
+	(
+		IEntryID FAR *this,
+	REFIID riid,
+	void **ppvObject
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *AddRef)
+	(
+		IEntryID FAR *this
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *Release)
+	(
+		IEntryID FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *GetInterface)
+	(
+		IEntryID FAR *this,
+	ULONG cbEntryID,
+	void *pEntryID,
+		REFIID riid,
+	IUnknown **ppvObj
+	);
+
+} IEntryIDVtbl;
+
+interface IEntryID
+{
+	IEntryIDVtbl FAR *lpVtbl;
+} ;
+
+#ifdef COBJMACROS
+
+#define IEntryID_QueryInterface(pI, riid, ppvObject) \
+	(*(pI)->lpVtbl->QueryInterface)((pI), riid, ppvObject)
+
+#define IEntryID_AddRef(pI) \
+	(*(pI)->lpVtbl->AddRef)((pI))
+
+#define IEntryID_Release(pI) \
+	(*(pI)->lpVtbl->Release)((pI))
+
+#define IEntryID_GetInterface(pI, cbEntryID, pEntryID, riid, ppvObj) \
+	(*(pI)->lpVtbl->GetInterface)((pI), cbEntryID, pEntryID, riid, ppvObj)
+#endif /* COBJMACROS */
+
+#endif
+
+
+/*----------------------------------------------------------------------------
+ *
+ *  INotifyDBEvents
+ *
+ *----------------------------------------------------------------------------
+ */
+/* Forward declaration */
+//typedef interface INotifyDBEvents INotifyDBEvents;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+/* C++ Language Binding */
+//extern "C" const IID IID_INotifyDBEvents;
+
+interface INotifyDBEvents : public IUnknown
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE OKToDo
+	(
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE Cancelled
+	(
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE SyncBefore
+	(
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE AboutToDo
+	(
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE FailedToDo
+	(
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE SyncAfter
+	(
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	) = 0;
+
+	virtual HRESULT STDMETHODCALLTYPE DidEvent
+	(
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	) = 0;
+
+};
+
+#else
+
+/* C Language Binding */
+extern const IID IID_INotifyDBEvents;
+
+typedef struct INotifyDBEventsVtbl
+{
+
+	HRESULT (STDMETHODCALLTYPE FAR *QueryInterface)
+	(
+		INotifyDBEvents FAR *this,
+	REFIID riid,
+	void **ppvObject
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *AddRef)
+	(
+		INotifyDBEvents FAR *this
+	);
+
+	ULONG (STDMETHODCALLTYPE FAR *Release)
+	(
+		INotifyDBEvents FAR *this
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *OKToDo)
+	(
+		INotifyDBEvents FAR *this,
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *Cancelled)
+	(
+		INotifyDBEvents FAR *this,
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *SyncBefore)
+	(
+		INotifyDBEvents FAR *this,
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *AboutToDo)
+	(
+		INotifyDBEvents FAR *this,
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *FailedToDo)
+	(
+		INotifyDBEvents FAR *this,
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *SyncAfter)
+	(
+		INotifyDBEvents FAR *this,
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	);
+
+	HRESULT (STDMETHODCALLTYPE FAR *DidEvent)
+	(
+		INotifyDBEvents FAR *this,
+	DWORD dwEventWhat,
+	ULONG cReasons,
+	DBNOTIFYREASON rgReasons[]
+	);
+
+} INotifyDBEventsVtbl;
+
+interface INotifyDBEvents
+{
+	INotifyDBEventsVtbl FAR *lpVtbl;
+} ;
+
+#ifdef COBJMACROS
+
+#define INotifyDBEvents_QueryInterface(pI, riid, ppvObject) \
+	(*(pI)->lpVtbl->QueryInterface)((pI), riid, ppvObject)
+
+#define INotifyDBEvents_AddRef(pI) \
+	(*(pI)->lpVtbl->AddRef)((pI))
+
+#define INotifyDBEvents_Release(pI) \
+	(*(pI)->lpVtbl->Release)((pI))
+
+#define INotifyDBEvents_OKToDo(pI, dwEventWhat, cReasons, rgReasons) \
+	(*(pI)->lpVtbl->OKToDo)((pI), dwEventWhat, cReasons, rgReasons)
+
+#define INotifyDBEvents_Cancelled(pI, dwEventWhat, cReasons, rgReasons) \
+	(*(pI)->lpVtbl->Cancelled)((pI), dwEventWhat, cReasons, rgReasons)
+
+#define INotifyDBEvents_SyncBefore(pI, dwEventWhat, cReasons, rgReasons) \
+	(*(pI)->lpVtbl->SyncBefore)((pI), dwEventWhat, cReasons, rgReasons)
+
+#define INotifyDBEvents_AboutToDo(pI, dwEventWhat, cReasons, rgReasons) \
+	(*(pI)->lpVtbl->AboutToDo)((pI), dwEventWhat, cReasons, rgReasons)
+
+#define INotifyDBEvents_FailedToDo(pI, dwEventWhat, cReasons, rgReasons) \
+	(*(pI)->lpVtbl->FailedToDo)((pI), dwEventWhat, cReasons, rgReasons)
+
+#define INotifyDBEvents_SyncAfter(pI, dwEventWhat, cReasons, rgReasons) \
+	(*(pI)->lpVtbl->SyncAfter)((pI), dwEventWhat, cReasons, rgReasons)
+
+#define INotifyDBEvents_DidEvent(pI, dwEventWhat, cReasons, rgReasons) \
+	(*(pI)->lpVtbl->DidEvent)((pI), dwEventWhat, cReasons, rgReasons)
+#endif /* COBJMACROS */
+
+#endif
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#define __OCDB_H_
+#endif // __OCDB_H_
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               a
+     zËaÏ»  „                   @   sÊ0  d Z dZdZdZdZdZdZdZdZd	Z	d
+Z
+dZdZdZdZdZdZdZeZeZeZeZeZe eB Ze eB Ze eB Ze eB Ze eB Ze eB Ze eB Ze eB Ze eB Ze eB Z e eB Z!e eB Z"eZ#eZ$eZ%eZ&e"Z'eZ(e eB Z)dZ*ddÑ Z+ddÑ Z,ddÑ Z-dZ.dZ/e-ee.ÉZ0e-edÉZ1e-edÉZ1e-e
+dÉZ2e-edÉZ3e-e(dÉZ4e-edÉZ5e-edÉZ5e-edÉZ6e-e
+dÉZ7e-edÉZ8e-edÉZ9e-e(dÉZ:e-edÉZ;e-edÉZ<e-edÉZ=e-e
+d	ÉZ>e-ed
+ÉZ?e-edÉZ@e-e
+dÉZAe-edÉZBe-edÉZCe-edÉZDe-edÉZEe-e
+d ÉZFe-ed!ÉZGe-e
+dÉZHe-ed"ÉZIe-e
+d#ÉZJe-ed$ÉZKe-ed%ÉZLe-ed&ÉZMe-e(d'ÉZNe-ed'ÉZOe-ed'ÉZPe-ed(ÉZQe-edÉZRe-edÉZSe-ed)ÉZTe-ed*ÉZUe-ed+ÉZVe-e
+d,ÉZWe-ed-ÉZXe-ed.ÉZYe-ed/ÉZZe-ed0ÉZ[e-e
+d1ÉZ\e-e
+d2ÉZ]e-ed3ÉZ^e-e
+d4ÉZ_e-ed5ÉZ`e-ed6ÉZae-ed7ÉZbe-e(d8ÉZce-ed8ÉZde-ed8ÉZee-ed9ÉZfe-ed:ÉZge-ed;ÉZhe-e
+d<ÉZie-ed=ÉZje-e
+d>ÉZke-ed?ÉZle-e(d@ÉZme-ed@ÉZne-ed@ÉZoe-edAÉZpe-edBÉZqe-e(dCÉZre-edCÉZse-edCÉZte-edDÉZue-edEÉZve-e(dFÉZwe-edFÉZxe-edFÉZye-edGÉZze-edHÉZ{e-e(dÉZ|e-edÉZ}e-edÉZ~e-edIÉZe-e(dJÉZÄe-edJÉZÅe-edJÉZÇe-edKÉZÉe-e(dLÉZÑe-edLÉZÖe-edLÉZÜe-edMÉZáe-edNÉZàe-edOÉZâe-edÉZäe-e(dPÉZãe-edPÉZåe-edPÉZçe-e
+dQÉZée-e(dRÉZèe-edRÉZêe-edRÉZëe-edSÉZíe-e(dTÉZìe-edTÉZîe-edTÉZïe-edUÉZñe-edVÉZóe-e(dWÉZòe-edWÉZôe-edWÉZöe-edXÉZõe-edYÉZúe-edZÉZùe-ed[ÉZûe-ed\ÉZüe-ed]ÉZ†e-e
+d^ÉZ°e-e
+d_ÉZ¢e-e
+d`ÉZ£e-e(daÉZ§e-edaÉZ•e-edaÉZ¶e-edbÉZße-edcÉZ®e-e(ddÉZ©e-eddÉZ™e-eddÉZ´e-edeÉZ¨e-edfÉZ≠e-edgÉZÆe-edhÉZØe-ediÉZ∞e-e
+djÉZ±e-e(dkÉZ≤e-edkÉZ≥e-edkÉZ¥e-e(dlÉZµe-edlÉZ∂e-edlÉZ∑e-e(dmÉZ∏e-edmÉZπe-edmÉZ∫e-e(dnÉZªe-ednÉZºe-ednÉZΩe-e(doÉZæe-edoÉZøe-edoÉZ¿e-e(dpÉZ¡e-edpÉZ¬e-edpÉZ√e-e(dqÉZƒe-edqÉZ≈e-edqÉZ∆e-edrÉZ«e-e(dsÉZ»e-edsÉZ…e-edsÉZ e-e(dtÉZÀe-edtÉZÃe-edtÉZÕe-e(duÉZŒe-eduÉZœe-eduÉZ–e-e(dvÉZ—e-edvÉZ“e-edvÉZ”e-e(dwÉZ‘e-edwÉZ’e-edwÉZ÷e-e(dxÉZ◊e-edxÉZÿe-edxÉZŸe-e(dyÉZ⁄e-edyÉZ€e-edyÉZ‹e-e(dzÉZ›e-edzÉZﬁe-edzÉZﬂe-e(d{ÉZ‡e-ed{ÉZ·e-ed{ÉZ‚e-e(d|ÉZ„e-ed|ÉZ‰e-ed|ÉZÂe-e(d}ÉZÊe-ed}ÉZÁe-ed}ÉZËe-e(d~ÉZÈe-ed~ÉZÍe-ed~ÉZÎe-edÉZÏe-edÄÉZÌe-e(d ÉZÓe-ed ÉZÔe-ed ÉZe-e(dÅÉZÒe-edÅÉZÚe-edÅÉZÛe-e(dÇÉZÙe-edÇÉZıe-edÇÉZˆe-edÉÉZ˜e-edÑÉZ¯e-edÖÉZ˘e-edÜÉZ˙e-edáÉZ˚e-e(dàÉZ¸e-edàÉZ˝e-edàÉZ˛e-edâÉZˇe-edäÉêZ e-edãÉêZe-edåÉêZe-edçÉêZe-edéÉêZe-e
+dèÉêZe-edêÉêZe-edëÉêZe-edíÉêZe-e
+dìÉêZ	e-edîÉêZ
+e-e
+dïÉêZe-edñÉêZe-e
+dóÉêZe-edòÉêZe-edôÉêZe-edöÉêZe-e
+dõÉêZe-e
+dúÉêZe-edùÉêZe-edûÉêZe-e
+düÉêZe-ed†ÉêZe-e(d°ÉêZe-ed°ÉêZe-ed°ÉêZe-ed¢ÉêZe-ed£ÉêZe-e
+d§ÉêZe-ed•ÉêZe-ed¶ÉêZe-e(dßÉêZe-edßÉêZ e-edßÉêZ!e-e(d®ÉêZ"e-ed®ÉêZ#e-ed®ÉêZ$e-ed©ÉêZ%e-ed™ÉêZ&e-e(d´ÉêZ'e-ed´ÉêZ(e-ed´ÉêZ)e-e(d¨ÉêZ*e-ed¨ÉêZ+e-ed¨ÉêZ,e-ed≠ÉêZ-e-e
+dÆÉêZ.e-e(dØÉêZ/e-edØÉêZ0e-edØÉêZ1e-e(d∞ÉêZ2e-ed∞ÉêZ3e-ed∞ÉêZ4e-e(d±ÉêZ5e-ed±ÉêZ6e-ed±ÉêZ7e-e(d≤ÉêZ8e-ed≤ÉêZ9e-ed≤ÉêZ:e-ed≥ÉêZ;e-ed¥ÉêZ<e-edµÉêZ=e-ed∂ÉêZ>e-ed∑ÉêZ?e-e
+d∏ÉêZ@e-edπÉêZAe-e
+d∫ÉêZBe-e
+dªÉêZCe-edºÉêZDe-edΩÉêZEe-edæÉêZFe-edøÉêZGe-ed¿ÉêZHe-ed¡ÉêZIe-ed¬ÉêZJe-ed√ÉêZKe-edƒÉêZLe-ed≈ÉêZMe-ed∆ÉêZNe-e
+d«ÉêZOe-ed»ÉêZPe-e(d…ÉêZQe-ed…ÉêZRe-ed…ÉêZSe-e
+d ÉêZTe-edÀÉêZUe-edÃÉêZVe-e
+dÕÉêZWe-edŒÉêZXe-edœÉêZYe-ed–ÉêZZe-ed—ÉêZ[e-ed“ÉêZ\e-ed”ÉêZ]e-ed‘ÉêZ^e-ed’ÉêZ_e-ed÷ÉêZ`e-ed◊ÉêZae-edÿÉêZbe-edŸÉêZce-ed⁄ÉêZde-ed€ÉêZee-ed‹ÉêZfe-e(d›ÉêZge-ed›ÉêZhe-ed›ÉêZie-e(dﬁÉêZje-edﬁÉêZke-edﬁÉêZle-e(dﬂÉêZme-edﬂÉêZne-edﬂÉêZoe-e(d‡ÉêZpe-ed‡ÉêZqe-ed‡ÉêZre-ed·ÉêZse-e(d‚ÉêZte-ed‚ÉêZue-ed‚ÉêZve-ed„ÉêZwe-ed‰ÉêZxe-edÂÉêZye-e(dÊÉêZze-edÊÉêZ{e-edÊÉêZ|e-edÁÉêZ}e-edËÉêZ~e-edÈÉêZe-e(dÍÉêZÄe-edÍÉêZÅe-edÍÉêZÇe-edÎÉêZÉe-e(dÏÉêZÑe-edÏÉêZÖe-edÏÉêZÜe-e(dÌÉêZáe-edÌÉêZàe-edÌÉêZâe-e(dÓÉêZäe-edÓÉêZãe-edÓÉêZåe-edÔÉêZçe-e
+dÉêZée-e(dÒÉêZèe-edÒÉêZêe-edÒÉêZëe-edÚÉêZíe-edÛÉêZìe-e
+dÙÉêZîe-edıÉêZïe-edˆÉêZñe-ed˜ÉêZóe-ed¯ÉêZòe-ed˘ÉêZôe-ed˙ÉêZöe-ed˚ÉêZõe-ed¸ÉêZúe-ed˝ÉêZùe-ed˛ÉêZûe-edˇÉêZüe-eêd ÉêZ†e-eêdÉêZ°e-eêdÉêZ¢e-eêdÉêZ£e-eêdÉêZ§e-eêdÉêZ•e-eêdÉêZ¶e-eêdÉêZße-eêdÉêZ®e-eêd	ÉêZ©e-eêd
+ÉêZ™e-eêdÉêZ´e-e
+êdÉêZ¨e-e
+êdÉêZ≠e-eêdÉêZÆe-e(êdÉêZØe-eêdÉêZ∞e-eêdÉêZ±e-eêdÉêZ≤e-eêdÉêZ≥e-eêdÉêZ¥e-eêdÉêZµe-eêdÉêZ∂e-eêdÉêZ∑e-e(êdÉêZ∏e-eêdÉêZπe-eêdÉêZ∫e-eêdÉêZªe-eêdÉêZºe-eêdÉêZΩe-eêdÉêZæe-eêdÉêZøe-eêdÉêZ¿e-eêdÉêZ¡e-eêdÉêZ¬e-e(êdÉêZ√e-eêdÉêZƒe-eêdÉêZ≈e-e(êdÉêZ∆e-eêdÉêZ«e-eêdÉêZ»e-eêd ÉêZ…e-e(êd!ÉêZ e-eêd!ÉêZÀe-eêd!ÉêZÃe-e(êd"ÉêZÕe-eêd"ÉêZŒe-eêd"ÉêZœe-eêd#ÉêZ–e-eêd$ÉêZ—e-eêd%ÉêZ“e-e(êd&ÉêZ”e-eêd&ÉêZ‘e-eêd&ÉêZ’e-e(êd'ÉêZ÷e-eêd'ÉêZ◊e-eêd'ÉêZÿe-e(êd(ÉêZŸe-eêd(ÉêZ⁄e-eêd(ÉêZ€e-eêd)ÉêZ‹e-eêd*ÉêZ›e-eêd+ÉêZﬁe-eêd,ÉêZﬂe-eêd-ÉêZ‡e-e(êd.ÉêZ·e-eêd.ÉêZ‚e-eêd.ÉêZ„e-eêd/ÉêZ‰e-e(êd0ÉêZÂe-eêd0ÉêZÊe-eêd0ÉêZÁe-e
+êd1ÉêZËe-e
+êd2ÉêZÈe-e(êd3ÉêZÍe-eêd3ÉêZÎe-eêd3ÉêZÏe-e(êd4ÉêZÌe-eêd4ÉêZÓe-eêd4ÉêZÔe-e(êd5ÉêZe-eêd5ÉêZÒe-eêd5ÉêZÚe-e(êd6ÉêZÛe-eêd6ÉêZÙe-eêd6ÉêZıêeÛêZˆêeÙêZ˜êeıêZ¯e-e(êd7ÉêZ˘e-eêd7ÉêZ˙e-eêd7ÉêZ˚e-e(êd8ÉêZ¸e-eêd8ÉêZ˝e-eêd8ÉêZ˛e-e(êd9ÉêZˇe-eêd9ÉêZ e-eêd9ÉêZe-e(êd:ÉêZe-eêd:ÉêZe-eêd:ÉêZe-e(êd;ÉêZe-eêd;ÉêZe-eêd;ÉêZe-e
+êd<ÉêZe-e(êd=ÉêZ	e-eêd=ÉêZ
+e-eêd=ÉêZe-e(êd>ÉêZe-eêd>ÉêZe-eêd>ÉêZe-e(êd?ÉêZe-eêd?ÉêZe-eêd?ÉêZe-eêd@ÉêZe-e(êdAÉêZe-eêdAÉêZe-eêdAÉêZe-eêdBÉêZe-e(êdCÉêZe-eêdCÉêZe-eêdCÉêZe-e(êdDÉêZe-eêdDÉêZe-eêdDÉêZe-e(êdEÉêZe-eêdEÉêZe-eêdEÉêZe-e(êdFÉêZ e-eêdFÉêZ!e-eêdFÉêZ"e-e(êdGÉêZ#e-eêdGÉêZ$e-eêdGÉêZ%e-e(êdHÉêZ&e-eêdHÉêZ'e-eêdHÉêZ(e-e(êdIÉêZ)e-eêdIÉêZ*e-eêdIÉêZ+êe)êZ,êe*êZ-êe+êZ.e-e(êdJÉêZ/e-eêdJÉêZ0e-eêdJÉêZ1êe/êZ2êe0êZ3êe1êZ4e-e(êdKÉêZ5e-eêdKÉêZ6e-eêdKÉêZ7e-e(êdLÉêZ8e-eêdLÉêZ9e-eêdLÉêZ:e-e(êdMÉêZ;e-eêdMÉêZ<e-eêdMÉêZ=e-e(êdNÉêZ>e-eêdNÉêZ?e-eêdNÉêZ@e-e(êdOÉêZAe-eêdOÉêZBe-eêdOÉêZCêeAêZDêeBêZEêeCêZFe-eêdPÉêZGe-e(êdQÉêZHe-eêdQÉêZIe-eêdQÉêZJe-e(êdRÉêZKe-eêdRÉêZLe-eêdRÉêZMe-e(êdSÉêZNe-eêdSÉêZOe-eêdSÉêZPe-e(êdTÉêZQe-eêdTÉêZRe-eêdTÉêZSêeQêZTêeRêZUêeSêZVe-e(êdUÉêZWe-eêdUÉêZXe-eêdUÉêZYêeWêZZêeXêZ[êeYêZ\e-e(êdVÉêZ]e-eêdVÉêZ^e-eêdVÉêZ_êe]êZ`êe^êZaêe_êZbe-e(êdWÉêZce-eêdWÉêZde-eêdWÉêZeêecêZfêedêZgêeeêZhe-e(êdXÉêZie-eêdXÉêZje-eêdXÉêZkêeiêZlêejêZmêekêZne-e(êdYÉêZoe-eêdYÉêZpe-eêdYÉêZqêeoêZrêepêZsêeqêZte-e(êdZÉêZue-eêdZÉêZve-eêdZÉêZwe-e(êd[ÉêZxe-eêd[ÉêZye-eêd[ÉêZze-e(êd\ÉêZ{e-eêd\ÉêZ|e-eêd\ÉêZ}e-e(êd]ÉêZ~e-eêd]ÉêZe-eêd]ÉêZÄe-e(êd^ÉêZÅe-eêd^ÉêZÇe-eêd^ÉêZÉe-e
+êd_ÉêZÑe-eêd`ÉêZÖe-eêdaÉêZÜe-e(êdbÉêZáe-eêdbÉêZàe-eêdbÉêZâe-e(êdcÉêZäe-eêdcÉêZãe-eêdcÉêZåe-e(êddÉêZçe-eêddÉêZée-eêddÉêZèe-e(êdeÉêZêe-eêdeÉêZëe-eêdeÉêZíe-e(êdfÉêZìe-eêdfÉêZîe-eêdfÉêZïe-e(êdgÉêZñe-eêdgÉêZóe-eêdgÉêZòe-e(êdhÉêZôe-eêdhÉêZöe-eêdhÉêZõe-e(êdiÉêZúe-eêdiÉêZùe-eêdiÉêZûe-e(êdjÉêZüe-eêdjÉêZ†e-eêdjÉêZ°e-e(êdkÉêZ¢e-eêdkÉêZ£e-eêdkÉêZ§e-eêdlÉêZ•e-e(êdmÉêZ¶e-eêdmÉêZße-eêdmÉêZ®e-e(êdnÉêZ©e-eêdnÉêZ™e-eêdnÉêZ´e-e(êdoÉêZ¨e-eêdoÉêZ≠e-eêdoÉêZÆe-e(êdpÉêZØe-eêdpÉêZ∞e-eêdpÉêZ±e-eêdqÉêZ≤e-eêdrÉêZ≥e-e)êdsÉêZ¥e-e êdsÉêZµe-eêdsÉêZ∂e-eêdtÉêZ∑e-e)êduÉêZ∏e-e êduÉêZπe-eêduÉêZ∫e-e(êdvÉêZªe-eêdvÉêZºe-eêdvÉêZΩe-e)êdwÉêZæe-e êdwÉêZøe-eêdwÉêZ¿e-e(êdxÉêZ¡e-eêdxÉêZ¬e-eêdxÉêZ√e-e(êdyÉêZƒe-eêdyÉêZ≈e-eêdyÉêZ∆e-e(êdzÉêZ«e-eêdzÉêZ»e-eêdzÉêZ…e-e(êd{ÉêZ e-eêd{ÉêZÀe-eêd{ÉêZÃe-e(êd|ÉêZÕe-eêd|ÉêZŒe-eêd|ÉêZœe-e(êd}ÉêZ–e-eêd}ÉêZ—e-eêd}ÉêZ“e-e(êd~ÉêZ”e-eêd~ÉêZ‘e-eêd~ÉêZ’e-e(êdÉêZ÷e-eêdÉêZ◊e-eêdÉêZÿe-e(êdÄÉêZŸe-eêdÄÉêZ⁄e-eêdÄÉêZ€e-e(êdÅÉêZ‹e-eêdÅÉêZ›e-eêdÅÉêZﬁe-e(êdÇÉêZﬂe-eêdÇÉêZ‡e-eêdÇÉêZ·e-e(êdÉÉêZ‚e-eêdÉÉêZ„e-eêdÉÉêZ‰e-eêdÑÉêZÂe-eêdÖÉêZÊe-eêdÜÉêZÁe-e
+êdáÉêZËe-eêdàÉêZÈe-eêdâÉêZÍe-eêdäÉêZÎe-eêdãÉêZÏe-e(êdåÉêZÌe-eêdåÉêZÓe-eêdåÉêZÔe-e(êdçÉêZe-eêdçÉêZÒe-eêdçÉêZÚe-eêdéÉêZÛe-eêdèÉêZÙe-eêdêÉêZıe-eêdëÉêZˆe-e)êdíÉêZ˜e-e êdíÉêZ¯e-eêdíÉêZ˘e-e)êdìÉêZ˙e-e êdìÉêZ˚e-eêdìÉêZ¸e-eêdîÉêZ˝e-e(êdïÉêZ˛e-eêdïÉêZˇe-eêdïÉêZ e-e(êdñÉêZe-eêdñÉêZe-eêdñÉêZe-eêdóÉêZe-eêdòÉêZe-eêdôÉêZe-eêdöÉêZe-eêdõÉêZe-eêdúÉêZ	e-e(êdùÉêZ
+e-eêdùÉêZe-eêdùÉêZe-e(êdûÉêZe-eêdûÉêZe-eêdûÉêZe-e
+êdüÉêZe-eêd†ÉêZe-eêd°ÉêZe-e(êd¢ÉêZe-eêd¢ÉêZe-eêd¢ÉêZe-e
+êd£ÉêZe-eêd§ÉêZe-eêd•ÉêZe-eêd¶ÉêZe-eêdßÉêZe-eêd®ÉêZe-eêd©ÉêZe-eêd™ÉêZe-eêd´ÉêZe-eêd¨ÉêZêd≠êZ êdÆêZ!êdØêZ"êd∞êZ#êd±êZ$êd≤êZ%êd≥êZ&êd¥êZ'êdµêZ(êd∂êZ)êd∑êZ*êd∏êZ+êe êZ,e-eêe$d ÉêZ-e-eêe$d ÉêZ.e-eêe$d ÉêZ/e-eêe$d  ÉêZ0e-eêe$d! ÉêZ1e-eêe$d ÉêZ2e-eêe$d ÉêZ3e-eêe$d ÉêZ4e-eêe$d ÉêZ5e-eêe$d ÉêZ6e-eêe$d ÉêZ7e-eêe$d ÉêZ8e-eêe$d ÉêZ9e-eêe$d ÉêZ:e-eêe$d ÉêZ;e-eêe$d ÉêZ<e-eêe*d$ ÉêZ=e-eêe*d& ÉêZ>e-eêe,d ÉêZ?e-eêe$d% ÉêZ@e-eêdπÉêZAe-eêe$d ÉêZBe-eêe$d	 ÉêZCe-eêe$d
+ ÉêZDe-eêe$d ÉêZEe-eêe$d ÉêZFe-eêe$d ÉêZGe-eêe$d" ÉêZHe-eêe$d# ÉêZIe-eêe$d$ ÉêZJêd∫êZKêdªêZLêdºêZMe-eêe%d ÉêZNe-eêe%d ÉêZOe-eêe%d	 ÉêZPe-eêe%d
+ ÉêZQe-eêe%d ÉêZRe-eêe%d ÉêZSe-eêe%d ÉêZTe-eêe%d ÉêZUe-eêe%d% ÉêZVe-eêe%d& ÉêZWe-eêe%d ÉêZXe-eêe%d ÉêZYe-e
+êe%d  ÉêZZe-eêe%d! ÉêZ[e-eêe%d ÉêZ\e-eêe%d" ÉêZ]e-eêe%d# ÉêZ^e-eêe%d$ ÉêZ_e-e
+êe%d' ÉêZ`e-e
+êe%ÉêZae-eêe+ÉêZbe-eêe+d ÉêZce-eêe+d ÉêZde-eêe+d ÉêZee-eêe+d ÉêZfe-eêe+d ÉêZgdêZhdkêZidêZjdêZkdêZlêdΩêZme-eêe#d ÉêZne-eêe#d ÉêZoe-eêe#d ÉêZpe-eêe#d ÉêZqe-eêe&ÉêZre-eêe&d ÉêZse-eêe"ÉêZte-eêe"d ÉêZue-e
+êe&d ÉêZve-eêe&d ÉêZwe-eêe"ÉêZxe-eêe"d ÉêZye-eêe"d ÉêZze-e
+êe"d ÉêZ{e-e
+êe"d ÉêZ|e-e
+êe"d ÉêZ}e-eêe"d ÉêZ~e-e(êe"d ÉêZe-eêe"d ÉêZÄe-eêe+d ÉêZÅe-eêe+d ÉêZÇdêZÉdêZÑdêZÖe-eêe&d ÉêZÜe-e
+êe'd	 ÉêZáe-e(êe"d% ÉêZàe-eêe"d& ÉêZâe-e(êe"d' ÉêZäe-eêe"d( ÉêZãe-e
+êe"d	 ÉêZåe-eêe"d  ÉêZçe-eêe"d! ÉêZée-eêe"d ÉêZèe-e(êe'd ÉêZêe-eêe"d
+ ÉêZëe-eêe"d ÉêZíe-eêe"d ÉêZìe-eêe"d ÉêZîe-eêe"d ÉêZïe-eêe(ÉêZñe-eêdæÉêZóe-eêdøÉêZòe-eêe'd ÉêZôe-eêe'd ÉêZöe-e
+êe'd ÉêZõe-eêe'd ÉêZúe-eêe'd ÉêZùe-eêe'd ÉêZûe-eêe'd ÉêZüe-eêe"d ÉêZ†e-eêe"d ÉêZ°e-eêe"d" ÉêZ¢e-eêe"d# ÉêZ£e-e(êe"d$ ÉêZ§e-e
+êe"d ÉêZ•êd¿êZ¶e-e
+êe)ÉêZße-eêe*ÉêZ®e-e(êe(d ÉêZ©e-e(êe(d ÉêZ™e-e(êe(d ÉêZ´e-eêe(d ÉêZ¨e-eêe(d ÉêZ≠e-eêe(d ÉêZÆe-eêe(d  ÉêZØe-eêe(d ÉêZ∞e-eêe(d	 ÉêZ±e-eêe(d
+ ÉêZ≤e-e(êe(d ÉêZ≥e-eêe(d ÉêZ¥e-eêe(d ÉêZµe-eêe(d ÉêZ∂e-eêe(d ÉêZ∑e-eêe(d ÉêZ∏eâêZπeâêZ∫e-eêe+d% ÉêZªe-eêe+d& ÉêZºe-eêe+d' ÉêZΩe-eêe+d( ÉêZæe-eêe+êd¡ ÉêZøe-eêe+êd¬ ÉêZ¿e-eêe+d ÉêZ¡e-eêe+d ÉêZ¬e-eêe+d) ÉêZ√e-eêe+d* ÉêZƒe-eêe+d+ ÉêZ≈e-eêe+d, ÉêZ∆e-eêe+d, ÉêZ«e-eêe+d- ÉêZ»e-eêe+d- ÉêZ…e-e(êe+d. ÉêZ e-eêe+d/ ÉêZÀe-eêe+d0 ÉêZÃe-ee,êe=ÉÉêZÕe-eêd√ÉêZŒe-e
+êdƒÉêZœe-eêd≈ÉêZ–êd∆êZ—e-eêe—d ÉêZ“e-eêe—d ÉêZ”e-eêe—d ÉêZ‘e-e
+êe—d ÉêZ’e-eêe—d ÉêZ÷e-eêe—d ÉêZ◊e-eêe—d ÉêZÿe-eêe—d ÉêZŸe-eêe—d ÉêZ⁄e-eêe—d ÉêZ€e-eêe—d ÉêZ‹êd«S (»  i   È    È   È   È   È   È   È   È   È
+   È   È   È   È   È   È@   ÈH   i  iˇˇ  c                 C   s   | t @ S )N)⁄PROP_TYPE_MASK©Z	ulPropTag© r   ˙kC:\__w\1\s\PoirotService\client\build\VsPoirotZipTemp\python\Lib\site-packages\win32comext/mapi/mapitags.py⁄	PROP_TYPE5   s    r   c                 C   s   | d? S ©NÈ   r   r   r   r   r   ⁄PROP_ID9   s    r   c                 C   s   |d> | B S r   r   )Z
+ulPropTypeZulPropIDr   r   r   ⁄PROP_TAG=   s    r   È   È	   È   È   È   r   È   È   È   È   È   È   È   È   È   È   È    È!   È"   È#   È$   È%   È&   È'   È(   È)   È*   È+   È,   È-   È.   È/   È0   È1   È2   È3   È4   È5   È6   È7   È8   È9   È:   È;   È<   È=   È>   È?   ÈA   ÈB   ÈC   ÈD   ÈE   ÈF   ÈG   ÈI   ÈJ   ÈK   ÈL   ÈM   ÈN   ÈO   ÈP   ÈQ   ÈR   ÈS   ÈT   ÈU   ÈV   ÈW   ÈX   ÈY   ÈZ   È[   È\   È]   È^   È_   È`   Èa   Èb   Èc   Èd   Èe   Èf   Èg   Èh   Èi   Èp   Èq   Èr   Ès   Èt   Èu   Èv   Èw   Èx   Èy   Èz   È{   È|   È}   È~   È   i  i  i  i  i  i  i  i  i	  i  i  i  i   i  i  i  i  i  i  i  i  i	  i
+  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i   i  i  i  i  i  i  i  i  i	  i
+  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i  i   i!  i"  i%  i&  iˇ  i˛  i˝  i¸  i˚  i˙  i˘  i¯  i˜  iˆ  iı  iÙ  i 0  i0  i0  i0  i0  i0  i0  i0  i0  i	0  i
+0  i0  i0  i0  i3  i3  i3  i3  i3  i3  i3  i3  i	3  i
+3  i 4  i4  i4  i4  i4  i4  i4  i4  i4  iﬂ5  i‡5  i‚5  i„5  i‰5  iÂ5  iÊ5  iÁ5  i 6  i6  i6  i6  i6  i6  i6  i	6  i
+6  i6  i6  i6  i6  i6  i6  i6  i6  i6  i6  i6  i6  i6  i 7  i7  i7  i7  i7  i7  i7  i7  i	7  i
+7  i7  i7  i7  i7  i7  i 9  i9  i9  iˇ9  i :  i:  i:  i:  i:  i:  i:  i:  i:  i	:  i
+:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i:  i :  i!:  i":  i#:  i$:  i%:  i&:  i':  i(:  i):  i*:  i+:  i,:  i-:  i.:  i/:  i0:  i@:  iA:  iB:  iC:  iD:  iE:  iF:  iG:  iH:  iI:  iJ:  iK:  iL:  iM:  iN:  iO:  iP:  iQ:  iR:  iS:  iT:  iU:  iV:  iW:  iX:  iY:  iZ:  i[:  i\:  i]:  i^:  i_:  i`:  ia:  ib:  ic:  id:  i =  i=  i=  i=  i=  i=  i=  i=  i	=  i
+=  i=  i=  i=  i=  i=  i=  i=  i=  i >  i>  i>  i>  i>  i>  i>  i>  i>  i	>  i
+>  i>  i>  i>  i ?  i?  i?  i?  i?  i?  i?  i?  i?  ig  iˇg  i‡?  i‡e  i f  if  i8f  i@f  iXf  ilf  ipf  iêf  ig  i   Äi   @i    Èˇˇˇˇi   i  i   È   È   i„6  i˛|  iˇ|  i g  N(›  ZMV_FLAGZPT_UNSPECIFIEDZPT_NULLZPT_I2ZPT_LONGZPT_R4Z	PT_DOUBLEZPT_CURRENCYZ
+PT_APPTIMEZPT_ERRORZ
+PT_BOOLEANZ	PT_OBJECTZPT_I8Z
+PT_STRING8Z
+PT_UNICODEZ
+PT_SYSTIMEZPT_CLSIDZ	PT_BINARYZPT_SHORTZPT_I4ZPT_FLOATZPT_R8ZPT_LONGLONGZPT_MV_I2Z
+PT_MV_LONGZPT_MV_R4ZPT_MV_DOUBLEZPT_MV_CURRENCYZPT_MV_APPTIMEZPT_MV_SYSTIMEZPT_MV_STRING8ZPT_MV_BINARYZPT_MV_UNICODEZPT_MV_CLSIDZPT_MV_I8ZPT_MV_SHORTZPT_MV_I4ZPT_MV_FLOATZPT_MV_R8ZPT_MV_LONGLONGZ
+PT_TSTRINGZPT_MV_TSTRINGr   r   r   r   ZPROP_ID_NULLZPROP_ID_INVALIDZPR_NULLZPR_ACKNOWLEDGEMENT_MODEZPR_ALTERNATE_RECIPIENT_ALLOWEDZPR_AUTHORIZING_USERSZPR_AUTO_FORWARD_COMMENTZPR_AUTO_FORWARD_COMMENT_WZPR_AUTO_FORWARD_COMMENT_AZPR_AUTO_FORWARDEDZ'PR_CONTENT_CONFIDENTIALITY_ALGORITHM_IDZPR_CONTENT_CORRELATORZPR_CONTENT_IDENTIFIERZPR_CONTENT_IDENTIFIER_WZPR_CONTENT_IDENTIFIER_AZPR_CONTENT_LENGTHZPR_CONTENT_RETURN_REQUESTEDZPR_CONVERSATION_KEYZPR_CONVERSION_EITSZ"PR_CONVERSION_WITH_LOSS_PROHIBITEDZPR_CONVERTED_EITSZPR_DEFERRED_DELIVERY_TIMEZPR_DELIVER_TIMEZPR_DISCARD_REASONZPR_DISCLOSURE_OF_RECIPIENTSZPR_DL_EXPANSION_HISTORYZPR_DL_EXPANSION_PROHIBITEDZPR_EXPIRY_TIMEZ!PR_IMPLICIT_CONVERSION_PROHIBITEDZPR_IMPORTANCEZ	PR_IPM_IDZPR_LATEST_DELIVERY_TIMEZPR_MESSAGE_CLASSZPR_MESSAGE_CLASS_WZPR_MESSAGE_CLASS_AZPR_MESSAGE_DELIVERY_IDZPR_MESSAGE_SECURITY_LABELZPR_OBSOLETED_IPMSZ%PR_ORIGINALLY_INTENDED_RECIPIENT_NAMEZPR_ORIGINAL_EITSZPR_ORIGINATOR_CERTIFICATEZ'PR_ORIGINATOR_DELIVERY_REPORT_REQUESTEDZPR_ORIGINATOR_RETURN_ADDRESSZPR_PARENT_KEYZPR_PRIORITYZPR_ORIGIN_CHECKZ PR_PROOF_OF_SUBMISSION_REQUESTEDZPR_READ_RECEIPT_REQUESTEDZPR_RECEIPT_TIMEZ$PR_RECIPIENT_REASSIGNMENT_PROHIBITEDZPR_REDIRECTION_HISTORYZPR_RELATED_IPMSZPR_ORIGINAL_SENSITIVITYZPR_LANGUAGESZPR_LANGUAGES_WZPR_LANGUAGES_AZPR_REPLY_TIMEZPR_REPORT_TAGZPR_REPORT_TIMEZPR_RETURNED_IPMZPR_SECURITYZPR_INCOMPLETE_COPYZPR_SENSITIVITYZ
+PR_SUBJECTZPR_SUBJECT_WZPR_SUBJECT_AZPR_SUBJECT_IPMZPR_CLIENT_SUBMIT_TIMEZPR_REPORT_NAMEZPR_REPORT_NAME_WZPR_REPORT_NAME_AZPR_SENT_REPRESENTING_SEARCH_KEYZPR_X400_CONTENT_TYPEZPR_SUBJECT_PREFIXZPR_SUBJECT_PREFIX_WZPR_SUBJECT_PREFIX_AZPR_NON_RECEIPT_REASONZPR_RECEIVED_BY_ENTRYIDZPR_RECEIVED_BY_NAMEZPR_RECEIVED_BY_NAME_WZPR_RECEIVED_BY_NAME_AZPR_SENT_REPRESENTING_ENTRYIDZPR_SENT_REPRESENTING_NAMEZPR_SENT_REPRESENTING_NAME_WZPR_SENT_REPRESENTING_NAME_AZPR_RCVD_REPRESENTING_ENTRYIDZPR_RCVD_REPRESENTING_NAMEZPR_RCVD_REPRESENTING_NAME_WZPR_RCVD_REPRESENTING_NAME_AZPR_REPORT_ENTRYIDZPR_READ_RECEIPT_ENTRYIDZPR_MESSAGE_SUBMISSION_IDZPR_PROVIDER_SUBMIT_TIMEZPR_ORIGINAL_SUBJECTZPR_ORIGINAL_SUBJECT_WZPR_ORIGINAL_SUBJECT_AZPR_DISC_VALZPR_ORIG_MESSAGE_CLASSZPR_ORIG_MESSAGE_CLASS_WZPR_ORIG_MESSAGE_CLASS_AZPR_ORIGINAL_AUTHOR_ENTRYIDZPR_ORIGINAL_AUTHOR_NAMEZPR_ORIGINAL_AUTHOR_NAME_WZPR_ORIGINAL_AUTHOR_NAME_AZPR_ORIGINAL_SUBMIT_TIMEZPR_REPLY_RECIPIENT_ENTRIESZPR_REPLY_RECIPIENT_NAMESZPR_REPLY_RECIPIENT_NAMES_WZPR_REPLY_RECIPIENT_NAMES_AZPR_RECEIVED_BY_SEARCH_KEYZPR_RCVD_REPRESENTING_SEARCH_KEYZPR_READ_RECEIPT_SEARCH_KEYZPR_REPORT_SEARCH_KEYZPR_ORIGINAL_DELIVERY_TIMEZPR_ORIGINAL_AUTHOR_SEARCH_KEYZPR_MESSAGE_TO_MEZPR_MESSAGE_CC_MEZPR_MESSAGE_RECIP_MEZPR_ORIGINAL_SENDER_NAMEZPR_ORIGINAL_SENDER_NAME_WZPR_ORIGINAL_SENDER_NAME_AZPR_ORIGINAL_SENDER_ENTRYIDZPR_ORIGINAL_SENDER_SEARCH_KEYZ"PR_ORIGINAL_SENT_REPRESENTING_NAMEZ$PR_ORIGINAL_SENT_REPRESENTING_NAME_WZ$PR_ORIGINAL_SENT_REPRESENTING_NAME_AZ%PR_ORIGINAL_SENT_REPRESENTING_ENTRYIDZ(PR_ORIGINAL_SENT_REPRESENTING_SEARCH_KEYZPR_START_DATEZPR_END_DATEZPR_OWNER_APPT_IDZPR_RESPONSE_REQUESTEDZPR_SENT_REPRESENTING_ADDRTYPEZPR_SENT_REPRESENTING_ADDRTYPE_WZPR_SENT_REPRESENTING_ADDRTYPE_AZ"PR_SENT_REPRESENTING_EMAIL_ADDRESSZ$PR_SENT_REPRESENTING_EMAIL_ADDRESS_WZ$PR_SENT_REPRESENTING_EMAIL_ADDRESS_AZPR_ORIGINAL_SENDER_ADDRTYPEZPR_ORIGINAL_SENDER_ADDRTYPE_WZPR_ORIGINAL_SENDER_ADDRTYPE_AZ PR_ORIGINAL_SENDER_EMAIL_ADDRESSZ"PR_ORIGINAL_SENDER_EMAIL_ADDRESS_WZ"PR_ORIGINAL_SENDER_EMAIL_ADDRESS_AZ&PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPEZ(PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE_WZ(PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE_AZ+PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESSZ-PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS_WZ-PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS_AZPR_CONVERSATION_TOPICZPR_CONVERSATION_TOPIC_WZPR_CONVERSATION_TOPIC_AZPR_CONVERSATION_INDEXZPR_ORIGINAL_DISPLAY_BCCZPR_ORIGINAL_DISPLAY_BCC_WZPR_ORIGINAL_DISPLAY_BCC_AZPR_ORIGINAL_DISPLAY_CCZPR_ORIGINAL_DISPLAY_CC_WZPR_ORIGINAL_DISPLAY_CC_AZPR_ORIGINAL_DISPLAY_TOZPR_ORIGINAL_DISPLAY_TO_WZPR_ORIGINAL_DISPLAY_TO_AZPR_RECEIVED_BY_ADDRTYPEZPR_RECEIVED_BY_ADDRTYPE_WZPR_RECEIVED_BY_ADDRTYPE_AZPR_RECEIVED_BY_EMAIL_ADDRESSZPR_RECEIVED_BY_EMAIL_ADDRESS_WZPR_RECEIVED_BY_EMAIL_ADDRESS_AZPR_RCVD_REPRESENTING_ADDRTYPEZPR_RCVD_REPRESENTING_ADDRTYPE_WZPR_RCVD_REPRESENTING_ADDRTYPE_AZ"PR_RCVD_REPRESENTING_EMAIL_ADDRESSZ$PR_RCVD_REPRESENTING_EMAIL_ADDRESS_WZ$PR_RCVD_REPRESENTING_EMAIL_ADDRESS_AZPR_ORIGINAL_AUTHOR_ADDRTYPEZPR_ORIGINAL_AUTHOR_ADDRTYPE_WZPR_ORIGINAL_AUTHOR_ADDRTYPE_AZ PR_ORIGINAL_AUTHOR_EMAIL_ADDRESSZ"PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS_WZ"PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS_AZ%PR_ORIGINALLY_INTENDED_RECIP_ADDRTYPEZ'PR_ORIGINALLY_INTENDED_RECIP_ADDRTYPE_WZ'PR_ORIGINALLY_INTENDED_RECIP_ADDRTYPE_AZ*PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESSZ,PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS_WZ,PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS_AZPR_TRANSPORT_MESSAGE_HEADERSZPR_TRANSPORT_MESSAGE_HEADERS_WZPR_TRANSPORT_MESSAGE_HEADERS_AZPR_DELEGATIONZPR_TNEF_CORRELATION_KEYZPR_BODYZ	PR_BODY_WZ	PR_BODY_AZPR_BODY_HTMLZPR_BODY_HTML_WZPR_BODY_HTML_AZPR_REPORT_TEXTZPR_REPORT_TEXT_WZPR_REPORT_TEXT_AZ&PR_ORIGINATOR_AND_DL_EXPANSION_HISTORYZPR_REPORTING_DL_NAMEZPR_REPORTING_MTA_CERTIFICATEZPR_RTF_SYNC_BODY_CRCZPR_RTF_SYNC_BODY_COUNTZPR_RTF_SYNC_BODY_TAGZPR_RTF_SYNC_BODY_TAG_WZPR_RTF_SYNC_BODY_TAG_AZPR_RTF_COMPRESSEDZPR_RTF_SYNC_PREFIX_COUNTZPR_RTF_SYNC_TRAILING_COUNTZ$PR_ORIGINALLY_INTENDED_RECIP_ENTRYIDZPR_CONTENT_INTEGRITY_CHECKZPR_EXPLICIT_CONVERSIONZPR_IPM_RETURN_REQUESTEDZPR_MESSAGE_TOKENZPR_NDR_REASON_CODEZPR_NDR_DIAG_CODEZ%PR_NON_RECEIPT_NOTIFICATION_REQUESTEDZPR_DELIVERY_POINTZ+PR_ORIGINATOR_NON_DELIVERY_REPORT_REQUESTEDZ+PR_ORIGINATOR_REQUESTED_ALTERNATE_RECIPIENTZ(PR_PHYSICAL_DELIVERY_BUREAU_FAX_DELIVERYZPR_PHYSICAL_DELIVERY_MODEZ#PR_PHYSICAL_DELIVERY_REPORT_REQUESTZPR_PHYSICAL_FORWARDING_ADDRESSZ(PR_PHYSICAL_FORWARDING_ADDRESS_REQUESTEDZ!PR_PHYSICAL_FORWARDING_PROHIBITEDZ PR_PHYSICAL_RENDITION_ATTRIBUTESZPR_PROOF_OF_DELIVERYZPR_PROOF_OF_DELIVERY_REQUESTEDZPR_RECIPIENT_CERTIFICATEZPR_RECIPIENT_NUMBER_FOR_ADVICEZ PR_RECIPIENT_NUMBER_FOR_ADVICE_WZ PR_RECIPIENT_NUMBER_FOR_ADVICE_AZPR_RECIPIENT_TYPEZPR_REGISTERED_MAIL_TYPEZPR_REPLY_REQUESTEDZPR_REQUESTED_DELIVERY_METHODZPR_SENDER_ENTRYIDZPR_SENDER_NAMEZPR_SENDER_NAME_WZPR_SENDER_NAME_AZPR_SUPPLEMENTARY_INFOZPR_SUPPLEMENTARY_INFO_WZPR_SUPPLEMENTARY_INFO_AZPR_TYPE_OF_MTS_USERZPR_SENDER_SEARCH_KEYZPR_SENDER_ADDRTYPEZPR_SENDER_ADDRTYPE_WZPR_SENDER_ADDRTYPE_AZPR_SENDER_EMAIL_ADDRESSZPR_SENDER_EMAIL_ADDRESS_WZPR_SENDER_EMAIL_ADDRESS_AZPR_CURRENT_VERSIONZPR_DELETE_AFTER_SUBMITZPR_DISPLAY_BCCZPR_DISPLAY_BCC_WZPR_DISPLAY_BCC_AZPR_DISPLAY_CCZPR_DISPLAY_CC_WZPR_DISPLAY_CC_AZPR_DISPLAY_TOZPR_DISPLAY_TO_WZPR_DISPLAY_TO_AZPR_PARENT_DISPLAYZPR_PARENT_DISPLAY_WZPR_PARENT_DISPLAY_AZPR_MESSAGE_DELIVERY_TIMEZPR_MESSAGE_FLAGSZPR_MESSAGE_SIZEZPR_PARENT_ENTRYIDZPR_SENTMAIL_ENTRYIDZPR_CORRELATEZPR_CORRELATE_MTSIDZPR_DISCRETE_VALUESZPR_RESPONSIBILITYZPR_SPOOLER_STATUSZPR_TRANSPORT_STATUSZPR_MESSAGE_RECIPIENTSZPR_MESSAGE_ATTACHMENTSZPR_SUBMIT_FLAGSZPR_RECIPIENT_STATUSZPR_TRANSPORT_KEYZPR_MSG_STATUSZPR_MESSAGE_DOWNLOAD_TIMEZPR_CREATION_VERSIONZPR_MODIFY_VERSIONZPR_HASATTACHZPR_BODY_CRCZPR_NORMALIZED_SUBJECTZPR_NORMALIZED_SUBJECT_WZPR_NORMALIZED_SUBJECT_AZPR_RTF_IN_SYNCZPR_ATTACH_SIZEZPR_ATTACH_NUMZPR_PREPROCESSZPR_ORIGINATING_MTA_CERTIFICATEZPR_PROOF_OF_SUBMISSIONZ
+PR_ENTRYIDZPR_OBJECT_TYPEZPR_ICONZPR_MINI_ICONZPR_STORE_ENTRYIDZPR_STORE_RECORD_KEYZPR_RECORD_KEYZPR_MAPPING_SIGNATUREZPR_ACCESS_LEVELZPR_INSTANCE_KEYZPR_ROW_TYPEZ	PR_ACCESSZPR_ROWIDZPR_DISPLAY_NAMEZPR_DISPLAY_NAME_WZPR_DISPLAY_NAME_AZPR_ADDRTYPEZPR_ADDRTYPE_WZPR_ADDRTYPE_AZPR_EMAIL_ADDRESSZPR_EMAIL_ADDRESS_WZPR_EMAIL_ADDRESS_AZ
+PR_COMMENTZPR_COMMENT_WZPR_COMMENT_AZPR_DEPTHZPR_PROVIDER_DISPLAYZPR_PROVIDER_DISPLAY_WZPR_PROVIDER_DISPLAY_AZPR_CREATION_TIMEZPR_LAST_MODIFICATION_TIMEZPR_RESOURCE_FLAGSZPR_PROVIDER_DLL_NAMEZPR_PROVIDER_DLL_NAME_WZPR_PROVIDER_DLL_NAME_AZPR_SEARCH_KEYZPR_PROVIDER_UIDZPR_PROVIDER_ORDINALZPR_FORM_VERSIONZPR_FORM_VERSION_WZPR_FORM_VERSION_AZPR_FORM_CLSIDZPR_FORM_CONTACT_NAMEZPR_FORM_CONTACT_NAME_WZPR_FORM_CONTACT_NAME_AZPR_FORM_CATEGORYZPR_FORM_CATEGORY_WZPR_FORM_CATEGORY_AZPR_FORM_CATEGORY_SUBZPR_FORM_CATEGORY_SUB_WZPR_FORM_CATEGORY_SUB_AZPR_FORM_HOST_MAPZPR_FORM_HIDDENZPR_FORM_DESIGNER_NAMEZPR_FORM_DESIGNER_NAME_WZPR_FORM_DESIGNER_NAME_AZPR_FORM_DESIGNER_GUIDZPR_FORM_MESSAGE_BEHAVIORZPR_DEFAULT_STOREZPR_STORE_SUPPORT_MASKZPR_STORE_STATEZPR_IPM_SUBTREE_SEARCH_KEYZPR_IPM_OUTBOX_SEARCH_KEYZPR_IPM_WASTEBASKET_SEARCH_KEYZPR_IPM_SENTMAIL_SEARCH_KEYZPR_MDB_PROVIDERZPR_RECEIVE_FOLDER_SETTINGSZPR_VALID_FOLDER_MASKZPR_IPM_SUBTREE_ENTRYIDZPR_IPM_OUTBOX_ENTRYIDZPR_IPM_WASTEBASKET_ENTRYIDZPR_IPM_SENTMAIL_ENTRYIDZPR_VIEWS_ENTRYIDZPR_COMMON_VIEWS_ENTRYIDZPR_FINDER_ENTRYIDZPR_CONTAINER_FLAGSZPR_FOLDER_TYPEZPR_CONTENT_COUNTZPR_CONTENT_UNREADZPR_CREATE_TEMPLATESZPR_DETAILS_TABLEZ	PR_SEARCHZPR_SELECTABLEZPR_SUBFOLDERSZ	PR_STATUSZPR_ANRZPR_ANR_WZPR_ANR_AZPR_CONTENTS_SORT_ORDERZPR_CONTAINER_HIERARCHYZPR_CONTAINER_CONTENTSZPR_FOLDER_ASSOCIATED_CONTENTSZPR_DEF_CREATE_DLZPR_DEF_CREATE_MAILUSERZPR_CONTAINER_CLASSZPR_CONTAINER_CLASS_WZPR_CONTAINER_CLASS_AZPR_CONTAINER_MODIFY_VERSIONZPR_AB_PROVIDER_IDZPR_DEFAULT_VIEW_ENTRYIDZPR_ASSOC_CONTENT_COUNTZPR_ATTACHMENT_X400_PARAMETERSZPR_ATTACH_DATA_OBJZPR_ATTACH_DATA_BINZPR_ATTACH_ENCODINGZPR_ATTACH_EXTENSIONZPR_ATTACH_EXTENSION_WZPR_ATTACH_EXTENSION_AZPR_ATTACH_FILENAMEZPR_ATTACH_FILENAME_WZPR_ATTACH_FILENAME_AZPR_ATTACH_METHODZPR_ATTACH_LONG_FILENAMEZPR_ATTACH_LONG_FILENAME_WZPR_ATTACH_LONG_FILENAME_AZPR_ATTACH_PATHNAMEZPR_ATTACH_PATHNAME_WZPR_ATTACH_PATHNAME_AZPR_ATTACH_RENDERINGZPR_ATTACH_TAGZPR_RENDERING_POSITIONZPR_ATTACH_TRANSPORT_NAMEZPR_ATTACH_TRANSPORT_NAME_WZPR_ATTACH_TRANSPORT_NAME_AZPR_ATTACH_LONG_PATHNAMEZPR_ATTACH_LONG_PATHNAME_WZPR_ATTACH_LONG_PATHNAME_AZPR_ATTACH_MIME_TAGZPR_ATTACH_MIME_TAG_WZPR_ATTACH_MIME_TAG_AZPR_ATTACH_ADDITIONAL_INFOZPR_DISPLAY_TYPEZPR_TEMPLATEIDZPR_PRIMARY_CAPABILITYZPR_7BIT_DISPLAY_NAMEZ
+PR_ACCOUNTZPR_ACCOUNT_WZPR_ACCOUNT_AZPR_ALTERNATE_RECIPIENTZPR_CALLBACK_TELEPHONE_NUMBERZPR_CALLBACK_TELEPHONE_NUMBER_WZPR_CALLBACK_TELEPHONE_NUMBER_AZPR_CONVERSION_PROHIBITEDZPR_DISCLOSE_RECIPIENTSZPR_GENERATIONZPR_GENERATION_WZPR_GENERATION_AZPR_GIVEN_NAMEZPR_GIVEN_NAME_WZPR_GIVEN_NAME_AZPR_GOVERNMENT_ID_NUMBERZPR_GOVERNMENT_ID_NUMBER_WZPR_GOVERNMENT_ID_NUMBER_AZPR_BUSINESS_TELEPHONE_NUMBERZPR_BUSINESS_TELEPHONE_NUMBER_WZPR_BUSINESS_TELEPHONE_NUMBER_AZPR_OFFICE_TELEPHONE_NUMBERZPR_OFFICE_TELEPHONE_NUMBER_WZPR_OFFICE_TELEPHONE_NUMBER_AZPR_HOME_TELEPHONE_NUMBERZPR_HOME_TELEPHONE_NUMBER_WZPR_HOME_TELEPHONE_NUMBER_AZPR_INITIALSZPR_INITIALS_WZPR_INITIALS_AZ
+PR_KEYWORDZPR_KEYWORD_WZPR_KEYWORD_AZPR_LANGUAGEZPR_LANGUAGE_WZPR_LANGUAGE_AZPR_LOCATIONZPR_LOCATION_WZPR_LOCATION_AZPR_MAIL_PERMISSIONZPR_MHS_COMMON_NAMEZPR_MHS_COMMON_NAME_WZPR_MHS_COMMON_NAME_AZPR_ORGANIZATIONAL_ID_NUMBERZPR_ORGANIZATIONAL_ID_NUMBER_WZPR_ORGANIZATIONAL_ID_NUMBER_AZ
+PR_SURNAMEZPR_SURNAME_WZPR_SURNAME_AZPR_ORIGINAL_ENTRYIDZPR_ORIGINAL_DISPLAY_NAMEZPR_ORIGINAL_DISPLAY_NAME_WZPR_ORIGINAL_DISPLAY_NAME_AZPR_ORIGINAL_SEARCH_KEYZPR_POSTAL_ADDRESSZPR_POSTAL_ADDRESS_WZPR_POSTAL_ADDRESS_AZPR_COMPANY_NAMEZPR_COMPANY_NAME_WZPR_COMPANY_NAME_AZPR_TITLEZ
+PR_TITLE_WZ
+PR_TITLE_AZPR_DEPARTMENT_NAMEZPR_DEPARTMENT_NAME_WZPR_DEPARTMENT_NAME_AZPR_OFFICE_LOCATIONZPR_OFFICE_LOCATION_WZPR_OFFICE_LOCATION_AZPR_PRIMARY_TELEPHONE_NUMBERZPR_PRIMARY_TELEPHONE_NUMBER_WZPR_PRIMARY_TELEPHONE_NUMBER_AZPR_BUSINESS2_TELEPHONE_NUMBERZPR_BUSINESS2_TELEPHONE_NUMBER_WZPR_BUSINESS2_TELEPHONE_NUMBER_AZPR_OFFICE2_TELEPHONE_NUMBERZPR_OFFICE2_TELEPHONE_NUMBER_WZPR_OFFICE2_TELEPHONE_NUMBER_AZPR_MOBILE_TELEPHONE_NUMBERZPR_MOBILE_TELEPHONE_NUMBER_WZPR_MOBILE_TELEPHONE_NUMBER_AZPR_CELLULAR_TELEPHONE_NUMBERZPR_CELLULAR_TELEPHONE_NUMBER_WZPR_CELLULAR_TELEPHONE_NUMBER_AZPR_RADIO_TELEPHONE_NUMBERZPR_RADIO_TELEPHONE_NUMBER_WZPR_RADIO_TELEPHONE_NUMBER_AZPR_CAR_TELEPHONE_NUMBERZPR_CAR_TELEPHONE_NUMBER_WZPR_CAR_TELEPHONE_NUMBER_AZPR_OTHER_TELEPHONE_NUMBERZPR_OTHER_TELEPHONE_NUMBER_WZPR_OTHER_TELEPHONE_NUMBER_AZPR_TRANSMITABLE_DISPLAY_NAMEZPR_TRANSMITABLE_DISPLAY_NAME_WZPR_TRANSMITABLE_DISPLAY_NAME_AZPR_PAGER_TELEPHONE_NUMBERZPR_PAGER_TELEPHONE_NUMBER_WZPR_PAGER_TELEPHONE_NUMBER_AZPR_BEEPER_TELEPHONE_NUMBERZPR_BEEPER_TELEPHONE_NUMBER_WZPR_BEEPER_TELEPHONE_NUMBER_AZPR_USER_CERTIFICATEZPR_PRIMARY_FAX_NUMBERZPR_PRIMARY_FAX_NUMBER_WZPR_PRIMARY_FAX_NUMBER_AZPR_BUSINESS_FAX_NUMBERZPR_BUSINESS_FAX_NUMBER_WZPR_BUSINESS_FAX_NUMBER_AZPR_HOME_FAX_NUMBERZPR_HOME_FAX_NUMBER_WZPR_HOME_FAX_NUMBER_AZ
+PR_COUNTRYZPR_COUNTRY_WZPR_COUNTRY_AZPR_BUSINESS_ADDRESS_COUNTRYZPR_BUSINESS_ADDRESS_COUNTRY_WZPR_BUSINESS_ADDRESS_COUNTRY_AZPR_LOCALITYZPR_LOCALITY_WZPR_LOCALITY_AZPR_BUSINESS_ADDRESS_CITYZPR_BUSINESS_ADDRESS_CITY_WZPR_BUSINESS_ADDRESS_CITY_AZPR_STATE_OR_PROVINCEZPR_STATE_OR_PROVINCE_WZPR_STATE_OR_PROVINCE_AZ%PR_BUSINESS_ADDRESS_STATE_OR_PROVINCEZ'PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE_WZ'PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE_AZPR_STREET_ADDRESSZPR_STREET_ADDRESS_WZPR_STREET_ADDRESS_AZPR_BUSINESS_ADDRESS_STREETZPR_BUSINESS_ADDRESS_STREET_WZPR_BUSINESS_ADDRESS_STREET_AZPR_POSTAL_CODEZPR_POSTAL_CODE_WZPR_POSTAL_CODE_AZPR_BUSINESS_ADDRESS_POSTAL_CODEZ!PR_BUSINESS_ADDRESS_POSTAL_CODE_WZ!PR_BUSINESS_ADDRESS_POSTAL_CODE_AZPR_POST_OFFICE_BOXZPR_POST_OFFICE_BOX_WZPR_POST_OFFICE_BOX_AZ#PR_BUSINESS_ADDRESS_POST_OFFICE_BOXZ%PR_BUSINESS_ADDRESS_POST_OFFICE_BOX_WZ%PR_BUSINESS_ADDRESS_POST_OFFICE_BOX_AZPR_TELEX_NUMBERZPR_TELEX_NUMBER_WZPR_TELEX_NUMBER_AZPR_ISDN_NUMBERZPR_ISDN_NUMBER_WZPR_ISDN_NUMBER_AZPR_ASSISTANT_TELEPHONE_NUMBERZPR_ASSISTANT_TELEPHONE_NUMBER_WZPR_ASSISTANT_TELEPHONE_NUMBER_AZPR_HOME2_TELEPHONE_NUMBERZPR_HOME2_TELEPHONE_NUMBER_WZPR_HOME2_TELEPHONE_NUMBER_AZPR_ASSISTANTZPR_ASSISTANT_WZPR_ASSISTANT_AZPR_SEND_RICH_INFOZPR_WEDDING_ANNIVERSARYZPR_BIRTHDAYZ
+PR_HOBBIESZPR_HOBBIES_WZPR_HOBBIES_AZPR_MIDDLE_NAMEZPR_MIDDLE_NAME_WZPR_MIDDLE_NAME_AZPR_DISPLAY_NAME_PREFIXZPR_DISPLAY_NAME_PREFIX_WZPR_DISPLAY_NAME_PREFIX_AZPR_PROFESSIONZPR_PROFESSION_WZPR_PROFESSION_AZPR_PREFERRED_BY_NAMEZPR_PREFERRED_BY_NAME_WZPR_PREFERRED_BY_NAME_AZPR_SPOUSE_NAMEZPR_SPOUSE_NAME_WZPR_SPOUSE_NAME_AZPR_COMPUTER_NETWORK_NAMEZPR_COMPUTER_NETWORK_NAME_WZPR_COMPUTER_NETWORK_NAME_AZPR_CUSTOMER_IDZPR_CUSTOMER_ID_WZPR_CUSTOMER_ID_AZPR_TTYTDD_PHONE_NUMBERZPR_TTYTDD_PHONE_NUMBER_WZPR_TTYTDD_PHONE_NUMBER_AZPR_FTP_SITEZPR_FTP_SITE_WZPR_FTP_SITE_AZ	PR_GENDERZPR_MANAGER_NAMEZPR_MANAGER_NAME_WZPR_MANAGER_NAME_AZPR_NICKNAMEZPR_NICKNAME_WZPR_NICKNAME_AZPR_PERSONAL_HOME_PAGEZPR_PERSONAL_HOME_PAGE_WZPR_PERSONAL_HOME_PAGE_AZPR_BUSINESS_HOME_PAGEZPR_BUSINESS_HOME_PAGE_WZPR_BUSINESS_HOME_PAGE_AZPR_CONTACT_VERSIONZPR_CONTACT_ENTRYIDSZPR_CONTACT_ADDRTYPESZPR_CONTACT_ADDRTYPES_WZPR_CONTACT_ADDRTYPES_AZ PR_CONTACT_DEFAULT_ADDRESS_INDEXZPR_CONTACT_EMAIL_ADDRESSESZPR_CONTACT_EMAIL_ADDRESSES_WZPR_CONTACT_EMAIL_ADDRESSES_AZPR_COMPANY_MAIN_PHONE_NUMBERZPR_COMPANY_MAIN_PHONE_NUMBER_WZPR_COMPANY_MAIN_PHONE_NUMBER_AZPR_CHILDRENS_NAMESZPR_CHILDRENS_NAMES_WZPR_CHILDRENS_NAMES_AZPR_HOME_ADDRESS_CITYZPR_HOME_ADDRESS_CITY_WZPR_HOME_ADDRESS_CITY_AZPR_HOME_ADDRESS_COUNTRYZPR_HOME_ADDRESS_COUNTRY_WZPR_HOME_ADDRESS_COUNTRY_AZPR_HOME_ADDRESS_POSTAL_CODEZPR_HOME_ADDRESS_POSTAL_CODE_WZPR_HOME_ADDRESS_POSTAL_CODE_AZ!PR_HOME_ADDRESS_STATE_OR_PROVINCEZ#PR_HOME_ADDRESS_STATE_OR_PROVINCE_WZ#PR_HOME_ADDRESS_STATE_OR_PROVINCE_AZPR_HOME_ADDRESS_STREETZPR_HOME_ADDRESS_STREET_WZPR_HOME_ADDRESS_STREET_AZPR_HOME_ADDRESS_POST_OFFICE_BOXZ!PR_HOME_ADDRESS_POST_OFFICE_BOX_WZ!PR_HOME_ADDRESS_POST_OFFICE_BOX_AZPR_OTHER_ADDRESS_CITYZPR_OTHER_ADDRESS_CITY_WZPR_OTHER_ADDRESS_CITY_AZPR_OTHER_ADDRESS_COUNTRYZPR_OTHER_ADDRESS_COUNTRY_WZPR_OTHER_ADDRESS_COUNTRY_AZPR_OTHER_ADDRESS_POSTAL_CODEZPR_OTHER_ADDRESS_POSTAL_CODE_WZPR_OTHER_ADDRESS_POSTAL_CODE_AZ"PR_OTHER_ADDRESS_STATE_OR_PROVINCEZ$PR_OTHER_ADDRESS_STATE_OR_PROVINCE_WZ$PR_OTHER_ADDRESS_STATE_OR_PROVINCE_AZPR_OTHER_ADDRESS_STREETZPR_OTHER_ADDRESS_STREET_WZPR_OTHER_ADDRESS_STREET_AZ PR_OTHER_ADDRESS_POST_OFFICE_BOXZ"PR_OTHER_ADDRESS_POST_OFFICE_BOX_WZ"PR_OTHER_ADDRESS_POST_OFFICE_BOX_AZPR_STORE_PROVIDERSZPR_AB_PROVIDERSZPR_TRANSPORT_PROVIDERSZPR_DEFAULT_PROFILEZPR_AB_SEARCH_PATHZPR_AB_DEFAULT_DIRZPR_AB_DEFAULT_PABZPR_FILTERING_HOOKSZPR_SERVICE_NAMEZPR_SERVICE_NAME_WZPR_SERVICE_NAME_AZPR_SERVICE_DLL_NAMEZPR_SERVICE_DLL_NAME_WZPR_SERVICE_DLL_NAME_AZPR_SERVICE_ENTRY_NAMEZPR_SERVICE_UIDZPR_SERVICE_EXTRA_UIDSZPR_SERVICESZPR_SERVICE_SUPPORT_FILESZPR_SERVICE_SUPPORT_FILES_WZPR_SERVICE_SUPPORT_FILES_AZPR_SERVICE_DELETE_FILESZPR_SERVICE_DELETE_FILES_WZPR_SERVICE_DELETE_FILES_AZPR_AB_SEARCH_PATH_UPDATEZPR_PROFILE_NAMEZPR_PROFILE_NAME_AZPR_PROFILE_NAME_WZPR_IDENTITY_DISPLAYZPR_IDENTITY_DISPLAY_WZPR_IDENTITY_DISPLAY_AZPR_IDENTITY_ENTRYIDZPR_RESOURCE_METHODSZPR_RESOURCE_TYPEZPR_STATUS_CODEZPR_IDENTITY_SEARCH_KEYZPR_OWN_STORE_ENTRYIDZPR_RESOURCE_PATHZPR_RESOURCE_PATH_WZPR_RESOURCE_PATH_AZPR_STATUS_STRINGZPR_STATUS_STRING_WZPR_STATUS_STRING_AZ PR_X400_DEFERRED_DELIVERY_CANCELZPR_HEADER_FOLDER_ENTRYIDZPR_REMOTE_PROGRESSZPR_REMOTE_PROGRESS_TEXTZPR_REMOTE_PROGRESS_TEXT_WZPR_REMOTE_PROGRESS_TEXT_AZPR_REMOTE_VALIDATE_OKZPR_CONTROL_FLAGSZPR_CONTROL_STRUCTUREZPR_CONTROL_TYPEZ	PR_DELTAXZ	PR_DELTAYZPR_XPOSZPR_YPOSZPR_CONTROL_IDZPR_INITIAL_DETAILS_PANEZPROP_ID_SECURE_MINZPROP_ID_SECURE_MAXZpidExchangeXmitReservedMinZpidExchangeNonXmitReservedMinZpidProfileMinZpidStoreMinZpidFolderMinZpidMessageReadOnlyMinZpidMessageWriteableMinZpidAttachReadOnlyMinZpidSpecialMinZpidAdminMinZpidSecureProfileMinZPR_PROFILE_VERSIONZPR_PROFILE_CONFIG_FLAGSZPR_PROFILE_HOME_SERVERZPR_PROFILE_HOME_SERVER_DNZPR_PROFILE_HOME_SERVER_ADDRSZPR_PROFILE_USERZPR_PROFILE_CONNECT_FLAGSZPR_PROFILE_TRANSPORT_FLAGSZPR_PROFILE_UI_STATEZPR_PROFILE_UNRESOLVED_NAMEZPR_PROFILE_UNRESOLVED_SERVERZPR_PROFILE_BINDING_ORDERZPR_PROFILE_MAX_RESTRICTZPR_PROFILE_AB_FILES_PATHZPR_PROFILE_OFFLINE_STORE_PATHZPR_PROFILE_OFFLINE_INFOZPR_PROFILE_ADDR_INFOZPR_PROFILE_OPTIONS_DATAZPR_PROFILE_SECURE_MAILBOXZPR_DISABLE_WINSOCKZPR_OST_ENCRYPTIONZPR_PROFILE_OPEN_FLAGSZPR_PROFILE_TYPEZPR_PROFILE_MAILBOXZPR_PROFILE_SERVERZPR_PROFILE_SERVER_DNZPR_PROFILE_FAVFLD_DISPLAY_NAMEZPR_PROFILE_FAVFLD_COMMENTZPR_PROFILE_ALLPUB_DISPLAY_NAMEZPR_PROFILE_ALLPUB_COMMENTZOSTF_NO_ENCRYPTIONZOSTF_COMPRESSABLE_ENCRYPTIONZOSTF_BEST_ENCRYPTIONZPR_NON_IPM_SUBTREE_ENTRYIDZPR_EFORMS_REGISTRY_ENTRYIDZPR_SPLUS_FREE_BUSY_ENTRYIDZPR_OFFLINE_ADDRBOOK_ENTRYIDZPR_EFORMS_FOR_LOCALE_ENTRYIDZ#PR_FREE_BUSY_FOR_LOCAL_SITE_ENTRYIDZ"PR_ADDRBOOK_FOR_LOCAL_SITE_ENTRYIDZPR_OFFLINE_MESSAGE_ENTRYIDZPR_IPM_FAVORITES_ENTRYIDZPR_IPM_PUBLIC_FOLDERS_ENTRYIDZPR_GW_MTSIN_ENTRYIDZPR_GW_MTSOUT_ENTRYIDZPR_TRANSFER_ENABLEDZPR_TEST_LINE_SPEEDZPR_HIERARCHY_SYNCHRONIZERZPR_CONTENTS_SYNCHRONIZERZPR_COLLECTORZPR_FAST_TRANSFERZPR_STORE_OFFLINEZPR_IN_TRANSITZPR_REPLICATION_STYLEZPR_REPLICATION_SCHEDULEZPR_REPLICATION_MESSAGE_PRIORITYZPR_OVERALL_MSG_AGE_LIMITZPR_REPLICATION_ALWAYS_INTERVALZPR_REPLICATION_MSG_SIZEZSTYLE_ALWAYS_INTERVAL_DEFAULTZ&REPLICATION_MESSAGE_SIZE_LIMIT_DEFAULTZSTYLE_NEVERZSTYLE_NORMALZSTYLE_ALWAYSZSTYLE_DEFAULTZPR_SOURCE_KEYZPR_PARENT_SOURCE_KEYZPR_CHANGE_KEYZPR_PREDECESSOR_CHANGE_LISTZPR_FOLDER_CHILD_COUNTZ	PR_RIGHTSZPR_ACL_TABLEZPR_RULES_TABLEZPR_HAS_RULESZPR_ADDRESS_BOOK_ENTRYIDZPR_ACL_DATAZPR_RULES_DATAZPR_FOLDER_DESIGN_FLAGSZPR_DESIGN_IN_PROGRESSZPR_SECURE_ORIGINATIONZPR_PUBLISH_IN_ADDRESS_BOOKZPR_RESOLVE_METHODZPR_ADDRESS_BOOK_DISPLAY_NAMEZPR_EFORMS_LOCALE_IDZPR_REPLICA_LISTZPR_OVERALL_AGE_LIMITZRESOLVE_METHOD_DEFAULTZRESOLVE_METHOD_LAST_WRITER_WINSZ'RESOLVE_METHOD_NO_CONFLICT_NOTIFICATIONZPR_PUBLIC_FOLDER_ENTRYIDZPR_HAS_NAMED_PROPERTIESZPR_CREATOR_NAMEZPR_CREATOR_ENTRYIDZPR_LAST_MODIFIER_NAMEZPR_LAST_MODIFIER_ENTRYIDZPR_HAS_DAMSZPR_RULE_TRIGGER_HISTORYZPR_MOVE_TO_STORE_ENTRYIDZPR_MOVE_TO_FOLDER_ENTRYIDZPR_REPLICA_SERVERZPR_DEFERRED_SEND_NUMBERZPR_DEFERRED_SEND_UNITSZPR_EXPIRY_NUMBERZPR_EXPIRY_UNITSZPR_DEFERRED_SEND_TIMEZPR_GW_ADMIN_OPERATIONSZPR_P1_CONTENTZPR_P1_CONTENT_TYPEZPR_CLIENT_ACTIONSZPR_DAM_ORIGINAL_ENTRYIDZPR_DAM_BACK_PATCHEDZPR_RULE_ERRORZPR_RULE_ACTION_TYPEZPR_RULE_ACTION_NUMBERZPR_RULE_FOLDER_ENTRYIDZPR_CONFLICT_ENTRYIDZPR_MESSAGE_LOCALE_IDZPR_STORAGE_QUOTA_LIMITZPR_EXCESS_STORAGE_USEDZPR_SVR_GENERATING_QUOTA_MSGZPR_DELEGATED_BY_RULEZMSGSTATUS_IN_CONFLICTZPR_IN_CONFLICTZPR_LONGTERM_ENTRYID_FROM_TABLEZPR_ORIGINATOR_NAMEZPR_ORIGINATOR_ADDRZPR_ORIGINATOR_ADDRTYPEZPR_ORIGINATOR_ENTRYIDZPR_ARRIVAL_TIMEZPR_TRACE_INFOZPR_INTERNAL_TRACE_INFOZPR_SUBJECT_TRACE_INFOZPR_RECIPIENT_NUMBERZPR_MTS_SUBJECT_IDZPR_REPORT_DESTINATION_NAMEZPR_REPORT_DESTINATION_ENTRYIDZPR_CONTENT_SEARCH_KEYZPR_FOREIGN_IDZPR_FOREIGN_REPORT_IDZPR_FOREIGN_SUBJECT_IDZ	PR_MTS_IDZPR_MTS_REPORT_IDZPR_FOLDER_FLAGSZPR_LAST_ACCESS_TIMEZPR_RESTRICTION_COUNTZPR_CATEG_COUNTZPR_CACHED_COLUMN_COUNTZPR_NORMAL_MSG_W_ATTACH_COUNTZPR_ASSOC_MSG_W_ATTACH_COUNTZ PR_RECIPIENT_ON_NORMAL_MSG_COUNTZPR_RECIPIENT_ON_ASSOC_MSG_COUNTZPR_ATTACH_ON_NORMAL_MSG_COUNTZPR_ATTACH_ON_ASSOC_MSG_COUNTZPR_NORMAL_MESSAGE_SIZEZPR_NORMAL_MESSAGE_SIZE_EXTENDEDZPR_ASSOC_MESSAGE_SIZEZPR_ASSOC_MESSAGE_SIZE_EXTENDEDZPR_FOLDER_PATHNAMEZPR_OWNER_COUNTZPR_CONTACT_COUNTZPR_MESSAGE_SIZE_EXTENDEDZPR_USERFIELDSZPR_FORCE_USE_ENTRYID_SERVERZPR_PROFILE_MDB_DNZPST_EXTERN_PROPID_BASEZPR_PST_PATHZPR_PST_PATH_WZPR_PST_PATH_AZPR_PST_REMEMBER_PWZPR_PST_ENCRYPTIONZPR_PST_PW_SZ_OLDZPR_PST_PW_SZ_OLD_WZPR_PST_PW_SZ_OLD_AZPR_PST_PW_SZ_NEWZPR_PST_PW_SZ_NEW_WZPR_PST_PW_SZ_NEW_Ar   r   r   r   ⁄<module>   sº  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

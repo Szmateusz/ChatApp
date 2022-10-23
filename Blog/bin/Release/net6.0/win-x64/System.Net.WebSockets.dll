@@ -1,0 +1,5816 @@
+taServices;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("C5702CD6-9B79-11d3-B654-00C04F79498E")
+MSVidAnalogCaptureToDataServices;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDataServicesToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("38F03426-E83B-4e68-B65B-DCAE73304838")
+MSVidDataServicesToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDataServicesToXDS;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("0429EC6E-1144-4bed-B88B-2FB9899A4A3D")
+MSVidDataServicesToXDS;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAnalogCaptureToXDS;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("3540D440-5B1D-49cb-821A-E84B8CF065A7")
+MSVidAnalogCaptureToXDS;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidCtl;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("B0EDF163-910A-11D2-B632-00C04F79498E")
+MSVidCtl;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidInputDevices;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("C5702CCC-9B79-11d3-B654-00C04F79498E")
+MSVidInputDevices;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidOutputDevices;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("C5702CCD-9B79-11d3-B654-00C04F79498E")
+MSVidOutputDevices;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidVideoRendererDevices;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("C5702CCE-9B79-11d3-B654-00C04F79498E")
+MSVidVideoRendererDevices;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAudioRendererDevices;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("C5702CCF-9B79-11d3-B654-00C04F79498E")
+MSVidAudioRendererDevices;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidFeatures;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("C5702CD0-9B79-11d3-B654-00C04F79498E")
+MSVidFeatures;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidGenericComposite;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("2764BCE5-CC39-11D2-B639-00C04F79498E")
+MSVidGenericComposite;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAnalogCaptureToOverlayMixer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("E18AF75A-08AF-11d3-B64A-00C04F79498E")
+MSVidAnalogCaptureToOverlayMixer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidWebDVDToVideoRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("267db0b3-55e3-4902-949b-df8f5cec0191")
+MSVidWebDVDToVideoRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidWebDVDToAudioRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("8D04238E-9FD1-41c6-8DE3-9E1EE309E935")
+MSVidWebDVDToAudioRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidMPEG2DecoderToClosedCaptioning;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("6AD28EE1-5002-4e71-AAF7-BD077907B1A4")
+MSVidMPEG2DecoderToClosedCaptioning;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAnalogCaptureToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("9F50E8B1-9530-4ddc-825E-1AF81D47AED6")
+MSVidAnalogCaptureToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDigitalCaptureToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("ABE40035-27C3-4a2f-8153-6624471608AF")
+MSVidDigitalCaptureToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidITVToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("92B94828-1AF7-4e6e-9EBF-770657F77AF5")
+MSVidITVToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidCCAToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("3EF76D68-8661-4843-8B8F-C37163D8C9CE")
+MSVidCCAToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidEncoderToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("A0B9B497-AFBC-45ad-A8A6-9B077C40D4F2")
+MSVidEncoderToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidFilePlaybackToVideoRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("B401C5EB-8457-427f-84EA-A4D2363364B0")
+MSVidFilePlaybackToVideoRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidFilePlaybackToAudioRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("CC23F537-18D4-4ece-93BD-207A84726979")
+MSVidFilePlaybackToAudioRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAnalogTVToEncoder;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("28953661-0231-41db-8986-21FF4388EE9B")
+MSVidAnalogTVToEncoder;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidStreamBufferSourceToVideoRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("3C4708DC-B181-46a8-8DA8-4AB0371758CD")
+MSVidStreamBufferSourceToVideoRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAnalogCaptureToCCA;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("942B7909-A28E-49a1-A207-34EBCBCB4B3B")
+MSVidAnalogCaptureToCCA;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDigitalCaptureToCCA;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("73D14237-B9DB-4efa-A6DD-84350421FB2F")
+MSVidDigitalCaptureToCCA;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDigitalCaptureToITV;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("5D8E73F7-4989-4ac8-8A98-39BA0D325302")
+MSVidDigitalCaptureToITV;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidSBESourceToITV;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("2291478C-5EE3-4bef-AB5D-B5FF2CF58352")
+MSVidSBESourceToITV;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidSBESourceToCC;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("9193A8F9-0CBA-400e-AA97-EB4709164576")
+MSVidSBESourceToCC;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidSBESourceToGenericSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("991DA7E5-953F-435B-BE5E-B92A05EDFC42")
+MSVidSBESourceToGenericSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidCCToVMR;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("C4BF2784-AE00-41ba-9828-9C953BD3C54A")
+MSVidCCToVMR;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidCCToAR;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("D76334CA-D89E-4baf-86AB-DDB59372AFC2")
+MSVidCCToAR;
+#endif
+
+EXTERN_C const CLSID CLSID_MSEventBinder;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("577FAA18-4518-445E-8F70-1473F8CF4BA4")
+MSEventBinder;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidStreamBufferRecordingControl;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("CAAFDD83-CEFC-4e3d-BA03-175F17A24F91")
+MSVidStreamBufferRecordingControl;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidRect;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("CB4276E6-7D5F-4cf1-9727-629C5E6DB6AE")
+MSVidRect;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDevice;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("6E40476F-9C49-4c3e-8BB9-8587958EFF74")
+MSVidDevice;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDevice2;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("30997F7D-B3B5-4A1C-983A-1FE8098CB77D")
+MSVidDevice2;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidInputDevice;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("AC1972F2-138A-4ca3-90DA-AE51112EDA28")
+MSVidInputDevice;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidVideoInputDevice;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("95F4820B-BB3A-4e2d-BC64-5B817BC2C30E")
+MSVidVideoInputDevice;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidVideoPlaybackDevice;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("1990D634-1A5E-4071-A34A-53AAFFCE9F36")
+MSVidVideoPlaybackDevice;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidFeature;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("7748530B-C08A-47ea-B24C-BE8695FF405F")
+MSVidFeature;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidOutput;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("87EB890D-03AD-4e9d-9866-376E5EC572ED")
+MSVidOutput;
+#endif
+#endif /* __MSVidCtlLib_LIBRARY_DEFINED__ */
+
+/* interface __MIDL_itf_msvidctl_0000_0003 */
+/* [local] */ 
+
+#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+#pragma endregion
+
+
+extern RPC_IF_HANDLE __MIDL_itf_msvidctl_0000_0003_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_msvidctl_0000_0003_v0_0_s_ifspec;
+
+/* Additional Prototypes for ALL interfaces */
+
+unsigned long             __RPC_USER  BSTR_UserSize(     __RPC__in unsigned long *, unsigned long            , __RPC__in BSTR * ); 
+unsigned char * __RPC_USER  BSTR_UserMarshal(  __RPC__in unsigned long *, __RPC__inout_xcount(0) unsigned char *, __RPC__in BSTR * ); 
+unsigned char * __RPC_USER  BSTR_UserUnmarshal(__RPC__in unsigned long *, __RPC__in_xcount(0) unsigned char *, __RPC__out BSTR * ); 
+void                      __RPC_USER  BSTR_UserFree(     __RPC__in unsigned long *, __RPC__in BSTR * ); 
+
+unsigned long             __RPC_USER  HWND_UserSize(     __RPC__in unsigned long *, unsigned long            , __RPC__in HWND * ); 
+unsigned char * __RPC_USER  HWND_UserMarshal(  __RPC__in unsigned long *, __RPC__inout_xcount(0) unsigned char *, __RPC__in HWND * ); 
+unsigned char * __RPC_USER  HWND_UserUnmarshal(__RPC__in unsigned long *, __RPC__in_xcount(0) unsigned char *, __RPC__out HWND * ); 
+void                      __RPC_USER  HWND_UserFree(     __RPC__in unsigned long *, __RPC__in HWND * ); 
+
+unsigned long             __RPC_USER  VARIANT_UserSize(     __RPC__in unsigned long *, unsigned long            , __RPC__in VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserMarshal(  __RPC__in unsigned long *, __RPC__inout_xcount(0) unsigned char *, __RPC__in VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserUnmarshal(__RPC__in unsigned long *, __RPC__in_xcount(0) unsigned char *, __RPC__out VARIANT * ); 
+void                      __RPC_USER  VARIANT_UserFree(     __RPC__in unsigned long *, __RPC__in VARIANT * ); 
+
+unsigned long             __RPC_USER  BSTR_UserSize64(     __RPC__in unsigned long *, unsigned long            , __RPC__in BSTR * ); 
+unsigned char * __RPC_USER  BSTR_UserMarshal64(  __RPC__in unsigned long *, __RPC__inout_xcount(0) unsigned char *, __RPC__in BSTR * ); 
+unsigned char * __RPC_USER  BSTR_UserUnmarshal64(__RPC__in unsigned long *, __RPC__in_xcount(0) unsigned char *, __RPC__out BSTR * ); 
+void                      __RPC_USER  BSTR_UserFree64(     __RPC__in unsigned long *, __RPC__in BSTR * ); 
+
+unsigned long             __RPC_USER  HWND_UserSize64(     __RPC__in unsigned long *, unsigned long            , __RPC__in HWND * ); 
+unsigned char * __RPC_USER  HWND_UserMarshal64(  __RPC__in unsigned long *, __RPC__inout_xcount(0) unsigned char *, __RPC__in HWND * ); 
+unsigned char * __RPC_USER  HWND_UserUnmarshal64(__RPC__in unsigned long *, __RPC__in_xcount(0) unsigned char *, __RPC__out HWND * ); 
+void                      __RPC_USER  HWND_UserFree64(     __RPC__in unsigned long *, __RPC__in HWND * ); 
+
+unsigned long             __RPC_USER  VARIANT_UserSize64(     __RPC__in unsigned long *, unsigned long            , __RPC__in VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserMarshal64(  __RPC__in unsigned long *, __RPC__inout_xcount(0) unsigned char *, __RPC__in VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserUnmarshal64(__RPC__in unsigned long *, __RPC__in_xcount(0) unsigned char *, __RPC__out VARIANT * ); 
+void                      __RPC_USER  VARIANT_UserFree64(     __RPC__in unsigned long *, __RPC__in VARIANT * ); 
+
+/* end of Additional Prototypes */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  M_SAMPLE_TYPECHANGED	= 0x8,
+        AM_SAMPLE_TIMEVALID	= 0x10,
+        AM_SAMPLE_TIMEDISCONTINUITY	= 0x40,
+        AM_SAMPLE_FLUSH_ON_PAUSE	= 0x80,
+        AM_SAMPLE_STOPVALID	= 0x100,
+        AM_SAMPLE_ENDOFSTREAM	= 0x200,
+        AM_STREAM_MEDIA	= 0,
+        AM_STREAM_CONTROL	= 1
+    } ;
+typedef struct tagAM_SAMPLE2_PROPERTIES
+    {
+    DWORD cbData;
+    DWORD dwTypeSpecificFlags;
+    DWORD dwSampleFlags;
+    LONG lActual;
+    REFERENCE_TIME tStart;
+    REFERENCE_TIME tStop;
+    DWORD dwStreamId;
+    AM_MEDIA_TYPE *pMediaType;
+    BYTE *pbBuffer;
+    LONG cbBuffer;
+    } 	AM_SAMPLE2_PROPERTIES;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0012_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0012_v0_0_s_ifspec;
+
+#ifndef __IMediaSample2_INTERFACE_DEFINED__
+#define __IMediaSample2_INTERFACE_DEFINED__
+
+/* interface IMediaSample2 */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IMediaSample2;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("36b73884-c2c8-11cf-8b46-00805f6cef60")
+    IMediaSample2 : public IMediaSample
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetProperties( 
+            /* [in] */ DWORD cbProperties,
+            /* [annotation][size_is][out] */ 
+            _Out_writes_bytes_(cbProperties)  BYTE *pbProperties) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetProperties( 
+            /* [in] */ DWORD cbProperties,
+            /* [annotation][size_is][in] */ 
+            _In_reads_bytes_(cbProperties)  const BYTE *pbProperties) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMediaSample2Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMediaSample2 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMediaSample2 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMediaSample2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetPointer )( 
+            IMediaSample2 * This,
+            /* [annotation][out] */ 
+            _Outptr_result_buffer_to_(_Inexpressible_(this->GetSize()), _Inexpressible_(this->GetActualDataLength()))  BYTE **ppBuffer);
+        
+        long ( STDMETHODCALLTYPE *GetSize )( 
+            IMediaSample2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTime )( 
+            IMediaSample2 * This,
+            /* [annotation][out] */ 
+            _Out_  REFERENCE_TIME *pTimeStart,
+            /* [annotation][out] */ 
+            _Out_  REFERENCE_TIME *pTimeEnd);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetTime )( 
+            IMediaSample2 * This,
+            /* [annotation][in] */ 
+            _In_opt_  REFERENCE_TIME *pTimeStart,
+            /* [annotation][in] */ 
+            _In_opt_  REFERENCE_TIME *pTimeEnd);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsSyncPoint )( 
+            IMediaSample2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetSyncPoint )( 
+            IMediaSample2 * This,
+            BOOL bIsSyncPoint);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsPreroll )( 
+            IMediaSample2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetPreroll )( 
+            IMediaSample2 * This,
+            BOOL bIsPreroll);
+        
+        long ( STDMETHODCALLTYPE *GetActualDataLength )( 
+            IMediaSample2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetActualDataLength )( 
+            IMediaSample2 * This,
+            long __MIDL__IMediaSample0000);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMediaType )( 
+            IMediaSample2 * This,
+            /* [annotation][out] */ 
+            _Out_  AM_MEDIA_TYPE **ppMediaType);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetMediaType )( 
+            IMediaSample2 * This,
+            /* [annotation][in] */ 
+            _In_  AM_MEDIA_TYPE *pMediaType);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsDiscontinuity )( 
+            IMediaSample2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetDiscontinuity )( 
+            IMediaSample2 * This,
+            BOOL bDiscontinuity);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMediaTime )( 
+            IMediaSample2 * This,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pTimeStart,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pTimeEnd);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetMediaTime )( 
+            IMediaSample2 * This,
+            /* [annotation][in] */ 
+            _In_opt_  LONGLONG *pTimeStart,
+            /* [annotation][in] */ 
+            _In_opt_  LONGLONG *pTimeEnd);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetProperties )( 
+            IMediaSample2 * This,
+            /* [in] */ DWORD cbProperties,
+            /* [annotation][size_is][out] */ 
+            _Out_writes_bytes_(cbProperties)  BYTE *pbProperties);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetProperties )( 
+            IMediaSample2 * This,
+            /* [in] */ DWORD cbProperties,
+            /* [annotation][size_is][in] */ 
+            _In_reads_bytes_(cbProperties)  const BYTE *pbProperties);
+        
+        END_INTERFACE
+    } IMediaSample2Vtbl;
+
+    interface IMediaSample2
+    {
+        CONST_VTBL struct IMediaSample2Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMediaSample2_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMediaSample2_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMediaSample2_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMediaSample2_GetPointer(This,ppBuffer)	\
+    ( (This)->lpVtbl -> GetPointer(This,ppBuffer) ) 
+
+#define IMediaSample2_GetSize(This)	\
+    ( (This)->lpVtbl -> GetSize(This) ) 
+
+#define IMediaSample2_GetTime(This,pTimeStart,pTimeEnd)	\
+    ( (This)->lpVtbl -> GetTime(This,pTimeStart,pTimeEnd) ) 
+
+#define IMediaSample2_SetTime(This,pTimeStart,pTimeEnd)	\
+    ( (This)->lpVtbl -> SetTime(This,pTimeStart,pTimeEnd) ) 
+
+#define IMediaSample2_IsSyncPoint(This)	\
+    ( (This)->lpVtbl -> IsSyncPoint(This) ) 
+
+#define IMediaSample2_SetSyncPoint(This,bIsSyncPoint)	\
+    ( (This)->lpVtbl -> SetSyncPoint(This,bIsSyncPoint) ) 
+
+#define IMediaSample2_IsPreroll(This)	\
+    ( (This)->lpVtbl -> IsPreroll(This) ) 
+
+#define IMediaSample2_SetPreroll(This,bIsPreroll)	\
+    ( (This)->lpVtbl -> SetPreroll(This,bIsPreroll) ) 
+
+#define IMediaSample2_GetActualDataLength(This)	\
+    ( (This)->lpVtbl -> GetActualDataLength(This) ) 
+
+#define IMediaSample2_SetActualDataLength(This,__MIDL__IMediaSample0000)	\
+    ( (This)->lpVtbl -> SetActualDataLength(This,__MIDL__IMediaSample0000) ) 
+
+#define IMediaSample2_GetMediaType(This,ppMediaType)	\
+    ( (This)->lpVtbl -> GetMediaType(This,ppMediaType) ) 
+
+#define IMediaSample2_SetMediaType(This,pMediaType)	\
+    ( (This)->lpVtbl -> SetMediaType(This,pMediaType) ) 
+
+#define IMediaSample2_IsDiscontinuity(This)	\
+    ( (This)->lpVtbl -> IsDiscontinuity(This) ) 
+
+#define IMediaSample2_SetDiscontinuity(This,bDiscontinuity)	\
+    ( (This)->lpVtbl -> SetDiscontinuity(This,bDiscontinuity) ) 
+
+#define IMediaSample2_GetMediaTime(This,pTimeStart,pTimeEnd)	\
+    ( (This)->lpVtbl -> GetMediaTime(This,pTimeStart,pTimeEnd) ) 
+
+#define IMediaSample2_SetMediaTime(This,pTimeStart,pTimeEnd)	\
+    ( (This)->lpVtbl -> SetMediaTime(This,pTimeStart,pTimeEnd) ) 
+
+
+#define IMediaSample2_GetProperties(This,cbProperties,pbProperties)	\
+    ( (This)->lpVtbl -> GetProperties(This,cbProperties,pbProperties) ) 
+
+#define IMediaSample2_SetProperties(This,cbProperties,pbProperties)	\
+    ( (This)->lpVtbl -> SetProperties(This,cbProperties,pbProperties) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMediaSample2_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0013 */
+/* [local] */ 
+
+typedef IMediaSample2 *PMEDIASAMPLE2;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0013_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0013_v0_0_s_ifspec;
+
+#ifndef __IMediaSample2Config_INTERFACE_DEFINED__
+#define __IMediaSample2Config_INTERFACE_DEFINED__
+
+/* interface IMediaSample2Config */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IMediaSample2Config;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("68961E68-832B-41ea-BC91-63593F3E70E3")
+    IMediaSample2Config : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetSurface( 
+            /* [out] */ __RPC__deref_out_opt IUnknown **ppDirect3DSurface9) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMediaSample2ConfigVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            __RPC__in IMediaSample2Config * This,
+            /* [in] */ __RPC__in REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            __RPC__in IMediaSample2Config * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            __RPC__in IMediaSample2Config * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetSurface )( 
+            __RPC__in IMediaSample2Config * This,
+            /* [out] */ __RPC__deref_out_opt IUnknown **ppDirect3DSurface9);
+        
+        END_INTERFACE
+    } IMediaSample2ConfigVtbl;
+
+    interface IMediaSample2Config
+    {
+        CONST_VTBL struct IMediaSample2ConfigVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMediaSample2Config_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMediaSample2Config_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMediaSample2Config_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMediaSample2Config_GetSurface(This,ppDirect3DSurface9)	\
+    ( (This)->lpVtbl -> GetSurface(This,ppDirect3DSurface9) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMediaSample2Config_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0014 */
+/* [local] */ 
+
+#define AM_GBF_PREVFRAMESKIPPED 1
+#define AM_GBF_NOTASYNCPOINT 2
+#define AM_GBF_NOWAIT 4
+#define AM_GBF_NODDSURFACELOCK 8
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0014_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0014_v0_0_s_ifspec;
+
+#ifndef __IMemAllocator_INTERFACE_DEFINED__
+#define __IMemAllocator_INTERFACE_DEFINED__
+
+/* interface IMemAllocator */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IMemAllocator;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a8689c-0ad4-11ce-b03a-0020af0ba770")
+    IMemAllocator : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE SetProperties( 
+            /* [annotation][in] */ 
+            _In_  ALLOCATOR_PROPERTIES *pRequest,
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pActual) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetProperties( 
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pProps) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Commit( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Decommit( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetBuffer( 
+            /* [annotation][out] */ 
+            _Out_  IMediaSample **ppBuffer,
+            /* [annotation][unique][in] */ 
+            _In_opt_  REFERENCE_TIME *pStartTime,
+            /* [annotation][unique][in] */ 
+            _In_opt_  REFERENCE_TIME *pEndTime,
+            /* [in] */ DWORD dwFlags) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ReleaseBuffer( 
+            /* [in] */ IMediaSample *pBuffer) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMemAllocatorVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMemAllocator * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMemAllocator * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMemAllocator * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetProperties )( 
+            IMemAllocator * This,
+            /* [annotation][in] */ 
+            _In_  ALLOCATOR_PROPERTIES *pRequest,
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pActual);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetProperties )( 
+            IMemAllocator * This,
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pProps);
+        
+        HRESULT ( STDMETHODCALLTYPE *Commit )( 
+            IMemAllocator * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Decommit )( 
+            IMemAllocator * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+            IMemAllocator * This,
+            /* [annotation][out] */ 
+            _Out_  IMediaSample **ppBuffer,
+            /* [annotation][unique][in] */ 
+            _In_opt_  REFERENCE_TIME *pStartTime,
+            /* [annotation][unique][in] */ 
+            _In_opt_  REFERENCE_TIME *pEndTime,
+            /* [in] */ DWORD dwFlags);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReleaseBuffer )( 
+            IMemAllocator * This,
+            /* [in] */ IMediaSample *pBuffer);
+        
+        END_INTERFACE
+    } IMemAllocatorVtbl;
+
+    interface IMemAllocator
+    {
+        CONST_VTBL struct IMemAllocatorVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMemAllocator_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMemAllocator_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMemAllocator_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMemAllocator_SetProperties(This,pRequest,pActual)	\
+    ( (This)->lpVtbl -> SetProperties(This,pRequest,pActual) ) 
+
+#define IMemAllocator_GetProperties(This,pProps)	\
+    ( (This)->lpVtbl -> GetProperties(This,pProps) ) 
+
+#define IMemAllocator_Commit(This)	\
+    ( (This)->lpVtbl -> Commit(This) ) 
+
+#define IMemAllocator_Decommit(This)	\
+    ( (This)->lpVtbl -> Decommit(This) ) 
+
+#define IMemAllocator_GetBuffer(This,ppBuffer,pStartTime,pEndTime,dwFlags)	\
+    ( (This)->lpVtbl -> GetBuffer(This,ppBuffer,pStartTime,pEndTime,dwFlags) ) 
+
+#define IMemAllocator_ReleaseBuffer(This,pBuffer)	\
+    ( (This)->lpVtbl -> ReleaseBuffer(This,pBuffer) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMemAllocator_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0015 */
+/* [local] */ 
+
+typedef IMemAllocator *PMEMALLOCATOR;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0015_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0015_v0_0_s_ifspec;
+
+#ifndef __IMemAllocatorCallbackTemp_INTERFACE_DEFINED__
+#define __IMemAllocatorCallbackTemp_INTERFACE_DEFINED__
+
+/* interface IMemAllocatorCallbackTemp */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IMemAllocatorCallbackTemp;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("379a0cf0-c1de-11d2-abf5-00a0c905f375")
+    IMemAllocatorCallbackTemp : public IMemAllocator
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE SetNotify( 
+            /* [in] */ IMemAllocatorNotifyCallbackTemp *pNotify) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetFreeCount( 
+            /* [annotation][out] */ 
+            _Out_  LONG *plBuffersFree) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMemAllocatorCallbackTempVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMemAllocatorCallbackTemp * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMemAllocatorCallbackTemp * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMemAllocatorCallbackTemp * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetProperties )( 
+            IMemAllocatorCallbackTemp * This,
+            /* [annotation][in] */ 
+            _In_  ALLOCATOR_PROPERTIES *pRequest,
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pActual);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetProperties )( 
+            IMemAllocatorCallbackTemp * This,
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pProps);
+        
+        HRESULT ( STDMETHODCALLTYPE *Commit )( 
+            IMemAllocatorCallbackTemp * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Decommit )( 
+            IMemAllocatorCallbackTemp * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+            IMemAllocatorCallbackTemp * This,
+            /* [annotation][out] */ 
+            _Out_  IMediaSample **ppBuffer,
+            /* [annotation][unique][in] */ 
+            _In_opt_  REFERENCE_TIME *pStartTime,
+            /* [annotation][unique][in] */ 
+            _In_opt_  REFERENCE_TIME *pEndTime,
+            /* [in] */ DWORD dwFlags);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReleaseBuffer )( 
+            IMemAllocatorCallbackTemp * This,
+            /* [in] */ IMediaSample *pBuffer);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetNotify )( 
+            IMemAllocatorCallbackTemp * This,
+            /* [in] */ IMemAllocatorNotifyCallbackTemp *pNotify);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetFreeCount )( 
+            IMemAllocatorCallbackTemp * This,
+            /* [annotation][out] */ 
+            _Out_  LONG *plBuffersFree);
+        
+        END_INTERFACE
+    } IMemAllocatorCallbackTempVtbl;
+
+    interface IMemAllocatorCallbackTemp
+    {
+        CONST_VTBL struct IMemAllocatorCallbackTempVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMemAllocatorCallbackTemp_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMemAllocatorCallbackTemp_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMemAllocatorCallbackTemp_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMemAllocatorCallbackTemp_SetProperties(This,pRequest,pActual)	\
+    ( (This)->lpVtbl -> SetProperties(This,pRequest,pActual) ) 
+
+#define IMemAllocatorCallbackTemp_GetProperties(This,pProps)	\
+    ( (This)->lpVtbl -> GetProperties(This,pProps) ) 
+
+#define IMemAllocatorCallbackTemp_Commit(This)	\
+    ( (This)->lpVtbl -> Commit(This) ) 
+
+#define IMemAllocatorCallbackTemp_Decommit(This)	\
+    ( (This)->lpVtbl -> Decommit(This) ) 
+
+#define IMemAllocatorCallbackTemp_GetBuffer(This,ppBuffer,pStartTime,pEndTime,dwFlags)	\
+    ( (This)->lpVtbl -> GetBuffer(This,ppBuffer,pStartTime,pEndTime,dwFlags) ) 
+
+#define IMemAllocatorCallbackTemp_ReleaseBuffer(This,pBuffer)	\
+    ( (This)->lpVtbl -> ReleaseBuffer(This,pBuffer) ) 
+
+
+#define IMemAllocatorCallbackTemp_SetNotify(This,pNotify)	\
+    ( (This)->lpVtbl -> SetNotify(This,pNotify) ) 
+
+#define IMemAllocatorCallbackTemp_GetFreeCount(This,plBuffersFree)	\
+    ( (This)->lpVtbl -> GetFreeCount(This,plBuffersFree) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMemAllocatorCallbackTemp_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMemAllocatorNotifyCallbackTemp_INTERFACE_DEFINED__
+#define __IMemAllocatorNotifyCallbackTemp_INTERFACE_DEFINED__
+
+/* interface IMemAllocatorNotifyCallbackTemp */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IMemAllocatorNotifyCallbackTemp;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("92980b30-c1de-11d2-abf5-00a0c905f375")
+    IMemAllocatorNotifyCallbackTemp : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE NotifyRelease( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMemAllocatorNotifyCallbackTempVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMemAllocatorNotifyCallbackTemp * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMemAllocatorNotifyCallbackTemp * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMemAllocatorNotifyCallbackTemp * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *NotifyRelease )( 
+            IMemAllocatorNotifyCallbackTemp * This);
+        
+        END_INTERFACE
+    } IMemAllocatorNotifyCallbackTempVtbl;
+
+    interface IMemAllocatorNotifyCallbackTemp
+    {
+        CONST_VTBL struct IMemAllocatorNotifyCallbackTempVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMemAllocatorNotifyCallbackTemp_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMemAllocatorNotifyCallbackTemp_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMemAllocatorNotifyCallbackTemp_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMemAllocatorNotifyCallbackTemp_NotifyRelease(This)	\
+    ( (This)->lpVtbl -> NotifyRelease(This) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMemAllocatorNotifyCallbackTemp_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMemInputPin_INTERFACE_DEFINED__
+#define __IMemInputPin_INTERFACE_DEFINED__
+
+/* interface IMemInputPin */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IMemInputPin;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a8689d-0ad4-11ce-b03a-0020af0ba770")
+    IMemInputPin : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetAllocator( 
+            /* [annotation][out] */ 
+            _Out_  IMemAllocator **ppAllocator) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE NotifyAllocator( 
+            /* [in] */ IMemAllocator *pAllocator,
+            /* [in] */ BOOL bReadOnly) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetAllocatorRequirements( 
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pProps) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Receive( 
+            /* [in] */ IMediaSample *pSample) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ReceiveMultiple( 
+            /* [annotation][size_is][in] */ 
+            _In_reads_(nSamples)  IMediaSample **pSamples,
+            /* [in] */ long nSamples,
+            /* [annotation][out] */ 
+            _Out_  long *nSamplesProcessed) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ReceiveCanBlock( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMemInputPinVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMemInputPin * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMemInputPin * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMemInputPin * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetAllocator )( 
+            IMemInputPin * This,
+            /* [annotation][out] */ 
+            _Out_  IMemAllocator **ppAllocator);
+        
+        HRESULT ( STDMETHODCALLTYPE *NotifyAllocator )( 
+            IMemInputPin * This,
+            /* [in] */ IMemAllocator *pAllocator,
+            /* [in] */ BOOL bReadOnly);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetAllocatorRequirements )( 
+            IMemInputPin * This,
+            /* [annotation][out] */ 
+            _Out_  ALLOCATOR_PROPERTIES *pProps);
+        
+        HRESULT ( STDMETHODCALLTYPE *Receive )( 
+            IMemInputPin * This,
+            /* [in] */ IMediaSample *pSample);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReceiveMultiple )( 
+            IMemInputPin * This,
+            /* [annotation][size_is][in] */ 
+            _In_reads_(nSamples)  IMediaSample **pSamples,
+            /* [in] */ long nSamples,
+            /* [annotation][out] */ 
+            _Out_  long *nSamplesProcessed);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReceiveCanBlock )( 
+            IMemInputPin * This);
+        
+        END_INTERFACE
+    } IMemInputPinVtbl;
+
+    interface IMemInputPin
+    {
+        CONST_VTBL struct IMemInputPinVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMemInputPin_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMemInputPin_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMemInputPin_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMemInputPin_GetAllocator(This,ppAllocator)	\
+    ( (This)->lpVtbl -> GetAllocator(This,ppAllocator) ) 
+
+#define IMemInputPin_NotifyAllocator(This,pAllocator,bReadOnly)	\
+    ( (This)->lpVtbl -> NotifyAllocator(This,pAllocator,bReadOnly) ) 
+
+#define IMemInputPin_GetAllocatorRequirements(This,pProps)	\
+    ( (This)->lpVtbl -> GetAllocatorRequirements(This,pProps) ) 
+
+#define IMemInputPin_Receive(This,pSample)	\
+    ( (This)->lpVtbl -> Receive(This,pSample) ) 
+
+#define IMemInputPin_ReceiveMultiple(This,pSamples,nSamples,nSamplesProcessed)	\
+    ( (This)->lpVtbl -> ReceiveMultiple(This,pSamples,nSamples,nSamplesProcessed) ) 
+
+#define IMemInputPin_ReceiveCanBlock(This)	\
+    ( (This)->lpVtbl -> ReceiveCanBlock(This) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMemInputPin_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0018 */
+/* [local] */ 
+
+typedef IMemInputPin *PMEMINPUTPIN;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0018_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0018_v0_0_s_ifspec;
+
+#ifndef __IAMovieSetup_INTERFACE_DEFINED__
+#define __IAMovieSetup_INTERFACE_DEFINED__
+
+/* interface IAMovieSetup */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IAMovieSetup;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("a3d8cec0-7e5a-11cf-bbc5-00805f6cef20")
+    IAMovieSetup : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Register( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Unregister( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IAMovieSetupVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IAMovieSetup * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IAMovieSetup * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IAMovieSetup * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Register )( 
+            IAMovieSetup * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Unregister )( 
+            IAMovieSetup * This);
+        
+        END_INTERFACE
+    } IAMovieSetupVtbl;
+
+    interface IAMovieSetup
+    {
+        CONST_VTBL struct IAMovieSetupVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IAMovieSetup_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IAMovieSetup_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IAMovieSetup_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IAMovieSetup_Register(This)	\
+    ( (This)->lpVtbl -> Register(This) ) 
+
+#define IAMovieSetup_Unregister(This)	\
+    ( (This)->lpVtbl -> Unregister(This) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IAMovieSetup_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0019 */
+/* [local] */ 
+
+typedef IAMovieSetup *PAMOVIESETUP;
+
+typedef 
+enum AM_SEEKING_SeekingFlags
+    {
+        AM_SEEKING_NoPositioning	= 0,
+        AM_SEEKING_AbsolutePositioning	= 0x1,
+        AM_SEEKING_RelativePositioning	= 0x2,
+        AM_SEEKING_IncrementalPositioning	= 0x3,
+        AM_SEEKING_PositioningBitsMask	= 0x3,
+        AM_SEEKING_SeekToKeyFrame	= 0x4,
+        AM_SEEKING_ReturnTime	= 0x8,
+        AM_SEEKING_Segment	= 0x10,
+        AM_SEEKING_NoFlush	= 0x20
+    } 	AM_SEEKING_SEEKING_FLAGS;
+
+typedef 
+enum AM_SEEKING_SeekingCapabilities
+    {
+        AM_SEEKING_CanSeekAbsolute	= 0x1,
+        AM_SEEKING_CanSeekForwards	= 0x2,
+        AM_SEEKING_CanSeekBackwards	= 0x4,
+        AM_SEEKING_CanGetCurrentPos	= 0x8,
+        AM_SEEKING_CanGetStopPos	= 0x10,
+        AM_SEEKING_CanGetDuration	= 0x20,
+        AM_SEEKING_CanPlayBackwards	= 0x40,
+        AM_SEEKING_CanDoSegments	= 0x80,
+        AM_SEEKING_Source	= 0x100
+    } 	AM_SEEKING_SEEKING_CAPABILITIES;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0019_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0019_v0_0_s_ifspec;
+
+#ifndef __IMediaSeeking_INTERFACE_DEFINED__
+#define __IMediaSeeking_INTERFACE_DEFINED__
+
+/* interface IMediaSeeking */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IMediaSeeking;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("36b73880-c2c8-11cf-8b46-00805f6cef60")
+    IMediaSeeking : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetCapabilities( 
+            /* [annotation][out] */ 
+            _Out_  DWORD *pCapabilities) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE CheckCapabilities( 
+            /* [out][in] */ DWORD *pCapabilities) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE IsFormatSupported( 
+            /* [in] */ const GUID *pFormat) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE QueryPreferredFormat( 
+            /* [annotation][out] */ 
+            _Out_  GUID *pFormat) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetTimeFormat( 
+            /* [annotation][out] */ 
+            _Out_  GUID *pFormat) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE IsUsingTimeFormat( 
+            /* [in] */ const GUID *pFormat) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetTimeFormat( 
+            /* [in] */ const GUID *pFormat) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetDuration( 
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pDuration) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetStopPosition( 
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pStop) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetCurrentPosition( 
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pCurrent) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ConvertTimeFormat( 
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pTarget,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pTargetFormat,
+            /* [in] */ LONGLONG Source,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pSourceFormat) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetPositions( 
+            /* [annotation][out][in] */ 
+            _Inout_opt_  LONGLONG *pCurrent,
+            /* [in] */ DWORD dwCurrentFlags,
+            /* [annotation][out][in] */ 
+            _Inout_opt_  LONGLONG *pStop,
+            /* [in] */ DWORD dwStopFlags) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetPositions( 
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pCurrent,
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pStop) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetAvailable( 
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pEarliest,
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pLatest) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetRate( 
+            /* [in] */ double dRate) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetRate( 
+            /* [annotation][out] */ 
+            _Out_  double *pdRate) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetPreroll( 
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pllPreroll) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMediaSeekingVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMediaSeeking * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMediaSeeking * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMediaSeeking * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetCapabilities )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  DWORD *pCapabilities);
+        
+        HRESULT ( STDMETHODCALLTYPE *CheckCapabilities )( 
+            IMediaSeeking * This,
+            /* [out][in] */ DWORD *pCapabilities);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsFormatSupported )( 
+            IMediaSeeking * This,
+            /* [in] */ const GUID *pFormat);
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryPreferredFormat )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  GUID *pFormat);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTimeFormat )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  GUID *pFormat);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsUsingTimeFormat )( 
+            IMediaSeeking * This,
+            /* [in] */ const GUID *pFormat);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetTimeFormat )( 
+            IMediaSeeking * This,
+            /* [in] */ const GUID *pFormat);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetDuration )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pDuration);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetStopPosition )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pStop);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetCurrentPosition )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pCurrent);
+        
+        HRESULT ( STDMETHODCALLTYPE *ConvertTimeFormat )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pTarget,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pTargetFormat,
+            /* [in] */ LONGLONG Source,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pSourceFormat);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetPositions )( 
+            IMediaSeeking * This,
+            /* [annotation][out][in] */ 
+            _Inout_opt_  LONGLONG *pCurrent,
+            /* [in] */ DWORD dwCurrentFlags,
+            /* [annotation][out][in] */ 
+            _Inout_opt_  LONGLONG *pStop,
+            /* [in] */ DWORD dwStopFlags);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetPositions )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pCurrent,
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pStop);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetAvailable )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pEarliest,
+            /* [annotation][out] */ 
+            _Out_opt_  LONGLONG *pLatest);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetRate )( 
+            IMediaSeeking * This,
+            /* [in] */ double dRate);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetRate )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  double *pdRate);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetPreroll )( 
+            IMediaSeeking * This,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pllPreroll);
+        
+        END_INTERFACE
+    } IMediaSeekingVtbl;
+
+    interface IMediaSeeking
+    {
+        CONST_VTBL struct IMediaSeekingVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMediaSeeking_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMediaSeeking_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMediaSeeking_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMediaSeeking_GetCapabilities(This,pCapabilities)	\
+    ( (This)->lpVtbl -> GetCapabilities(This,pCapabilities) ) 
+
+#define IMediaSeeking_CheckCapabilities(This,pCapabilities)	\
+    ( (This)->lpVtbl -> CheckCapabilities(This,pCapabilities) ) 
+
+#define IMediaSeeking_IsFormatSupported(This,pFormat)	\
+    ( (This)->lpVtbl -> IsFormatSupported(This,pFormat) ) 
+
+#define IMediaSeeking_QueryPreferredFormat(This,pFormat)	\
+    ( (This)->lpVtbl -> QueryPreferredFormat(This,pFormat) ) 
+
+#define IMediaSeeking_GetTimeFormat(This,pFormat)	\
+    ( (This)->lpVtbl -> GetTimeFormat(This,pFormat) ) 
+
+#define IMediaSeeking_IsUsingTimeFormat(This,pFormat)	\
+    ( (This)->lpVtbl -> IsUsingTimeFormat(This,pFormat) ) 
+
+#define IMediaSeeking_SetTimeFormat(This,pFormat)	\
+    ( (This)->lpVtbl -> SetTimeFormat(This,pFormat) ) 
+
+#define IMediaSeeking_GetDuration(This,pDuration)	\
+    ( (This)->lpVtbl -> GetDuration(This,pDuration) ) 
+
+#define IMediaSeeking_GetStopPosition(This,pStop)	\
+    ( (This)->lpVtbl -> GetStopPosition(This,pStop) ) 
+
+#define IMediaSeeking_GetCurrentPosition(This,pCurrent)	\
+    ( (This)->lpVtbl -> GetCurrentPosition(This,pCurrent) ) 
+
+#define IMediaSeeking_ConvertTimeFormat(This,pTarget,pTargetFormat,Source,pSourceFormat)	\
+    ( (This)->lpVtbl -> ConvertTimeFormat(This,pTarget,pTargetFormat,Source,pSourceFormat) ) 
+
+#define IMediaSeeking_SetPositions(This,pCurrent,dwCurrentFlags,pStop,dwStopFlags)	\
+    ( (This)->lpVtbl -> SetPositions(This,pCurrent,dwCurrentFlags,pStop,dwStopFlags) ) 
+
+#define IMediaSeeking_GetPositions(This,pCurrent,pStop)	\
+    ( (This)->lpVtbl -> GetPositions(This,pCurrent,pStop) ) 
+
+#define IMediaSeeking_GetAvailable(This,pEarliest,pLatest)	\
+    ( (This)->lpVtbl -> GetAvailable(This,pEarliest,pLatest) ) 
+
+#define IMediaSeeking_SetRate(This,dRate)	\
+    ( (This)->lpVtbl -> SetRate(This,dRate) ) 
+
+#define IMediaSeeking_GetRate(This,pdRate)	\
+    ( (This)->lpVtbl -> GetRate(This,pdRate) ) 
+
+#define IMediaSeeking_GetPreroll(This,pllPreroll)	\
+    ( (This)->lpVtbl -> GetPreroll(This,pllPreroll) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMediaSeeking_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0020 */
+/* [local] */ 
+
+typedef IMediaSeeking *PMEDIASEEKING;
+
+enum tagAM_MEDIAEVENT_FLAGS
+{
+    AM_MEDIAEVENT_NONOTIFY = 0x01
+};
+#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+#pragma endregion
+#include <winapifamily.h>
+#pragma region Desktop Family
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+#include <winapifamily.h>
+#pragma region Application Family
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+struct CodecAPIEventData
+    {
+    GUID guid;
+    DWORD dataLength;
+    DWORD reserved[ 3 ];
+    } ;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0020_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0020_v0_0_s_ifspec;
+
+#ifndef __ICodecAPI_INTERFACE_DEFINED__
+#define __ICodecAPI_INTERFACE_DEFINED__
+
+/* interface ICodecAPI */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_ICodecAPI;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("901db4c7-31ce-41a2-85dc-8fa0bf41b8da")
+    ICodecAPI : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE IsSupported( 
+            /* [in] */ const GUID *Api) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE IsModifiable( 
+            /* [in] */ const GUID *Api) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetParameterRange( 
+            /* [in] */ const GUID *Api,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *ValueMin,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *ValueMax,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *SteppingDelta) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetParameterValues( 
+            /* [in] */ const GUID *Api,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ValuesCount)  VARIANT **Values,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ValuesCount) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetDefaultValue( 
+            /* [in] */ const GUID *Api,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *Value) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetValue( 
+            /* [in] */ const GUID *Api,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *Value) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetValue( 
+            /* [in] */ const GUID *Api,
+            /* [annotation][in] */ 
+            _In_  VARIANT *Value) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RegisterForEvent( 
+            /* [in] */ const GUID *Api,
+            /* [in] */ LONG_PTR userData) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE UnregisterForEvent( 
+            /* [in] */ const GUID *Api) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetAllDefaults( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetValueWithNotify( 
+            /* [in] */ const GUID *Api,
+            /* [in] */ VARIANT *Value,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ChangedParamCount)  GUID **ChangedParam,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ChangedParamCount) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetAllDefaultsWithNotify( 
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ChangedParamCount)  GUID **ChangedParam,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ChangedParamCount) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetAllSettings( 
+            /* [in] */ IStream *__MIDL__ICodecAPI0000) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetAllSettings( 
+            /* [in] */ IStream *__MIDL__ICodecAPI0001) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetAllSettingsWithNotify( 
+            IStream *__MIDL__ICodecAPI0002,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ChangedParamCount)  GUID **ChangedParam,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ChangedParamCount) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct ICodecAPIVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            ICodecAPI * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            ICodecAPI * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            ICodecAPI * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsSupported )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsModifiable )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetParameterRange )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *ValueMin,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *ValueMax,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *SteppingDelta);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetParameterValues )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ValuesCount)  VARIANT **Values,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ValuesCount);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetDefaultValue )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *Value);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetValue )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api,
+            /* [annotation][out] */ 
+            _Out_  VARIANT *Value);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetValue )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api,
+            /* [annotation][in] */ 
+            _In_  VARIANT *Value);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterForEvent )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api,
+            /* [in] */ LONG_PTR userData);
+        
+        HRESULT ( STDMETHODCALLTYPE *UnregisterForEvent )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetAllDefaults )( 
+            ICodecAPI * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetValueWithNotify )( 
+            ICodecAPI * This,
+            /* [in] */ const GUID *Api,
+            /* [in] */ VARIANT *Value,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ChangedParamCount)  GUID **ChangedParam,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ChangedParamCount);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetAllDefaultsWithNotify )( 
+            ICodecAPI * This,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ChangedParamCount)  GUID **ChangedParam,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ChangedParamCount);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetAllSettings )( 
+            ICodecAPI * This,
+            /* [in] */ IStream *__MIDL__ICodecAPI0000);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetAllSettings )( 
+            ICodecAPI * This,
+            /* [in] */ IStream *__MIDL__ICodecAPI0001);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetAllSettingsWithNotify )( 
+            ICodecAPI * This,
+            IStream *__MIDL__ICodecAPI0002,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_all_(*ChangedParamCount)  GUID **ChangedParam,
+            /* [annotation][out] */ 
+            _Out_  ULONG *ChangedParamCount);
+        
+        END_INTERFACE
+    } ICodecAPIVtbl;
+
+    interface ICodecAPI
+    {
+        CONST_VTBL struct ICodecAPIVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define ICodecAPI_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define ICodecAPI_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define ICodecAPI_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define ICodecAPI_IsSupported(This,Api)	\
+    ( (This)->lpVtbl -> IsSupported(This,Api) ) 
+
+#define ICodecAPI_IsModifiable(This,Api)	\
+    ( (This)->lpVtbl -> IsModifiable(This,Api) ) 
+
+#define ICodecAPI_GetParameterRange(This,Api,ValueMin,ValueMax,SteppingDelta)	\
+    ( (This)->lpVtbl -> GetParameterRange(This,Api,ValueMin,ValueMax,SteppingDelta) ) 
+
+#define ICodecAPI_GetParameterValues(This,Api,Values,ValuesCount)	\
+    ( (This)->lpVtbl -> GetParameterValues(This,Api,Values,ValuesCount) ) 
+
+#define ICodecAPI_GetDefaultValue(This,Api,Value)	\
+    ( (This)->lpVtbl -> GetDefaultValue(This,Api,Value) ) 
+
+#define ICodecAPI_GetValue(This,Api,Value)	\
+    ( (This)->lpVtbl -> GetValue(This,Api,Value) ) 
+
+#define ICodecAPI_SetValue(This,Api,Value)	\
+    ( (This)->lpVtbl -> SetValue(This,Api,Value) ) 
+
+#define ICodecAPI_RegisterForEvent(This,Api,userData)	\
+    ( (This)->lpVtbl -> RegisterForEvent(This,Api,userData) ) 
+
+#define ICodecAPI_UnregisterForEvent(This,Api)	\
+    ( (This)->lpVtbl -> UnregisterForEvent(This,Api) ) 
+
+#define ICodecAPI_SetAllDefaults(This)	\
+    ( (This)->lpVtbl -> SetAllDefaults(This) ) 
+
+#define ICodecAPI_SetValueWithNotify(This,Api,Value,ChangedParam,ChangedParamCount)	\
+    ( (This)->lpVtbl -> SetValueWithNotify(This,Api,Value,ChangedParam,ChangedParamCount) ) 
+
+#define ICodecAPI_SetAllDefaultsWithNotify(This,ChangedParam,ChangedParamCount)	\
+    ( (This)->lpVtbl -> SetAllDefaultsWithNotify(This,ChangedParam,ChangedParamCount) ) 
+
+#define ICodecAPI_GetAllSettings(This,__MIDL__ICodecAPI0000)	\
+    ( (This)->lpVtbl -> GetAllSettings(This,__MIDL__ICodecAPI0000) ) 
+
+#define ICodecAPI_SetAllSettings(This,__MIDL__ICodecAPI0001)	\
+    ( (This)->lpVtbl -> SetAllSettings(This,__MIDL__ICodecAPI0001) ) 
+
+#define ICodecAPI_SetAllSettingsWithNotify(This,__MIDL__ICodecAPI0002,ChangedParam,ChangedParamCount)	\
+    ( (This)->lpVtbl -> SetAllSettingsWithNotify(This,__MIDL__ICodecAPI0002,ChangedParam,ChangedParamCount) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __ICodecAPI_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0021 */
+/* [local] */ 
+
+#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef struct REGFILTER
+    {
+    CLSID Clsid;
+    LPWSTR Name;
+    } 	REGFILTER;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0021_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0021_v0_0_s_ifspec;
+
+#ifndef __IEnumRegFilters_INTERFACE_DEFINED__
+#define __IEnumRegFilters_INTERFACE_DEFINED__
+
+/* interface IEnumRegFilters */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IEnumRegFilters;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a4-0ad4-11ce-b03a-0020af0ba770")
+    IEnumRegFilters : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Next( 
+            /* [in] */ ULONG cFilters,
+            /* [annotation][out] */ 
+            _Out_writes_to_(cFilters, *pcFetched)  REGFILTER **apRegFilter,
+            /* [annotation][out] */ 
+            _Inout_opt_  ULONG *pcFetched) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Skip( 
+            /* [in] */ ULONG cFilters) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Clone( 
+            /* [annotation][out] */ 
+            _Out_  IEnumRegFilters **ppEnum) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IEnumRegFiltersVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IEnumRegFilters * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IEnumRegFilters * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IEnumRegFilters * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Next )( 
+            IEnumRegFilters * This,
+            /* [in] */ ULONG cFilters,
+            /* [annotation][out] */ 
+            _Out_writes_to_(cFilters, *pcFetched)  REGFILTER **apRegFilter,
+            /* [annotation][out] */ 
+            _Inout_opt_  ULONG *pcFetched);
+        
+        HRESULT ( STDMETHODCALLTYPE *Skip )( 
+            IEnumRegFilters * This,
+            /* [in] */ ULONG cFilters);
+        
+        HRESULT ( STDMETHODCALLTYPE *Reset )( 
+            IEnumRegFilters * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Clone )( 
+            IEnumRegFilters * This,
+            /* [annotation][out] */ 
+            _Out_  IEnumRegFilters **ppEnum);
+        
+        END_INTERFACE
+    } IEnumRegFiltersVtbl;
+
+    interface IEnumRegFilters
+    {
+        CONST_VTBL struct IEnumRegFiltersVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IEnumRegFilters_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IEnumRegFilters_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IEnumRegFilters_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IEnumRegFilters_Next(This,cFilters,apRegFilter,pcFetched)	\
+    ( (This)->lpVtbl -> Next(This,cFilters,apRegFilter,pcFetched) ) 
+
+#define IEnumRegFilters_Skip(This,cFilters)	\
+    ( (This)->lpVtbl -> Skip(This,cFilters) ) 
+
+#define IEnumRegFilters_Reset(This)	\
+    ( (This)->lpVtbl -> Reset(This) ) 
+
+#define IEnumRegFilters_Clone(This,ppEnum)	\
+    ( (This)->lpVtbl -> Clone(This,ppEnum) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IEnumRegFilters_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0022 */
+/* [local] */ 
+
+typedef IEnumRegFilters *PENUMREGFILTERS;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0022_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0022_v0_0_s_ifspec;
+
+#ifndef __IFilterMapper_INTERFACE_DEFINED__
+#define __IFilterMapper_INTERFACE_DEFINED__
+
+/* interface IFilterMapper */
+/* [unique][uuid][object][local] */ 
+
+
+enum __MIDL_IFilterMapper_0001
+    {
+        MERIT_PREFERRED	= 0x800000,
+        MERIT_NORMAL	= 0x600000,
+        MERIT_UNLIKELY	= 0x400000,
+        MERIT_DO_NOT_USE	= 0x200000,
+        MERIT_SW_COMPRESSOR	= 0x100000,
+        MERIT_HW_COMPRESSOR	= 0x100050
+    } ;
+
+EXTERN_C const IID IID_IFilterMapper;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a3-0ad4-11ce-b03a-0020af0ba770")
+    IFilterMapper : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE RegisterFilter( 
+            /* [in] */ CLSID clsid,
+            /* [in] */ LPCWSTR Name,
+            /* [in] */ DWORD dwMerit) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RegisterFilterInstance( 
+            /* [in] */ CLSID clsid,
+            /* [in] */ LPCWSTR Name,
+            /* [annotation][out] */ 
+            _Out_  CLSID *MRId) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RegisterPin( 
+            /* [in] */ CLSID Filter,
+            /* [in] */ LPCWSTR Name,
+            /* [in] */ BOOL bRendered,
+            /* [in] */ BOOL bOutput,
+            /* [in] */ BOOL bZero,
+            /* [in] */ BOOL bMany,
+            /* [in] */ CLSID ConnectsToFilter,
+            /* [in] */ LPCWSTR ConnectsToPin) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RegisterPinType( 
+            /* [in] */ CLSID clsFilter,
+            /* [in] */ LPCWSTR strName,
+            /* [in] */ CLSID clsMajorType,
+            /* [in] */ CLSID clsSubType) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE UnregisterFilter( 
+            /* [in] */ CLSID Filter) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE UnregisterFilterInstance( 
+            /* [in] */ CLSID MRId) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE UnregisterPin( 
+            /* [in] */ CLSID Filter,
+            /* [in] */ LPCWSTR Name) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE EnumMatchingFilters( 
+            /* [annotation][out] */ 
+            _Out_  IEnumRegFilters **ppEnum,
+            /* [in] */ DWORD dwMerit,
+            /* [in] */ BOOL bInputNeeded,
+            /* [in] */ CLSID clsInMaj,
+            /* [in] */ CLSID clsInSub,
+            /* [in] */ BOOL bRender,
+            /* [in] */ BOOL bOututNeeded,
+            /* [in] */ CLSID clsOutMaj,
+            /* [in] */ CLSID clsOutSub) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFilterMapperVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFilterMapper * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFilterMapper * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFilterMapper * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterFilter )( 
+            IFilterMapper * This,
+            /* [in] */ CLSID clsid,
+            /* [in] */ LPCWSTR Name,
+            /* [in] */ DWORD dwMerit);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterFilterInstance )( 
+            IFilterMapper * This,
+            /* [in] */ CLSID clsid,
+            /* [in] */ LPCWSTR Name,
+            /* [annotation][out] */ 
+            _Out_  CLSID *MRId);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterPin )( 
+            IFilterMapper * This,
+            /* [in] */ CLSID Filter,
+            /* [in] */ LPCWSTR Name,
+            /* [in] */ BOOL bRendered,
+            /* [in] */ BOOL bOutput,
+            /* [in] */ BOOL bZero,
+            /* [in] */ BOOL bMany,
+            /* [in] */ CLSID ConnectsToFilter,
+            /* [in] */ LPCWSTR ConnectsToPin);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterPinType )( 
+            IFilterMapper * This,
+            /* [in] */ CLSID clsFilter,
+            /* [in] */ LPCWSTR strName,
+            /* [in] */ CLSID clsMajorType,
+            /* [in] */ CLSID clsSubType);
+        
+        HRESULT ( STDMETHODCALLTYPE *UnregisterFilter )( 
+            IFilterMapper * This,
+            /* [in] */ CLSID Filter);
+        
+        HRESULT ( STDMETHODCALLTYPE *UnregisterFilterInstance )( 
+            IFilterMapper * This,
+            /* [in] */ CLSID MRId);
+        
+        HRESULT ( STDMETHODCALLTYPE *UnregisterPin )( 
+            IFilterMapper * This,
+            /* [in] */ CLSID Filter,
+            /* [in] */ LPCWSTR Name);
+        
+        HRESULT ( STDMETHODCALLTYPE *EnumMatchingFilters )( 
+            IFilterMapper * This,
+            /* [annotation][out] */ 
+            _Out_  IEnumRegFilters **ppEnum,
+            /* [in] */ DWORD dwMerit,
+            /* [in] */ BOOL bInputNeeded,
+            /* [in] */ CLSID clsInMaj,
+            /* [in] */ CLSID clsInSub,
+            /* [in] */ BOOL bRender,
+            /* [in] */ BOOL bOututNeeded,
+            /* [in] */ CLSID clsOutMaj,
+            /* [in] */ CLSID clsOutSub);
+        
+        END_INTERFACE
+    } IFilterMapperVtbl;
+
+    interface IFilterMapper
+    {
+        CONST_VTBL struct IFilterMapperVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFilterMapper_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFilterMapper_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFilterMapper_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFilterMapper_RegisterFilter(This,clsid,Name,dwMerit)	\
+    ( (This)->lpVtbl -> RegisterFilter(This,clsid,Name,dwMerit) ) 
+
+#define IFilterMapper_RegisterFilterInstance(This,clsid,Name,MRId)	\
+    ( (This)->lpVtbl -> RegisterFilterInstance(This,clsid,Name,MRId) ) 
+
+#define IFilterMapper_RegisterPin(This,Filter,Name,bRendered,bOutput,bZero,bMany,ConnectsToFilter,ConnectsToPin)	\
+    ( (This)->lpVtbl -> RegisterPin(This,Filter,Name,bRendered,bOutput,bZero,bMany,ConnectsToFilter,ConnectsToPin) ) 
+
+#define IFilterMapper_RegisterPinType(This,clsFilter,strName,clsMajorType,clsSubType)	\
+    ( (This)->lpVtbl -> RegisterPinType(This,clsFilter,strName,clsMajorType,clsSubType) ) 
+
+#define IFilterMapper_UnregisterFilter(This,Filter)	\
+    ( (This)->lpVtbl -> UnregisterFilter(This,Filter) ) 
+
+#define IFilterMapper_UnregisterFilterInstance(This,MRId)	\
+    ( (This)->lpVtbl -> UnregisterFilterInstance(This,MRId) ) 
+
+#define IFilterMapper_UnregisterPin(This,Filter,Name)	\
+    ( (This)->lpVtbl -> UnregisterPin(This,Filter,Name) ) 
+
+#define IFilterMapper_EnumMatchingFilters(This,ppEnum,dwMerit,bInputNeeded,clsInMaj,clsInSub,bRender,bOututNeeded,clsOutMaj,clsOutSub)	\
+    ( (This)->lpVtbl -> EnumMatchingFilters(This,ppEnum,dwMerit,bInputNeeded,clsInMaj,clsInSub,bRender,bOututNeeded,clsOutMaj,clsOutSub) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFilterMapper_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0023 */
+/* [local] */ 
+
+typedef struct REGPINTYPES
+    {
+    const CLSID *clsMajorType;
+    const CLSID *clsMinorType;
+    } 	REGPINTYPES;
+
+typedef struct REGFILTERPINS
+    {
+    LPWSTR strName;
+    BOOL bRendered;
+    BOOL bOutput;
+    BOOL bZero;
+    BOOL bMany;
+    const CLSID *clsConnectsToFilter;
+    const WCHAR *strConnectsToPin;
+    UINT nMediaTypes;
+    const REGPINTYPES *lpMediaType;
+    } 	REGFILTERPINS;
+
+typedef struct REGPINMEDIUM
+    {
+    CLSID clsMedium;
+    DWORD dw1;
+    DWORD dw2;
+    } 	REGPINMEDIUM;
+
+
+enum __MIDL___MIDL_itf_strmif_0000_0023_0001
+    {
+        REG_PINFLAG_B_ZERO	= 0x1,
+        REG_PINFLAG_B_RENDERER	= 0x2,
+        REG_PINFLAG_B_MANY	= 0x4,
+        REG_PINFLAG_B_OUTPUT	= 0x8
+    } ;
+typedef struct REGFILTERPINS2
+    {
+    DWORD dwFlags;
+    UINT cInstances;
+    UINT nMediaTypes;
+    /* [size_is] */ const REGPINTYPES *lpMediaType;
+    UINT nMediums;
+    /* [size_is] */ const REGPINMEDIUM *lpMedium;
+    const CLSID *clsPinCategory;
+    } 	REGFILTERPINS2;
+
+typedef struct REGFILTER2
+    {
+    DWORD dwVersion;
+    DWORD dwMerit;
+    /* [switch_type][switch_is] */ union 
+        {
+        /* [case()] */ struct 
+            {
+            ULONG cPins;
+            /* [size_is] */ const REGFILTERPINS *rgPins;
+            } 	;
+        /* [case()] */ struct 
+            {
+            ULONG cPins2;
+            /* [size_is] */ const REGFILTERPINS2 *rgPins2;
+            } 	;
+        } 	;
+    } 	REGFILTER2;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0023_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0023_v0_0_s_ifspec;
+
+#ifndef __IFilterMapper2_INTERFACE_DEFINED__
+#define __IFilterMapper2_INTERFACE_DEFINED__
+
+/* interface IFilterMapper2 */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IFilterMapper2;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("b79bb0b0-33c1-11d1-abe1-00a0c905f375")
+    IFilterMapper2 : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE CreateCategory( 
+            /* [in] */ REFCLSID clsidCategory,
+            /* [in] */ DWORD dwCategoryMerit,
+            /* [in] */ LPCWSTR Description) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE UnregisterFilter( 
+            /* [in] */ const CLSID *pclsidCategory,
+            /* [in] */ LPCOLESTR szInstance,
+            /* [in] */ REFCLSID Filter) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RegisterFilter( 
+            /* [in] */ REFCLSID clsidFilter,
+            /* [in] */ LPCWSTR Name,
+            /* [annotation][out][in] */ 
+            _Inout_opt_  IMoniker **ppMoniker,
+            /* [in] */ const CLSID *pclsidCategory,
+            /* [annotation][in] */ 
+            _In_  LPCOLESTR szInstance,
+            /* [in] */ const REGFILTER2 *prf2) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE EnumMatchingFilters( 
+            /* [annotation][out] */ 
+            _Out_  IEnumMoniker **ppEnum,
+            /* [in] */ DWORD dwFlags,
+            /* [in] */ BOOL bExactMatch,
+            /* [in] */ DWORD dwMerit,
+            /* [in] */ BOOL bInputNeeded,
+            /* [in] */ DWORD cInputTypes,
+            /* [annotation][size_is] */ 
+            _In_reads_opt_(cInputTypes * 2)  const GUID *pInputTypes,
+            /* [annotation][in] */ 
+            _In_opt_  const REGPINMEDIUM *pMedIn,
+            /* [annotation][in] */ 
+            _In_opt_  const CLSID *pPinCategoryIn,
+            /* [in] */ BOOL bRender,
+            /* [in] */ BOOL bOutputNeeded,
+            /* [in] */ DWORD cOutputTypes,
+            /* [annotation][size_is] */ 
+            _In_reads_opt_(cOutputTypes * 2)  const GUID *pOutputTypes,
+            /* [annotation][in] */ 
+            _In_opt_  const REGPINMEDIUM *pMedOut,
+            /* [annotation][in] */ 
+            _In_opt_  const CLSID *pPinCategoryOut) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFilterMapper2Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFilterMapper2 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFilterMapper2 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFilterMapper2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *CreateCategory )( 
+            IFilterMapper2 * This,
+            /* [in] */ REFCLSID clsidCategory,
+            /* [in] */ DWORD dwCategoryMerit,
+            /* [in] */ LPCWSTR Description);
+        
+        HRESULT ( STDMETHODCALLTYPE *UnregisterFilter )( 
+            IFilterMapper2 * This,
+            /* [in] */ const CLSID *pclsidCategory,
+            /* [in] */ LPCOLESTR szInstance,
+            /* [in] */ REFCLSID Filter);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterFilter )( 
+            IFilterMapper2 * This,
+            /* [in] */ REFCLSID clsidFilter,
+            /* [in] */ LPCWSTR Name,
+            /* [annotation][out][in] */ 
+            _Inout_opt_  IMoniker **ppMoniker,
+            /* [in] */ const CLSID *pclsidCategory,
+            /* [annotation][in] */ 
+            _In_  LPCOLESTR szInstance,
+            /* [in] */ const REGFILTER2 *prf2);
+        
+        HRESULT ( STDMETHODCALLTYPE *EnumMatchingFilters )( 
+            IFilterMapper2 * This,
+            /* [annotation][out] */ 
+            _Out_  IEnumMoniker **ppEnum,
+            /* [in] */ DWORD dwFlags,
+            /* [in] */ BOOL bExactMatch,
+            /* [in] */ DWORD dwMerit,
+            /* [in] */ BOOL bInputNeeded,
+            /* [in] */ DWORD cInputTypes,
+            /* [annotation][size_is] */ 
+            _In_reads_opt_(cInputTypes * 2)  const GUID *pInputTypes,
+            /* [annotation][in] */ 
+            _In_opt_  const REGPINMEDIUM *pMedIn,
+            /* [annotation][in] */ 
+            _In_opt_  const CLSID *pPinCategoryIn,
+            /* [in] */ BOOL bRender,
+            /* [in] */ BOOL bOutputNeeded,
+            /* [in] */ DWORD cOutputTypes,
+            /* [annotation][size_is] */ 
+            _In_reads_opt_(cOutputTypes * 2)  const GUID *pOutputTypes,
+            /* [annotation][in] */ 
+            _In_opt_  const REGPINMEDIUM *pMedOut,
+            /* [annotation][in] */ 
+            _In_opt_  const CLSID *pPinCategoryOut);
+        
+        END_INTERFACE
+    } IFilterMapper2Vtbl;
+
+    interface IFilterMapper2
+    {
+        CONST_VTBL struct IFilterMapper2Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFilterMapper2_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFilterMapper2_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFilterMapper2_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFilterMapper2_CreateCategory(This,clsidCategory,dwCategoryMerit,Description)	\
+    ( (This)->lpVtbl -> CreateCategory(This,clsidCategory,dwCategoryMerit,Description) ) 
+
+#define IFilterMapper2_UnregisterFilter(This,pclsidCategory,szInstance,Filter)	\
+    ( (This)->lpVtbl -> UnregisterFilter(This,pclsidCategory,szInstance,Filter) ) 
+
+#define IFilterMapper2_RegisterFilter(This,clsidFilter,Name,ppMoniker,pclsidCategory,szInstance,prf2)	\
+    ( (This)->lpVtbl -> RegisterFilter(This,clsidFilter,Name,ppMoniker,pclsidCategory,szInstance,prf2) ) 
+
+#define IFilterMapper2_EnumMatchingFilters(This,ppEnum,dwFlags,bExactMatch,dwMerit,bInputNeeded,cInputTypes,pInputTypes,pMedIn,pPinCategoryIn,bRender,bOutputNeeded,cOutputTypes,pOutputTypes,pMedOut,pPinCategoryOut)	\
+    ( (This)->lpVtbl -> EnumMatchingFilters(This,ppEnum,dwFlags,bExactMatch,dwMerit,bInputNeeded,cInputTypes,pInputTypes,pMedIn,pPinCategoryIn,bRender,bOutputNeeded,cOutputTypes,pOutputTypes,pMedOut,pPinCategoryOut) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFilterMapper2_INTERFACE_DEFINED__ */
+
+
+#ifndef __IFilterMapper3_INTERFACE_DEFINED__
+#define __IFilterMapper3_INTERFACE_DEFINED__
+
+/* interface IFilterMapper3 */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IFilterMapper3;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("b79bb0b1-33c1-11d1-abe1-00a0c905f375")
+    IFilterMapper3 : public IFilterMapper2
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetICreateDevEnum( 
+            /* [annotation][out] */ 
+            _Out_  ICreateDevEnum **ppEnum) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFilterMapper3Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFilterMapper3 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFilterMapper3 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFilterMapper3 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *CreateCategory )( 
+            IFilterMapper3 * This,
+            /* [in] */ REFCLSID clsidCategory,
+            /* [in] */ DWORD dwCategoryMerit,
+            /* [in] */ LPCWSTR Description);
+        
+        HRESULT ( STDMETHODCALLTYPE *UnregisterFilter )( 
+            IFilterMapper3 * This,
+            /* [in] */ const CLSID *pclsidCategory,
+            /* [in] */ LPCOLESTR szInstance,
+            /* [in] */ REFCLSID Filter);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterFilter )( 
+            IFilterMapper3 * This,
+            /* [in] */ REFCLSID clsidFilter,
+            /* [in] */ LPCWSTR Name,
+            /* [annotation][out][in] */ 
+            _Inout_opt_  IMoniker **ppMoniker,
+            /* [in] */ const CLSID *pclsidCategory,
+            /* [annotation][in] */ 
+            _In_  LPCOLESTR szInstance,
+            /* [in] */ const REGFILTER2 *prf2);
+        
+        HRESULT ( STDMETHODCALLTYPE *EnumMatchingFilters )( 
+            IFilterMapper3 * This,
+            /* [annotation][out] */ 
+            _Out_  IEnumMoniker **ppEnum,
+            /* [in] */ DWORD dwFlags,
+            /* [in] */ BOOL bExactMatch,
+            /* [in] */ DWORD dwMerit,
+            /* [in] */ BOOL bInputNeeded,
+            /* [in] */ DWORD cInputTypes,
+            /* [annotation][size_is] */ 
+            _In_reads_opt_(cInputTypes * 2)  const GUID *pInputTypes,
+            /* [annotation][in] */ 
+            _In_opt_  const REGPINMEDIUM *pMedIn,
+            /* [annotation][in] */ 
+            _In_opt_  const CLSID *pPinCategoryIn,
+            /* [in] */ BOOL bRender,
+            /* [in] */ BOOL bOutputNeeded,
+            /* [in] */ DWORD cOutputTypes,
+            /* [annotation][size_is] */ 
+            _In_reads_opt_(cOutputTypes * 2)  const GUID *pOutputTypes,
+            /* [annotation][in] */ 
+            _In_opt_  const REGPINMEDIUM *pMedOut,
+            /* [annotation][in] */ 
+            _In_opt_  const CLSID *pPinCategoryOut);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetICreateDevEnum )( 
+            IFilterMapper3 * This,
+            /* [annotation][out] */ 
+            _Out_  ICreateDevEnum **ppEnum);
+        
+        END_INTERFACE
+    } IFilterMapper3Vtbl;
+
+    interface IFilterMapper3
+    {
+        CONST_VTBL struct IFilterMapper3Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFilterMapper3_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFilterMapper3_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFilterMapper3_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFilterMapper3_CreateCategory(This,clsidCategory,dwCategoryMerit,Description)	\
+    ( (This)->lpVtbl -> CreateCategory(This,clsidCategory,dwCategoryMerit,Description) ) 
+
+#define IFilterMapper3_UnregisterFilter(This,pclsidCategory,szInstance,Filter)	\
+    ( (This)->lpVtbl -> UnregisterFilter(This,pclsidCategory,szInstance,Filter) ) 
+
+#define IFilterMapper3_RegisterFilter(This,clsidFilter,Name,ppMoniker,pclsidCategory,szInstance,prf2)	\
+    ( (This)->lpVtbl -> RegisterFilter(This,clsidFilter,Name,ppMoniker,pclsidCategory,szInstance,prf2) ) 
+
+#define IFilterMapper3_EnumMatchingFilters(This,ppEnum,dwFlags,bExactMatch,dwMerit,bInputNeeded,cInputTypes,pInputTypes,pMedIn,pPinCategoryIn,bRender,bOutputNeeded,cOutputTypes,pOutputTypes,pMedOut,pPinCategoryOut)	\
+    ( (This)->lpVtbl -> EnumMatchingFilters(This,ppEnum,dwFlags,bExactMatch,dwMerit,bInputNeeded,cInputTypes,pInputTypes,pMedIn,pPinCategoryIn,bRender,bOutputNeeded,cOutputTypes,pOutputTypes,pMedOut,pPinCategoryOut) ) 
+
+
+#define IFilterMapper3_GetICreateDevEnum(This,ppEnum)	\
+    ( (This)->lpVtbl -> GetICreateDevEnum(This,ppEnum) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFilterMapper3_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0025 */
+/* [local] */ 
+
+typedef 
+enum tagQualityMessageType
+    {
+        Famine	= 0,
+        Flood	= ( Famine + 1 ) 
+    } 	QualityMessageType;
+
+typedef struct tagQuality
+    {
+    QualityMessageType Type;
+    long Proportion;
+    REFERENCE_TIME Late;
+    REFERENCE_TIME TimeStamp;
+    } 	Quality;
+
+typedef IQualityControl *PQUALITYCONTROL;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0025_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0025_v0_0_s_ifspec;
+
+#ifndef __IQualityControl_INTERFACE_DEFINED__
+#define __IQualityControl_INTERFACE_DEFINED__
+
+/* interface IQualityControl */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IQualityControl;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a5-0ad4-11ce-b03a-0020af0ba770")
+    IQualityControl : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Notify( 
+            /* [in] */ IBaseFilter *pSelf,
+            /* [in] */ Quality q) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetSink( 
+            /* [in] */ IQualityControl *piqc) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IQualityControlVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IQualityControl * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IQualityControl * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IQualityControl * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Notify )( 
+            IQualityControl * This,
+            /* [in] */ IBaseFilter *pSelf,
+            /* [in] */ Quality q);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetSink )( 
+            IQualityControl * This,
+            /* [in] */ IQualityControl *piqc);
+        
+        END_INTERFACE
+    } IQualityControlVtbl;
+
+    interface IQualityControl
+    {
+        CONST_VTBL struct IQualityControlVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IQualityControl_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IQualityControl_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IQualityControl_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IQualityControl_Notify(This,pSelf,q)	\
+    ( (This)->lpVtbl -> Notify(This,pSelf,q) ) 
+
+#define IQualityControl_SetSink(This,piqc)	\
+    ( (This)->lpVtbl -> SetSink(This,piqc) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IQualityControl_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0026 */
+/* [local] */ 
+
+
+enum __MIDL___MIDL_itf_strmif_0000_0026_0001
+    {
+        CK_NOCOLORKEY	= 0,
+        CK_INDEX	= 0x1,
+        CK_RGB	= 0x2
+    } ;
+typedef struct tagCOLORKEY
+    {
+    DWORD KeyType;
+    DWORD PaletteIndex;
+    COLORREF LowColorValue;
+    COLORREF HighColorValue;
+    } 	COLORKEY;
+
+
+enum __MIDL___MIDL_itf_strmif_0000_0026_0002
+    {
+        ADVISE_NONE	= 0,
+        ADVISE_CLIPPING	= 0x1,
+        ADVISE_PALETTE	= 0x2,
+        ADVISE_COLORKEY	= 0x4,
+        ADVISE_POSITION	= 0x8,
+        ADVISE_DISPLAY_CHANGE	= 0x10
+    } ;
+#define	ADVISE_ALL	( ( ( ( ADVISE_CLIPPING | ADVISE_PALETTE )  | ADVISE_COLORKEY )  | ADVISE_POSITION )  )
+
+#define	ADVISE_ALL2	( ( ADVISE_ALL | ADVISE_DISPLAY_CHANGE )  )
+
+#ifndef _WINGDI_
+typedef struct _RGNDATAHEADER
+    {
+    DWORD dwSize;
+    DWORD iType;
+    DWORD nCount;
+    DWORD nRgnSize;
+    RECT rcBound;
+    } 	RGNDATAHEADER;
+
+typedef struct _RGNDATA
+    {
+    RGNDATAHEADER rdh;
+    char Buffer[ 1 ];
+    } 	RGNDATA;
+
+#endif
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0026_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0026_v0_0_s_ifspec;
+
+#ifndef __IOverlayNotify_INTERFACE_DEFINED__
+#define __IOverlayNotify_INTERFACE_DEFINED__
+
+/* interface IOverlayNotify */
+/* [unique][uuid][local][object][local] */ 
+
+
+EXTERN_C const IID IID_IOverlayNotify;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a0-0ad4-11ce-b03a-0020af0ba770")
+    IOverlayNotify : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE OnPaletteChange( 
+            /* [in] */ DWORD dwColors,
+            /* [in] */ const PALETTEENTRY *pPalette) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE OnClipChange( 
+            /* [in] */ const RECT *pSourceRect,
+            /* [in] */ const RECT *pDestinationRect,
+            /* [in] */ const RGNDATA *pRgnData) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE OnColorKeyChange( 
+            /* [in] */ const COLORKEY *pColorKey) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE OnPositionChange( 
+            /* [in] */ const RECT *pSourceRect,
+            /* [in] */ const RECT *pDestinationRect) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IOverlayNotifyVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IOverlayNotify * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IOverlayNotify * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IOverlayNotify * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnPaletteChange )( 
+            IOverlayNotify * This,
+            /* [in] */ DWORD dwColors,
+            /* [in] */ const PALETTEENTRY *pPalette);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnClipChange )( 
+            IOverlayNotify * This,
+            /* [in] */ const RECT *pSourceRect,
+            /* [in] */ const RECT *pDestinationRect,
+            /* [in] */ const RGNDATA *pRgnData);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnColorKeyChange )( 
+            IOverlayNotify * This,
+            /* [in] */ const COLORKEY *pColorKey);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnPositionChange )( 
+            IOverlayNotify * This,
+            /* [in] */ const RECT *pSourceRect,
+            /* [in] */ const RECT *pDestinationRect);
+        
+        END_INTERFACE
+    } IOverlayNotifyVtbl;
+
+    interface IOverlayNotify
+    {
+        CONST_VTBL struct IOverlayNotifyVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IOverlayNotify_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IOverlayNotify_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IOverlayNotify_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IOverlayNotify_OnPaletteChange(This,dwColors,pPalette)	\
+    ( (This)->lpVtbl -> OnPaletteChange(This,dwColors,pPalette) ) 
+
+#define IOverlayNotify_OnClipChange(This,pSourceRect,pDestinationRect,pRgnData)	\
+    ( (This)->lpVtbl -> OnClipChange(This,pSourceRect,pDestinationRect,pRgnData) ) 
+
+#define IOverlayNotify_OnColorKeyChange(This,pColorKey)	\
+    ( (This)->lpVtbl -> OnColorKeyChange(This,pColorKey) ) 
+
+#define IOverlayNotify_OnPositionChange(This,pSourceRect,pDestinationRect)	\
+    ( (This)->lpVtbl -> OnPositionChange(This,pSourceRect,pDestinationRect) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IOverlayNotify_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0027 */
+/* [local] */ 
+
+typedef IOverlayNotify *POVERLAYNOTIFY;
+
+#if !defined(HMONITOR_DECLARED) && !defined(HMONITOR) && (WINVER < 0x0500)
+#define HMONITOR_DECLARED
+#if 0
+typedef HANDLE HMONITOR;
+
+#endif
+DECLARE_HANDLE(HMONITOR);
+#endif
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0027_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0027_v0_0_s_ifspec;
+
+#ifndef __IOverlayNotify2_INTERFACE_DEFINED__
+#define __IOverlayNotify2_INTERFACE_DEFINED__
+
+/* interface IOverlayNotify2 */
+/* [unique][uuid][local][object] */ 
+
+
+EXTERN_C const IID IID_IOverlayNotify2;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("680EFA10-D535-11D1-87C8-00A0C9223196")
+    IOverlayNotify2 : public IOverlayNotify
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE OnDisplayChange( 
+            HMONITOR hMonitor) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IOverlayNotify2Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IOverlayNotify2 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IOverlayNotify2 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IOverlayNotify2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnPaletteChange )( 
+            IOverlayNotify2 * This,
+            /* [in] */ DWORD dwColors,
+            /* [in] */ const PALETTEENTRY *pPalette);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnClipChange )( 
+            IOverlayNotify2 * This,
+            /* [in] */ const RECT *pSourceRect,
+            /* [in] */ const RECT *pDestinationRect,
+            /* [in] */ const RGNDATA *pRgnData);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnColorKeyChange )( 
+            IOverlayNotify2 * This,
+            /* [in] */ const COLORKEY *pColorKey);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnPositionChange )( 
+            IOverlayNotify2 * This,
+            /* [in] */ const RECT *pSourceRect,
+            /* [in] */ const RECT *pDestinationRect);
+        
+        HRESULT ( STDMETHODCALLTYPE *OnDisplayChange )( 
+            IOverlayNotify2 * This,
+            HMONITOR hMonitor);
+        
+        END_INTERFACE
+    } IOverlayNotify2Vtbl;
+
+    interface IOverlayNotify2
+    {
+        CONST_VTBL struct IOverlayNotify2Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IOverlayNotify2_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IOverlayNotify2_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IOverlayNotify2_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IOverlayNotify2_OnPaletteChange(This,dwColors,pPalette)	\
+    ( (This)->lpVtbl -> OnPaletteChange(This,dwColors,pPalette) ) 
+
+#define IOverlayNotify2_OnClipChange(This,pSourceRect,pDestinationRect,pRgnData)	\
+    ( (This)->lpVtbl -> OnClipChange(This,pSourceRect,pDestinationRect,pRgnData) ) 
+
+#define IOverlayNotify2_OnColorKeyChange(This,pColorKey)	\
+    ( (This)->lpVtbl -> OnColorKeyChange(This,pColorKey) ) 
+
+#define IOverlayNotify2_OnPositionChange(This,pSourceRect,pDestinationRect)	\
+    ( (This)->lpVtbl -> OnPositionChange(This,pSourceRect,pDestinationRect) ) 
+
+
+#define IOverlayNotify2_OnDisplayChange(This,hMonitor)	\
+    ( (This)->lpVtbl -> OnDisplayChange(This,hMonitor) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IOverlayNotify2_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0028 */
+/* [local] */ 
+
+typedef IOverlayNotify2 *POVERLAYNOTIFY2;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0028_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0028_v0_0_s_ifspec;
+
+#ifndef __IOverlay_INTERFACE_DEFINED__
+#define __IOverlay_INTERFACE_DEFINED__
+
+/* interface IOverlay */
+/* [unique][uuid][local][object] */ 
+
+
+EXTERN_C const IID IID_IOverlay;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a1-0ad4-11ce-b03a-0020af0ba770")
+    IOverlay : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetPalette( 
+            /* [annotation][out] */ 
+            _Inout_  DWORD *pdwColors,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_to_(*pdwColors, *pdwColors)  PALETTEENTRY **ppPalette) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetPalette( 
+            /* [in] */ DWORD dwColors,
+            /* [annotation][size_is][in] */ 
+            _In_reads_(dwColors)  PALETTEENTRY *pPalette) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetDefaultColorKey( 
+            /* [annotation][out] */ 
+            _Out_  COLORKEY *pColorKey) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetColorKey( 
+            /* [annotation][out] */ 
+            _Out_  COLORKEY *pColorKey) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetColorKey( 
+            /* [out][in] */ COLORKEY *pColorKey) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetWindowHandle( 
+            /* [annotation][out] */ 
+            _Out_  HWND *pHwnd) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetClipList( 
+            /* [annotation][out] */ 
+            _Out_  RECT *pSourceRect,
+            /* [annotation][out] */ 
+            _Out_  RECT *pDestinationRect,
+            /* [annotation][out] */ 
+            _Out_  RGNDATA **ppRgnData) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetVideoPosition( 
+            /* [annotation][out] */ 
+            _Out_  RECT *pSourceRect,
+            /* [annotation][out] */ 
+            _Out_  RECT *pDestinationRect) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Advise( 
+            /* [in] */ IOverlayNotify *pOverlayNotify,
+            /* [in] */ DWORD dwInterests) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Unadvise( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IOverlayVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IOverlay * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IOverlay * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IOverlay * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetPalette )( 
+            IOverlay * This,
+            /* [annotation][out] */ 
+            _Inout_  DWORD *pdwColors,
+            /* [annotation][size_is][size_is][out] */ 
+            _Outptr_result_buffer_to_(*pdwColors, *pdwColors)  PALETTEENTRY **ppPalette);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetPalette )( 
+            IOverlay * This,
+            /* [in] */ DWORD dwColors,
+            /* [annotation][size_is][in] */ 
+            _In_reads_(dwColors)  PALETTEENTRY *pPalette);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetDefaultColorKey )( 
+            IOverlay * This,
+            /* [annotation][out] */ 
+            _Out_  COLORKEY *pColorKey);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetColorKey )( 
+            IOverlay * This,
+            /* [annotation][out] */ 
+            _Out_  COLORKEY *pColorKey);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetColorKey )( 
+            IOverlay * This,
+            /* [out][in] */ COLORKEY *pColorKey);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetWindowHandle )( 
+            IOverlay * This,
+            /* [annotation][out] */ 
+            _Out_  HWND *pHwnd);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetClipList )( 
+            IOverlay * This,
+            /* [annotation][out] */ 
+            _Out_  RECT *pSourceRect,
+            /* [annotation][out] */ 
+            _Out_  RECT *pDestinationRect,
+            /* [annotation][out] */ 
+            _Out_  RGNDATA **ppRgnData);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetVideoPosition )( 
+            IOverlay * This,
+            /* [annotation][out] */ 
+            _Out_  RECT *pSourceRect,
+            /* [annotation][out] */ 
+            _Out_  RECT *pDestinationRect);
+        
+        HRESULT ( STDMETHODCALLTYPE *Advise )( 
+            IOverlay * This,
+            /* [in] */ IOverlayNotify *pOverlayNotify,
+            /* [in] */ DWORD dwInterests);
+        
+        HRESULT ( STDMETHODCALLTYPE *Unadvise )( 
+            IOverlay * This);
+        
+        END_INTERFACE
+    } IOverlayVtbl;
+
+    interface IOverlay
+    {
+        CONST_VTBL struct IOverlayVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IOverlay_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IOverlay_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IOverlay_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IOverlay_GetPalette(This,pdwColors,ppPalette)	\
+    ( (This)->lpVtbl -> GetPalette(This,pdwColors,ppPalette) ) 
+
+#define IOverlay_SetPalette(This,dwColors,pPalette)	\
+    ( (This)->lpVtbl -> SetPalette(This,dwColors,pPalette) ) 
+
+#define IOverlay_GetDefaultColorKey(This,pColorKey)	\
+    ( (This)->lpVtbl -> GetDefaultColorKey(This,pColorKey) ) 
+
+#define IOverlay_GetColorKey(This,pColorKey)	\
+    ( (This)->lpVtbl -> GetColorKey(This,pColorKey) ) 
+
+#define IOverlay_SetColorKey(This,pColorKey)	\
+    ( (This)->lpVtbl -> SetColorKey(This,pColorKey) ) 
+
+#define IOverlay_GetWindowHandle(This,pHwnd)	\
+    ( (This)->lpVtbl -> GetWindowHandle(This,pHwnd) ) 
+
+#define IOverlay_GetClipList(This,pSourceRect,pDestinationRect,ppRgnData)	\
+    ( (This)->lpVtbl -> GetClipList(This,pSourceRect,pDestinationRect,ppRgnData) ) 
+
+#define IOverlay_GetVideoPosition(This,pSourceRect,pDestinationRect)	\
+    ( (This)->lpVtbl -> GetVideoPosition(This,pSourceRect,pDestinationRect) ) 
+
+#define IOverlay_Advise(This,pOverlayNotify,dwInterests)	\
+    ( (This)->lpVtbl -> Advise(This,pOverlayNotify,dwInterests) ) 
+
+#define IOverlay_Unadvise(This)	\
+    ( (This)->lpVtbl -> Unadvise(This) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IOverlay_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0029 */
+/* [local] */ 
+
+typedef IOverlay *POVERLAY;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0029_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0029_v0_0_s_ifspec;
+
+#ifndef __IMediaEventSink_INTERFACE_DEFINED__
+#define __IMediaEventSink_INTERFACE_DEFINED__
+
+/* interface IMediaEventSink */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IMediaEventSink;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a2-0ad4-11ce-b03a-0020af0ba770")
+    IMediaEventSink : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Notify( 
+            /* [in] */ long EventCode,
+            /* [in] */ LONG_PTR EventParam1,
+            /* [in] */ LONG_PTR EventParam2) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMediaEventSinkVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMediaEventSink * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMediaEventSink * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMediaEventSink * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Notify )( 
+            IMediaEventSink * This,
+            /* [in] */ long EventCode,
+            /* [in] */ LONG_PTR EventParam1,
+            /* [in] */ LONG_PTR EventParam2);
+        
+        END_INTERFACE
+    } IMediaEventSinkVtbl;
+
+    interface IMediaEventSink
+    {
+        CONST_VTBL struct IMediaEventSinkVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMediaEventSink_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMediaEventSink_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMediaEventSink_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMediaEventSink_Notify(This,EventCode,EventParam1,EventParam2)	\
+    ( (This)->lpVtbl -> Notify(This,EventCode,EventParam1,EventParam2) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMediaEventSink_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0030 */
+/* [local] */ 
+
+typedef IMediaEventSink *PMEDIAEVENTSINK;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0030_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0030_v0_0_s_ifspec;
+
+#ifndef __IFileSourceFilter_INTERFACE_DEFINED__
+#define __IFileSourceFilter_INTERFACE_DEFINED__
+
+/* interface IFileSourceFilter */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IFileSourceFilter;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a6-0ad4-11ce-b03a-0020af0ba770")
+    IFileSourceFilter : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Load( 
+            /* [in] */ LPCOLESTR pszFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetCurFile( 
+            /* [annotation][out] */ 
+            _Out_  LPOLESTR *ppszFileName,
+            /* [annotation][out] */ 
+            _Out_opt_  AM_MEDIA_TYPE *pmt) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFileSourceFilterVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFileSourceFilter * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFileSourceFilter * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFileSourceFilter * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Load )( 
+            IFileSourceFilter * This,
+            /* [in] */ LPCOLESTR pszFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetCurFile )( 
+            IFileSourceFilter * This,
+            /* [annotation][out] */ 
+            _Out_  LPOLESTR *ppszFileName,
+            /* [annotation][out] */ 
+            _Out_opt_  AM_MEDIA_TYPE *pmt);
+        
+        END_INTERFACE
+    } IFileSourceFilterVtbl;
+
+    interface IFileSourceFilter
+    {
+        CONST_VTBL struct IFileSourceFilterVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFileSourceFilter_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFileSourceFilter_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFileSourceFilter_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFileSourceFilter_Load(This,pszFileName,pmt)	\
+    ( (This)->lpVtbl -> Load(This,pszFileName,pmt) ) 
+
+#define IFileSourceFilter_GetCurFile(This,ppszFileName,pmt)	\
+    ( (This)->lpVtbl -> GetCurFile(This,ppszFileName,pmt) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFileSourceFilter_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0031 */
+/* [local] */ 
+
+typedef IFileSourceFilter *PFILTERFILESOURCE;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0031_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0031_v0_0_s_ifspec;
+
+#ifndef __IFileSinkFilter_INTERFACE_DEFINED__
+#define __IFileSinkFilter_INTERFACE_DEFINED__
+
+/* interface IFileSinkFilter */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IFileSinkFilter;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("a2104830-7c70-11cf-8bce-00aa00a3f1a6")
+    IFileSinkFilter : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE SetFileName( 
+            /* [in] */ LPCOLESTR pszFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetCurFile( 
+            /* [annotation][out] */ 
+            _Out_  LPOLESTR *ppszFileName,
+            /* [annotation][out] */ 
+            _Out_  AM_MEDIA_TYPE *pmt) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFileSinkFilterVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFileSinkFilter * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFileSinkFilter * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFileSinkFilter * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetFileName )( 
+            IFileSinkFilter * This,
+            /* [in] */ LPCOLESTR pszFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetCurFile )( 
+            IFileSinkFilter * This,
+            /* [annotation][out] */ 
+            _Out_  LPOLESTR *ppszFileName,
+            /* [annotation][out] */ 
+            _Out_  AM_MEDIA_TYPE *pmt);
+        
+        END_INTERFACE
+    } IFileSinkFilterVtbl;
+
+    interface IFileSinkFilter
+    {
+        CONST_VTBL struct IFileSinkFilterVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFileSinkFilter_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFileSinkFilter_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFileSinkFilter_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFileSinkFilter_SetFileName(This,pszFileName,pmt)	\
+    ( (This)->lpVtbl -> SetFileName(This,pszFileName,pmt) ) 
+
+#define IFileSinkFilter_GetCurFile(This,ppszFileName,pmt)	\
+    ( (This)->lpVtbl -> GetCurFile(This,ppszFileName,pmt) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFileSinkFilter_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0032 */
+/* [local] */ 
+
+typedef IFileSinkFilter *PFILTERFILESINK;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0032_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0032_v0_0_s_ifspec;
+
+#ifndef __IFileSinkFilter2_INTERFACE_DEFINED__
+#define __IFileSinkFilter2_INTERFACE_DEFINED__
+
+/* interface IFileSinkFilter2 */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IFileSinkFilter2;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("00855B90-CE1B-11d0-BD4F-00A0C911CE86")
+    IFileSinkFilter2 : public IFileSinkFilter
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE SetMode( 
+            /* [in] */ DWORD dwFlags) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetMode( 
+            /* [annotation][out] */ 
+            _Out_  DWORD *pdwFlags) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFileSinkFilter2Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFileSinkFilter2 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFileSinkFilter2 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFileSinkFilter2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetFileName )( 
+            IFileSinkFilter2 * This,
+            /* [in] */ LPCOLESTR pszFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetCurFile )( 
+            IFileSinkFilter2 * This,
+            /* [annotation][out] */ 
+            _Out_  LPOLESTR *ppszFileName,
+            /* [annotation][out] */ 
+            _Out_  AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetMode )( 
+            IFileSinkFilter2 * This,
+            /* [in] */ DWORD dwFlags);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMode )( 
+            IFileSinkFilter2 * This,
+            /* [annotation][out] */ 
+            _Out_  DWORD *pdwFlags);
+        
+        END_INTERFACE
+    } IFileSinkFilter2Vtbl;
+
+    interface IFileSinkFilter2
+    {
+        CONST_VTBL struct IFileSinkFilter2Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFileSinkFilter2_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFileSinkFilter2_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFileSinkFilter2_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFileSinkFilter2_SetFileName(This,pszFileName,pmt)	\
+    ( (This)->lpVtbl -> SetFileName(This,pszFileName,pmt) ) 
+
+#define IFileSinkFilter2_GetCurFile(This,ppszFileName,pmt)	\
+    ( (This)->lpVtbl -> GetCurFile(This,ppszFileName,pmt) ) 
+
+
+#define IFileSinkFilter2_SetMode(This,dwFlags)	\
+    ( (This)->lpVtbl -> SetMode(This,dwFlags) ) 
+
+#define IFileSinkFilter2_GetMode(This,pdwFlags)	\
+    ( (This)->lpVtbl -> GetMode(This,pdwFlags) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFileSinkFilter2_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0033 */
+/* [local] */ 
+
+typedef IFileSinkFilter2 *PFILESINKFILTER2;
+
+typedef 
+enum AM_FILESINK_FLAGS
+    {
+        AM_FILE_OVERWRITE	= 0x1
+    } 	AM_FILESINK_FLAGS;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0033_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0033_v0_0_s_ifspec;
+
+#ifndef __IGraphBuilder_INTERFACE_DEFINED__
+#define __IGraphBuilder_INTERFACE_DEFINED__
+
+/* interface IGraphBuilder */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IGraphBuilder;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868a9-0ad4-11ce-b03a-0020af0ba770")
+    IGraphBuilder : public IFilterGraph
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Connect( 
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IPin *ppinIn) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Render( 
+            /* [in] */ IPin *ppinOut) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RenderFile( 
+            /* [in] */ LPCWSTR lpcwstrFile,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrPlayList) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE AddSourceFilter( 
+            /* [in] */ LPCWSTR lpcwstrFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrFilterName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetLogFile( 
+            /* [in] */ DWORD_PTR hFile) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Abort( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ShouldOperationContinue( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IGraphBuilderVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IGraphBuilder * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IGraphBuilder * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IGraphBuilder * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddFilter )( 
+            IGraphBuilder * This,
+            /* [in] */ IBaseFilter *pFilter,
+            /* [string][in] */ LPCWSTR pName);
+        
+        HRESULT ( STDMETHODCALLTYPE *RemoveFilter )( 
+            IGraphBuilder * This,
+            /* [in] */ IBaseFilter *pFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *EnumFilters )( 
+            IGraphBuilder * This,
+            /* [annotation][out] */ 
+            _Out_  IEnumFilters **ppEnum);
+        
+        HRESULT ( STDMETHODCALLTYPE *FindFilterByName )( 
+            IGraphBuilder * This,
+            /* [string][in] */ LPCWSTR pName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *ConnectDirect )( 
+            IGraphBuilder * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IPin *ppinIn,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *Reconnect )( 
+            IGraphBuilder * This,
+            /* [in] */ IPin *ppin);
+        
+        HRESULT ( STDMETHODCALLTYPE *Disconnect )( 
+            IGraphBuilder * This,
+            /* [in] */ IPin *ppin);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetDefaultSyncSource )( 
+            IGraphBuilder * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Connect )( 
+            IGraphBuilder * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IPin *ppinIn);
+        
+        HRESULT ( STDMETHODCALLTYPE *Render )( 
+            IGraphBuilder * This,
+            /* [in] */ IPin *ppinOut);
+        
+        HRESULT ( STDMETHODCALLTYPE *RenderFile )( 
+            IGraphBuilder * This,
+            /* [in] */ LPCWSTR lpcwstrFile,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrPlayList);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddSourceFilter )( 
+            IGraphBuilder * This,
+            /* [in] */ LPCWSTR lpcwstrFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrFilterName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetLogFile )( 
+            IGraphBuilder * This,
+            /* [in] */ DWORD_PTR hFile);
+        
+        HRESULT ( STDMETHODCALLTYPE *Abort )( 
+            IGraphBuilder * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *ShouldOperationContinue )( 
+            IGraphBuilder * This);
+        
+        END_INTERFACE
+    } IGraphBuilderVtbl;
+
+    interface IGraphBuilder
+    {
+        CONST_VTBL struct IGraphBuilderVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IGraphBuilder_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IGraphBuilder_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IGraphBuilder_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IGraphBuilder_AddFilter(This,pFilter,pName)	\
+    ( (This)->lpVtbl -> AddFilter(This,pFilter,pName) ) 
+
+#define IGraphBuilder_RemoveFilter(This,pFilter)	\
+    ( (This)->lpVtbl -> RemoveFilter(This,pFilter) ) 
+
+#define IGraphBuilder_EnumFilters(This,ppEnum)	\
+    ( (This)->lpVtbl -> EnumFilters(This,ppEnum) ) 
+
+#define IGraphBuilder_FindFilterByName(This,pName,ppFilter)	\
+    ( (This)->lpVtbl -> FindFilterByName(This,pName,ppFilter) ) 
+
+#define IGraphBuilder_ConnectDirect(This,ppinOut,ppinIn,pmt)	\
+    ( (This)->lpVtbl -> ConnectDirect(This,ppinOut,ppinIn,pmt) ) 
+
+#define IGraphBuilder_Reconnect(This,ppin)	\
+    ( (This)->lpVtbl -> Reconnect(This,ppin) ) 
+
+#define IGraphBuilder_Disconnect(This,ppin)	\
+    ( (This)->lpVtbl -> Disconnect(This,ppin) ) 
+
+#define IGraphBuilder_SetDefaultSyncSource(This)	\
+    ( (This)->lpVtbl -> SetDefaultSyncSource(This) ) 
+
+
+#define IGraphBuilder_Connect(This,ppinOut,ppinIn)	\
+    ( (This)->lpVtbl -> Connect(This,ppinOut,ppinIn) ) 
+
+#define IGraphBuilder_Render(This,ppinOut)	\
+    ( (This)->lpVtbl -> Render(This,ppinOut) ) 
+
+#define IGraphBuilder_RenderFile(This,lpcwstrFile,lpcwstrPlayList)	\
+    ( (This)->lpVtbl -> RenderFile(This,lpcwstrFile,lpcwstrPlayList) ) 
+
+#define IGraphBuilder_AddSourceFilter(This,lpcwstrFileName,lpcwstrFilterName,ppFilter)	\
+    ( (This)->lpVtbl -> AddSourceFilter(This,lpcwstrFileName,lpcwstrFilterName,ppFilter) ) 
+
+#define IGraphBuilder_SetLogFile(This,hFile)	\
+    ( (This)->lpVtbl -> SetLogFile(This,hFile) ) 
+
+#define IGraphBuilder_Abort(This)	\
+    ( (This)->lpVtbl -> Abort(This) ) 
+
+#define IGraphBuilder_ShouldOperationContinue(This)	\
+    ( (This)->lpVtbl -> ShouldOperationContinue(This) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IGraphBuilder_INTERFACE_DEFINED__ */
+
+
+#ifndef __ICaptureGraphBuilder_INTERFACE_DEFINED__
+#define __ICaptureGraphBuilder_INTERFACE_DEFINED__
+
+/* interface ICaptureGraphBuilder */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_ICaptureGraphBuilder;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("bf87b6e0-8c27-11d0-b3f0-00aa003761c5")
+    ICaptureGraphBuilder : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE SetFiltergraph( 
+            /* [in] */ IGraphBuilder *pfg) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetFiltergraph( 
+            /* [annotation][out] */ 
+            _Out_  IGraphBuilder **ppfg) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetOutputFileName( 
+            /* [in] */ const GUID *pType,
+            /* [in] */ LPCOLESTR lpstrFile,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppf,
+            /* [annotation][out] */ 
+            _Out_  IFileSinkFilter **ppSink) = 0;
+        
+        virtual /* [local] */ HRESULT STDMETHODCALLTYPE FindInterface( 
+            /* [annotation][unique][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ IBaseFilter *pf,
+            /* [in] */ REFIID riid,
+            /* [annotation][out] */ 
+            _Out_  void **ppint) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RenderStream( 
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ IUnknown *pSource,
+            /* [in] */ IBaseFilter *pfCompressor,
+            /* [in] */ IBaseFilter *pfRenderer) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ControlStream( 
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ IBaseFilter *pFilter,
+            /* [in] */ REFERENCE_TIME *pstart,
+            /* [in] */ REFERENCE_TIME *pstop,
+            /* [in] */ WORD wStartCookie,
+            /* [in] */ WORD wStopCookie) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE AllocCapFile( 
+            /* [in] */ LPCOLESTR lpstr,
+            /* [in] */ DWORDLONG dwlSize) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE CopyCaptureFile( 
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrOld,
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrNew,
+            /* [in] */ int fAllowEscAbort,
+            /* [in] */ IAMCopyCaptureFileProgress *pCallback) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct ICaptureGraphBuilderVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            ICaptureGraphBuilder * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            ICaptureGraphBuilder * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            ICaptureGraphBuilder * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetFiltergraph )( 
+            ICaptureGraphBuilder * This,
+            /* [in] */ IGraphBuilder *pfg);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetFiltergraph )( 
+            ICaptureGraphBuilder * This,
+            /* [annotation][out] */ 
+            _Out_  IGraphBuilder **ppfg);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetOutputFileName )( 
+            ICaptureGraphBuilder * This,
+            /* [in] */ const GUID *pType,
+            /* [in] */ LPCOLESTR lpstrFile,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppf,
+            /* [annotation][out] */ 
+            _Out_  IFileSinkFilter **ppSink);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *FindInterface )( 
+            ICaptureGraphBuilder * This,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ IBaseFilter *pf,
+            /* [in] */ REFIID riid,
+            /* [annotation][out] */ 
+            _Out_  void **ppint);
+        
+        HRESULT ( STDMETHODCALLTYPE *RenderStream )( 
+            ICaptureGraphBuilder * This,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ IUnknown *pSource,
+            /* [in] */ IBaseFilter *pfCompressor,
+            /* [in] */ IBaseFilter *pfRenderer);
+        
+        HRESULT ( STDMETHODCALLTYPE *ControlStream )( 
+            ICaptureGraphBuilder * This,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ IBaseFilter *pFilter,
+            /* [in] */ REFERENCE_TIME *pstart,
+            /* [in] */ REFERENCE_TIME *pstop,
+            /* [in] */ WORD wStartCookie,
+            /* [in] */ WORD wStopCookie);
+        
+        HRESULT ( STDMETHODCALLTYPE *AllocCapFile )( 
+            ICaptureGraphBuilder * This,
+            /* [in] */ LPCOLESTR lpstr,
+            /* [in] */ DWORDLONG dwlSize);
+        
+        HRESULT ( STDMETHODCALLTYPE *CopyCaptureFile )( 
+            ICaptureGraphBuilder * This,
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrOld,
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrNew,
+            /* [in] */ int fAllowEscAbort,
+            /* [in] */ IAMCopyCaptureFileProgress *pCallback);
+        
+        END_INTERFACE
+    } ICaptureGraphBuilderVtbl;
+
+    interface ICaptureGraphBuilder
+    {
+        CONST_VTBL struct ICaptureGraphBuilderVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define ICaptureGraphBuilder_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define ICaptureGraphBuilder_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define ICaptureGraphBuilder_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define ICaptureGraphBuilder_SetFiltergraph(This,pfg)	\
+    ( (This)->lpVtbl -> SetFiltergraph(This,pfg) ) 
+
+#define ICaptureGraphBuilder_GetFiltergraph(This,ppfg)	\
+    ( (This)->lpVtbl -> GetFiltergraph(This,ppfg) ) 
+
+#define ICaptureGraphBuilder_SetOutputFileName(This,pType,lpstrFile,ppf,ppSink)	\
+    ( (This)->lpVtbl -> SetOutputFileName(This,pType,lpstrFile,ppf,ppSink) ) 
+
+#define ICaptureGraphBuilder_FindInterface(This,pCategory,pf,riid,ppint)	\
+    ( (This)->lpVtbl -> FindInterface(This,pCategory,pf,riid,ppint) ) 
+
+#define ICaptureGraphBuilder_RenderStream(This,pCategory,pSource,pfCompressor,pfRenderer)	\
+    ( (This)->lpVtbl -> RenderStream(This,pCategory,pSource,pfCompressor,pfRenderer) ) 
+
+#define ICaptureGraphBuilder_ControlStream(This,pCategory,pFilter,pstart,pstop,wStartCookie,wStopCookie)	\
+    ( (This)->lpVtbl -> ControlStream(This,pCategory,pFilter,pstart,pstop,wStartCookie,wStopCookie) ) 
+
+#define ICaptureGraphBuilder_AllocCapFile(This,lpstr,dwlSize)	\
+    ( (This)->lpVtbl -> AllocCapFile(This,lpstr,dwlSize) ) 
+
+#define ICaptureGraphBuilder_CopyCaptureFile(This,lpwstrOld,lpwstrNew,fAllowEscAbort,pCallback)	\
+    ( (This)->lpVtbl -> CopyCaptureFile(This,lpwstrOld,lpwstrNew,fAllowEscAbort,pCallback) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [call_as] */ HRESULT STDMETHODCALLTYPE ICaptureGraphBuilder_RemoteFindInterface_Proxy( 
+    ICaptureGraphBuilder * This,
+    /* [annotation][unique][in] */ 
+    _In_opt_  const GUID *pCategory,
+    /* [in] */ IBaseFilter *pf,
+    /* [in] */ REFIID riid,
+    /* [annotation][out] */ 
+    _Out_  IUnknown **ppint);
+
+
+void __RPC_STUB ICaptureGraphBuilder_RemoteFindInterface_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __ICaptureGraphBuilder_INTERFACE_DEFINED__ */
+
+
+#ifndef __IAMCopyCaptureFileProgress_INTERFACE_DEFINED__
+#define __IAMCopyCaptureFileProgress_INTERFACE_DEFINED__
+
+/* interface IAMCopyCaptureFileProgress */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IAMCopyCaptureFileProgress;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("670d1d20-a068-11d0-b3f0-00aa003761c5")
+    IAMCopyCaptureFileProgress : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Progress( 
+            /* [in] */ int iProgress) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IAMCopyCaptureFileProgressVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IAMCopyCaptureFileProgress * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IAMCopyCaptureFileProgress * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IAMCopyCaptureFileProgress * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Progress )( 
+            IAMCopyCaptureFileProgress * This,
+            /* [in] */ int iProgress);
+        
+        END_INTERFACE
+    } IAMCopyCaptureFileProgressVtbl;
+
+    interface IAMCopyCaptureFileProgress
+    {
+        CONST_VTBL struct IAMCopyCaptureFileProgressVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IAMCopyCaptureFileProgress_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IAMCopyCaptureFileProgress_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IAMCopyCaptureFileProgress_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IAMCopyCaptureFileProgress_Progress(This,iProgress)	\
+    ( (This)->lpVtbl -> Progress(This,iProgress) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IAMCopyCaptureFileProgress_INTERFACE_DEFINED__ */
+
+
+#ifndef __ICaptureGraphBuilder2_INTERFACE_DEFINED__
+#define __ICaptureGraphBuilder2_INTERFACE_DEFINED__
+
+/* interface ICaptureGraphBuilder2 */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_ICaptureGraphBuilder2;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("93E5A4E0-2D50-11d2-ABFA-00A0C9C6E38D")
+    ICaptureGraphBuilder2 : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE SetFiltergraph( 
+            /* [in] */ IGraphBuilder *pfg) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetFiltergraph( 
+            /* [annotation][out] */ 
+            _Out_  IGraphBuilder **ppfg) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetOutputFileName( 
+            /* [in] */ const GUID *pType,
+            /* [in] */ LPCOLESTR lpstrFile,
+            /* [annotation][out] */ 
+            _Outptr_  IBaseFilter **ppf,
+            /* [annotation][out] */ 
+            _Outptr_opt_  IFileSinkFilter **ppSink) = 0;
+        
+        virtual /* [local] */ HRESULT STDMETHODCALLTYPE FindInterface( 
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pType,
+            /* [in] */ IBaseFilter *pf,
+            /* [in] */ REFIID riid,
+            /* [annotation][out] */ 
+            _Out_  void **ppint) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RenderStream( 
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ const GUID *pType,
+            /* [in] */ IUnknown *pSource,
+            /* [in] */ IBaseFilter *pfCompressor,
+            /* [in] */ IBaseFilter *pfRenderer) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ControlStream( 
+            /* [in] */ const GUID *pCategory,
+            /* [in] */ const GUID *pType,
+            /* [in] */ IBaseFilter *pFilter,
+            /* [annotation][in] */ 
+            _In_opt_  REFERENCE_TIME *pstart,
+            /* [annotation][in] */ 
+            _In_opt_  REFERENCE_TIME *pstop,
+            /* [in] */ WORD wStartCookie,
+            /* [in] */ WORD wStopCookie) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE AllocCapFile( 
+            /* [in] */ LPCOLESTR lpstr,
+            /* [in] */ DWORDLONG dwlSize) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE CopyCaptureFile( 
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrOld,
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrNew,
+            /* [in] */ int fAllowEscAbort,
+            /* [in] */ IAMCopyCaptureFileProgress *pCallback) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE FindPin( 
+            /* [in] */ IUnknown *pSource,
+            /* [in] */ PIN_DIRECTION pindir,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pType,
+            /* [in] */ BOOL fUnconnected,
+            /* [in] */ int num,
+            /* [annotation][out] */ 
+            _Out_  IPin **ppPin) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct ICaptureGraphBuilder2Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            ICaptureGraphBuilder2 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            ICaptureGraphBuilder2 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            ICaptureGraphBuilder2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetFiltergraph )( 
+            ICaptureGraphBuilder2 * This,
+            /* [in] */ IGraphBuilder *pfg);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetFiltergraph )( 
+            ICaptureGraphBuilder2 * This,
+            /* [annotation][out] */ 
+            _Out_  IGraphBuilder **ppfg);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetOutputFileName )( 
+            ICaptureGraphBuilder2 * This,
+            /* [in] */ const GUID *pType,
+            /* [in] */ LPCOLESTR lpstrFile,
+            /* [annotation][out] */ 
+            _Outptr_  IBaseFilter **ppf,
+            /* [annotation][out] */ 
+            _Outptr_opt_  IFileSinkFilter **ppSink);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *FindInterface )( 
+            ICaptureGraphBuilder2 * This,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pType,
+            /* [in] */ IBaseFilter *pf,
+            /* [in] */ REFIID riid,
+            /* [annotation][out] */ 
+            _Out_  void **ppint);
+        
+        HRESULT ( STDMETHODCALLTYPE *RenderStream )( 
+            ICaptureGraphBuilder2 * This,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [in] */ const GUID *pType,
+            /* [in] */ IUnknown *pSource,
+            /* [in] */ IBaseFilter *pfCompressor,
+            /* [in] */ IBaseFilter *pfRenderer);
+        
+        HRESULT ( STDMETHODCALLTYPE *ControlStream )( 
+            ICaptureGraphBuilder2 * This,
+            /* [in] */ const GUID *pCategory,
+            /* [in] */ const GUID *pType,
+            /* [in] */ IBaseFilter *pFilter,
+            /* [annotation][in] */ 
+            _In_opt_  REFERENCE_TIME *pstart,
+            /* [annotation][in] */ 
+            _In_opt_  REFERENCE_TIME *pstop,
+            /* [in] */ WORD wStartCookie,
+            /* [in] */ WORD wStopCookie);
+        
+        HRESULT ( STDMETHODCALLTYPE *AllocCapFile )( 
+            ICaptureGraphBuilder2 * This,
+            /* [in] */ LPCOLESTR lpstr,
+            /* [in] */ DWORDLONG dwlSize);
+        
+        HRESULT ( STDMETHODCALLTYPE *CopyCaptureFile )( 
+            ICaptureGraphBuilder2 * This,
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrOld,
+            /* [annotation][in] */ 
+            _In_  LPOLESTR lpwstrNew,
+            /* [in] */ int fAllowEscAbort,
+            /* [in] */ IAMCopyCaptureFileProgress *pCallback);
+        
+        HRESULT ( STDMETHODCALLTYPE *FindPin )( 
+            ICaptureGraphBuilder2 * This,
+            /* [in] */ IUnknown *pSource,
+            /* [in] */ PIN_DIRECTION pindir,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pCategory,
+            /* [annotation][in] */ 
+            _In_opt_  const GUID *pType,
+            /* [in] */ BOOL fUnconnected,
+            /* [in] */ int num,
+            /* [annotation][out] */ 
+            _Out_  IPin **ppPin);
+        
+        END_INTERFACE
+    } ICaptureGraphBuilder2Vtbl;
+
+    interface ICaptureGraphBuilder2
+    {
+        CONST_VTBL struct ICaptureGraphBuilder2Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define ICaptureGraphBuilder2_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define ICaptureGraphBuilder2_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define ICaptureGraphBuilder2_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define ICaptureGraphBuilder2_SetFiltergraph(This,pfg)	\
+    ( (This)->lpVtbl -> SetFiltergraph(This,pfg) ) 
+
+#define ICaptureGraphBuilder2_GetFiltergraph(This,ppfg)	\
+    ( (This)->lpVtbl -> GetFiltergraph(This,ppfg) ) 
+
+#define ICaptureGraphBuilder2_SetOutputFileName(This,pType,lpstrFile,ppf,ppSink)	\
+    ( (This)->lpVtbl -> SetOutputFileName(This,pType,lpstrFile,ppf,ppSink) ) 
+
+#define ICaptureGraphBuilder2_FindInterface(This,pCategory,pType,pf,riid,ppint)	\
+    ( (This)->lpVtbl -> FindInterface(This,pCategory,pType,pf,riid,ppint) ) 
+
+#define ICaptureGraphBuilder2_RenderStream(This,pCategory,pType,pSource,pfCompressor,pfRenderer)	\
+    ( (This)->lpVtbl -> RenderStream(This,pCategory,pType,pSource,pfCompressor,pfRenderer) ) 
+
+#define ICaptureGraphBuilder2_ControlStream(This,pCategory,pType,pFilter,pstart,pstop,wStartCookie,wStopCookie)	\
+    ( (This)->lpVtbl -> ControlStream(This,pCategory,pType,pFilter,pstart,pstop,wStartCookie,wStopCookie) ) 
+
+#define ICaptureGraphBuilder2_AllocCapFile(This,lpstr,dwlSize)	\
+    ( (This)->lpVtbl -> AllocCapFile(This,lpstr,dwlSize) ) 
+
+#define ICaptureGraphBuilder2_CopyCaptureFile(This,lpwstrOld,lpwstrNew,fAllowEscAbort,pCallback)	\
+    ( (This)->lpVtbl -> CopyCaptureFile(This,lpwstrOld,lpwstrNew,fAllowEscAbort,pCallback) ) 
+
+#define ICaptureGraphBuilder2_FindPin(This,pSource,pindir,pCategory,pType,fUnconnected,num,ppPin)	\
+    ( (This)->lpVtbl -> FindPin(This,pSource,pindir,pCategory,pType,fUnconnected,num,ppPin) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [call_as] */ HRESULT STDMETHODCALLTYPE ICaptureGraphBuilder2_RemoteFindInterface_Proxy( 
+    ICaptureGraphBuilder2 * This,
+    /* [annotation][in] */ 
+    _In_opt_  const GUID *pCategory,
+    /* [annotation][in] */ 
+    _In_opt_  const GUID *pType,
+    /* [in] */ IBaseFilter *pf,
+    /* [in] */ REFIID riid,
+    /* [annotation][out] */ 
+    _Out_  IUnknown **ppint);
+
+
+void __RPC_STUB ICaptureGraphBuilder2_RemoteFindInterface_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __ICaptureGraphBuilder2_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0000_0037 */
+/* [local] */ 
+
+
+enum _AM_RENSDEREXFLAGS
+    {
+        AM_RENDEREX_RENDERTOEXISTINGRENDERERS	= 0x1
+    } ;
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0037_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0000_0037_v0_0_s_ifspec;
+
+#ifndef __IFilterGraph2_INTERFACE_DEFINED__
+#define __IFilterGraph2_INTERFACE_DEFINED__
+
+/* interface IFilterGraph2 */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IFilterGraph2;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("36b73882-c2c8-11cf-8b46-00805f6cef60")
+    IFilterGraph2 : public IGraphBuilder
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE AddSourceFilterForMoniker( 
+            /* [in] */ IMoniker *pMoniker,
+            /* [in] */ IBindCtx *pCtx,
+            /* [unique][in] */ LPCWSTR lpcwstrFilterName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ReconnectEx( 
+            /* [in] */ IPin *ppin,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RenderEx( 
+            /* [in] */ IPin *pPinOut,
+            /* [in] */ DWORD dwFlags,
+            /* [annotation][out][in] */ 
+            _Reserved_  DWORD *pvContext) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFilterGraph2Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFilterGraph2 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFilterGraph2 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFilterGraph2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddFilter )( 
+            IFilterGraph2 * This,
+            /* [in] */ IBaseFilter *pFilter,
+            /* [string][in] */ LPCWSTR pName);
+        
+        HRESULT ( STDMETHODCALLTYPE *RemoveFilter )( 
+            IFilterGraph2 * This,
+            /* [in] */ IBaseFilter *pFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *EnumFilters )( 
+            IFilterGraph2 * This,
+            /* [annotation][out] */ 
+            _Out_  IEnumFilters **ppEnum);
+        
+        HRESULT ( STDMETHODCALLTYPE *FindFilterByName )( 
+            IFilterGraph2 * This,
+            /* [string][in] */ LPCWSTR pName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *ConnectDirect )( 
+            IFilterGraph2 * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IPin *ppinIn,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *Reconnect )( 
+            IFilterGraph2 * This,
+            /* [in] */ IPin *ppin);
+        
+        HRESULT ( STDMETHODCALLTYPE *Disconnect )( 
+            IFilterGraph2 * This,
+            /* [in] */ IPin *ppin);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetDefaultSyncSource )( 
+            IFilterGraph2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Connect )( 
+            IFilterGraph2 * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IPin *ppinIn);
+        
+        HRESULT ( STDMETHODCALLTYPE *Render )( 
+            IFilterGraph2 * This,
+            /* [in] */ IPin *ppinOut);
+        
+        HRESULT ( STDMETHODCALLTYPE *RenderFile )( 
+            IFilterGraph2 * This,
+            /* [in] */ LPCWSTR lpcwstrFile,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrPlayList);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddSourceFilter )( 
+            IFilterGraph2 * This,
+            /* [in] */ LPCWSTR lpcwstrFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrFilterName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetLogFile )( 
+            IFilterGraph2 * This,
+            /* [in] */ DWORD_PTR hFile);
+        
+        HRESULT ( STDMETHODCALLTYPE *Abort )( 
+            IFilterGraph2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *ShouldOperationContinue )( 
+            IFilterGraph2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddSourceFilterForMoniker )( 
+            IFilterGraph2 * This,
+            /* [in] */ IMoniker *pMoniker,
+            /* [in] */ IBindCtx *pCtx,
+            /* [unique][in] */ LPCWSTR lpcwstrFilterName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReconnectEx )( 
+            IFilterGraph2 * This,
+            /* [in] */ IPin *ppin,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *RenderEx )( 
+            IFilterGraph2 * This,
+            /* [in] */ IPin *pPinOut,
+            /* [in] */ DWORD dwFlags,
+            /* [annotation][out][in] */ 
+            _Reserved_  DWORD *pvContext);
+        
+        END_INTERFACE
+    } IFilterGraph2Vtbl;
+
+    interface IFilterGraph2
+    {
+        CONST_VTBL struct IFilterGraph2Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFilterGraph2_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFilterGraph2_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFilterGraph2_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFilterGraph2_AddFilter(This,pFilter,pName)	\
+    ( (This)->lpVtbl -> AddFilter(This,pFilter,pName) ) 
+
+#define IFilterGraph2_RemoveFilter(This,pFilter)	\
+    ( (This)->lpVtbl -> RemoveFilter(This,pFilter) ) 
+
+#define IFilterGraph2_EnumFilters(This,ppEnum)	\
+    ( (This)->lpVtbl -> EnumFilters(This,ppEnum) ) 
+
+#define IFilterGraph2_FindFilterByName(This,pName,ppFilter)	\
+    ( (This)->lpVtbl -> FindFilterByName(This,pName,ppFilter) ) 
+
+#define IFilterGraph2_ConnectDirect(This,ppinOut,ppinIn,pmt)	\
+    ( (This)->lpVtbl -> ConnectDirect(This,ppinOut,ppinIn,pmt) ) 
+
+#define IFilterGraph2_Reconnect(This,ppin)	\
+    ( (This)->lpVtbl -> Reconnect(This,ppin) ) 
+
+#define IFilterGraph2_Disconnect(This,ppin)	\
+    ( (This)->lpVtbl -> Disconnect(This,ppin) ) 
+
+#define IFilterGraph2_SetDefaultSyncSource(This)	\
+    ( (This)->lpVtbl -> SetDefaultSyncSource(This) ) 
+
+
+#define IFilterGraph2_Connect(This,ppinOut,ppinIn)	\
+    ( (This)->lpVtbl -> Connect(This,ppinOut,ppinIn) ) 
+
+#define IFilterGraph2_Render(This,ppinOut)	\
+    ( (This)->lpVtbl -> Render(This,ppinOut) ) 
+
+#define IFilterGraph2_RenderFile(This,lpcwstrFile,lpcwstrPlayList)	\
+    ( (This)->lpVtbl -> RenderFile(This,lpcwstrFile,lpcwstrPlayList) ) 
+
+#define IFilterGraph2_AddSourceFilter(This,lpcwstrFileName,lpcwstrFilterName,ppFilter)	\
+    ( (This)->lpVtbl -> AddSourceFilter(This,lpcwstrFileName,lpcwstrFilterName,ppFilter) ) 
+
+#define IFilterGraph2_SetLogFile(This,hFile)	\
+    ( (This)->lpVtbl -> SetLogFile(This,hFile) ) 
+
+#define IFilterGraph2_Abort(This)	\
+    ( (This)->lpVtbl -> Abort(This) ) 
+
+#define IFilterGraph2_ShouldOperationContinue(This)	\
+    ( (This)->lpVtbl -> ShouldOperationContinue(This) ) 
+
+
+#define IFilterGraph2_AddSourceFilterForMoniker(This,pMoniker,pCtx,lpcwstrFilterName,ppFilter)	\
+    ( (This)->lpVtbl -> AddSourceFilterForMoniker(This,pMoniker,pCtx,lpcwstrFilterName,ppFilter) ) 
+
+#define IFilterGraph2_ReconnectEx(This,ppin,pmt)	\
+    ( (This)->lpVtbl -> ReconnectEx(This,ppin,pmt) ) 
+
+#define IFilterGraph2_RenderEx(This,pPinOut,dwFlags,pvContext)	\
+    ( (This)->lpVtbl -> RenderEx(This,pPinOut,dwFlags,pvContext) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFilterGraph2_INTERFACE_DEFINED__ */
+
+
+#ifndef __IFilterGraph3_INTERFACE_DEFINED__
+#define __IFilterGraph3_INTERFACE_DEFINED__
+
+/* interface IFilterGraph3 */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IFilterGraph3;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("aaf38154-b80b-422f-91e6-b66467509a07")
+    IFilterGraph3 : public IFilterGraph2
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE SetSyncSourceEx( 
+            /* [annotation][in] */ 
+            _In_  IReferenceClock *pClockForMostOfFilterGraph,
+            /* [annotation][in] */ 
+            _In_  IReferenceClock *pClockForFilter,
+            /* [annotation][in] */ 
+            _In_  IBaseFilter *pFilter) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IFilterGraph3Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFilterGraph3 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFilterGraph3 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFilterGraph3 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddFilter )( 
+            IFilterGraph3 * This,
+            /* [in] */ IBaseFilter *pFilter,
+            /* [string][in] */ LPCWSTR pName);
+        
+        HRESULT ( STDMETHODCALLTYPE *RemoveFilter )( 
+            IFilterGraph3 * This,
+            /* [in] */ IBaseFilter *pFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *EnumFilters )( 
+            IFilterGraph3 * This,
+            /* [annotation][out] */ 
+            _Out_  IEnumFilters **ppEnum);
+        
+        HRESULT ( STDMETHODCALLTYPE *FindFilterByName )( 
+            IFilterGraph3 * This,
+            /* [string][in] */ LPCWSTR pName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *ConnectDirect )( 
+            IFilterGraph3 * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IPin *ppinIn,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *Reconnect )( 
+            IFilterGraph3 * This,
+            /* [in] */ IPin *ppin);
+        
+        HRESULT ( STDMETHODCALLTYPE *Disconnect )( 
+            IFilterGraph3 * This,
+            /* [in] */ IPin *ppin);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetDefaultSyncSource )( 
+            IFilterGraph3 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Connect )( 
+            IFilterGraph3 * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IPin *ppinIn);
+        
+        HRESULT ( STDMETHODCALLTYPE *Render )( 
+            IFilterGraph3 * This,
+            /* [in] */ IPin *ppinOut);
+        
+        HRESULT ( STDMETHODCALLTYPE *RenderFile )( 
+            IFilterGraph3 * This,
+            /* [in] */ LPCWSTR lpcwstrFile,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrPlayList);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddSourceFilter )( 
+            IFilterGraph3 * This,
+            /* [in] */ LPCWSTR lpcwstrFileName,
+            /* [annotation][unique][in] */ 
+            _In_opt_  LPCWSTR lpcwstrFilterName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetLogFile )( 
+            IFilterGraph3 * This,
+            /* [in] */ DWORD_PTR hFile);
+        
+        HRESULT ( STDMETHODCALLTYPE *Abort )( 
+            IFilterGraph3 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *ShouldOperationContinue )( 
+            IFilterGraph3 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *AddSourceFilterForMoniker )( 
+            IFilterGraph3 * This,
+            /* [in] */ IMoniker *pMoniker,
+            /* [in] */ IBindCtx *pCtx,
+            /* [unique][in] */ LPCWSTR lpcwstrFilterName,
+            /* [annotation][out] */ 
+            _Out_  IBaseFilter **ppFilter);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReconnectEx )( 
+            IFilterGraph3 * This,
+            /* [in] */ IPin *ppin,
+            /* [annotation][unique][in] */ 
+            _In_opt_  const AM_MEDIA_TYPE *pmt);
+        
+        HRESULT ( STDMETHODCALLTYPE *RenderEx )( 
+            IFilterGraph3 * This,
+            /* [in] */ IPin *pPinOut,
+            /* [in] */ DWORD dwFlags,
+            /* [annotation][out][in] */ 
+            _Reserved_  DWORD *pvContext);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetSyncSourceEx )( 
+            IFilterGraph3 * This,
+            /* [annotation][in] */ 
+            _In_  IReferenceClock *pClockForMostOfFilterGraph,
+            /* [annotation][in] */ 
+            _In_  IReferenceClock *pClockForFilter,
+            /* [annotation][in] */ 
+            _In_  IBaseFilter *pFilter);
+        
+        END_INTERFACE
+    } IFilterGraph3Vtbl;
+
+    interface IFilterGraph3
+    {
+        CONST_VTBL struct IFilterGraph3Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFilterGraph3_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IFilterGraph3_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IFilterGraph3_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IFilterGraph3_AddFilter(This,pFilter,pName)	\
+    ( (This)->lpVtbl -> AddFilter(This,pFilter,pName) ) 
+
+#define IFilterGraph3_RemoveFilter(This,pFilter)	\
+    ( (This)->lpVtbl -> RemoveFilter(This,pFilter) ) 
+
+#define IFilterGraph3_EnumFilters(This,ppEnum)	\
+    ( (This)->lpVtbl -> EnumFilters(This,ppEnum) ) 
+
+#define IFilterGraph3_FindFilterByName(This,pName,ppFilter)	\
+    ( (This)->lpVtbl -> FindFilterByName(This,pName,ppFilter) ) 
+
+#define IFilterGraph3_ConnectDirect(This,ppinOut,ppinIn,pmt)	\
+    ( (This)->lpVtbl -> ConnectDirect(This,ppinOut,ppinIn,pmt) ) 
+
+#define IFilterGraph3_Reconnect(This,ppin)	\
+    ( (This)->lpVtbl -> Reconnect(This,ppin) ) 
+
+#define IFilterGraph3_Disconnect(This,ppin)	\
+    ( (This)->lpVtbl -> Disconnect(This,ppin) ) 
+
+#define IFilterGraph3_SetDefaultSyncSource(This)	\
+    ( (This)->lpVtbl -> SetDefaultSyncSource(This) ) 
+
+
+#define IFilterGraph3_Connect(This,ppinOut,ppinIn)	\
+    ( (This)->lpVtbl -> Connect(This,ppinOut,ppinIn) ) 
+
+#define IFilterGraph3_Render(This,ppinOut)	\
+    ( (This)->lpVtbl -> Render(This,ppinOut) ) 
+
+#define IFilterGraph3_RenderFile(This,lpcwstrFile,lpcwstrPlayList)	\
+    ( (This)->lpVtbl -> RenderFile(This,lpcwstrFile,lpcwstrPlayList) ) 
+
+#define IFilterGraph3_AddSourceFilter(This,lpcwstrFileName,lpcwstrFilterName,ppFilter)	\
+    ( (This)->lpVtbl -> AddSourceFilter(This,lpcwstrFileName,lpcwstrFilterName,ppFilter) ) 
+
+#define IFilterGraph3_SetLogFile(This,hFile)	\
+    ( (This)->lpVtbl -> SetLogFile(This,hFile) ) 
+
+#define IFilterGraph3_Abort(This)	\
+    ( (This)->lpVtbl -> Abort(This) ) 
+
+#define IFilterGraph3_ShouldOperationContinue(This)	\
+    ( (This)->lpVtbl -> ShouldOperationContinue(This) ) 
+
+
+#define IFilterGraph3_AddSourceFilterForMoniker(This,pMoniker,pCtx,lpcwstrFilterName,ppFilter)	\
+    ( (This)->lpVtbl -> AddSourceFilterForMoniker(This,pMoniker,pCtx,lpcwstrFilterName,ppFilter) ) 
+
+#define IFilterGraph3_ReconnectEx(This,ppin,pmt)	\
+    ( (This)->lpVtbl -> ReconnectEx(This,ppin,pmt) ) 
+
+#define IFilterGraph3_RenderEx(This,pPinOut,dwFlags,pvContext)	\
+    ( (This)->lpVtbl -> RenderEx(This,pPinOut,dwFlags,pvContext) ) 
+
+
+#define IFilterGraph3_SetSyncSourceEx(This,pClockForMostOfFilterGraph,pClockForFilter,pFilter)	\
+    ( (This)->lpVtbl -> SetSyncSourceEx(This,pClockForMostOfFilterGraph,pClockForFilter,pFilter) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IFilterGraph3_INTERFACE_DEFINED__ */
+
+
+#ifndef __IStreamBuilder_INTERFACE_DEFINED__
+#define __IStreamBuilder_INTERFACE_DEFINED__
+
+/* interface IStreamBuilder */
+/* [unique][uuid][local][object] */ 
+
+
+EXTERN_C const IID IID_IStreamBuilder;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868bf-0ad4-11ce-b03a-0020af0ba770")
+    IStreamBuilder : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Render( 
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IGraphBuilder *pGraph) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Backout( 
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IGraphBuilder *pGraph) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IStreamBuilderVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IStreamBuilder * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IStreamBuilder * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IStreamBuilder * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Render )( 
+            IStreamBuilder * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IGraphBuilder *pGraph);
+        
+        HRESULT ( STDMETHODCALLTYPE *Backout )( 
+            IStreamBuilder * This,
+            /* [in] */ IPin *ppinOut,
+            /* [in] */ IGraphBuilder *pGraph);
+        
+        END_INTERFACE
+    } IStreamBuilderVtbl;
+
+    interface IStreamBuilder
+    {
+        CONST_VTBL struct IStreamBuilderVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IStreamBuilder_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IStreamBuilder_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IStreamBuilder_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IStreamBuilder_Render(This,ppinOut,pGraph)	\
+    ( (This)->lpVtbl -> Render(This,ppinOut,pGraph) ) 
+
+#define IStreamBuilder_Backout(This,ppinOut,pGraph)	\
+    ( (This)->lpVtbl -> Backout(This,ppinOut,pGraph) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IStreamBuilder_INTERFACE_DEFINED__ */
+
+
+#ifndef __IAsyncReader_INTERFACE_DEFINED__
+#define __IAsyncReader_INTERFACE_DEFINED__
+
+/* interface IAsyncReader */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IAsyncReader;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868aa-0ad4-11ce-b03a-0020af0ba770")
+    IAsyncReader : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE RequestAllocator( 
+            /* [in] */ IMemAllocator *pPreferred,
+            /* [annotation][in] */ 
+            _In_  ALLOCATOR_PROPERTIES *pProps,
+            /* [annotation][out] */ 
+            _Out_  IMemAllocator **ppActual) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Request( 
+            /* [in] */ IMediaSample *pSample,
+            /* [in] */ DWORD_PTR dwUser) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE WaitForNext( 
+            /* [in] */ DWORD dwTimeout,
+            /* [annotation][out] */ 
+            _Out_opt_  IMediaSample **ppSample,
+            /* [annotation][out] */ 
+            _Out_  DWORD_PTR *pdwUser) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SyncReadAligned( 
+            /* [in] */ IMediaSample *pSample) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SyncRead( 
+            /* [in] */ LONGLONG llPosition,
+            /* [in] */ LONG lLength,
+            /* [annotation][size_is][out] */ 
+            _Out_writes_bytes_(lLength)  BYTE *pBuffer) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Length( 
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pTotal,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pAvailable) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE BeginFlush( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE EndFlush( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IAsyncReaderVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IAsyncReader * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IAsyncReader * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IAsyncReader * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *RequestAllocator )( 
+            IAsyncReader * This,
+            /* [in] */ IMemAllocator *pPreferred,
+            /* [annotation][in] */ 
+            _In_  ALLOCATOR_PROPERTIES *pProps,
+            /* [annotation][out] */ 
+            _Out_  IMemAllocator **ppActual);
+        
+        HRESULT ( STDMETHODCALLTYPE *Request )( 
+            IAsyncReader * This,
+            /* [in] */ IMediaSample *pSample,
+            /* [in] */ DWORD_PTR dwUser);
+        
+        HRESULT ( STDMETHODCALLTYPE *WaitForNext )( 
+            IAsyncReader * This,
+            /* [in] */ DWORD dwTimeout,
+            /* [annotation][out] */ 
+            _Out_opt_  IMediaSample **ppSample,
+            /* [annotation][out] */ 
+            _Out_  DWORD_PTR *pdwUser);
+        
+        HRESULT ( STDMETHODCALLTYPE *SyncReadAligned )( 
+            IAsyncReader * This,
+            /* [in] */ IMediaSample *pSample);
+        
+        HRESULT ( STDMETHODCALLTYPE *SyncRead )( 
+            IAsyncReader * This,
+            /* [in] */ LONGLONG llPosition,
+            /* [in] */ LONG lLength,
+            /* [annotation][size_is][out] */ 
+            _Out_writes_bytes_(lLength)  BYTE *pBuffer);
+        
+        HRESULT ( STDMETHODCALLTYPE *Length )( 
+            IAsyncReader * This,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pTotal,
+            /* [annotation][out] */ 
+            _Out_  LONGLONG *pAvailable);
+        
+        HRESULT ( STDMETHODCALLTYPE *BeginFlush )( 
+            IAsyncReader * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *EndFlush )( 
+            IAsyncReader * This);
+        
+        END_INTERFACE
+    } IAsyncReaderVtbl;
+
+    interface IAsyncReader
+    {
+        CONST_VTBL struct IAsyncReaderVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IAsyncReader_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IAsyncReader_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IAsyncReader_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IAsyncReader_RequestAllocator(This,pPreferred,pProps,ppActual)	\
+    ( (This)->lpVtbl -> RequestAllocator(This,pPreferred,pProps,ppActual) ) 
+
+#define IAsyncReader_Request(This,pSample,dwUser)	\
+    ( (This)->lpVtbl -> Request(This,pSample,dwUser) ) 
+
+#define IAsyncReader_WaitForNext(This,dwTimeout,ppSample,pdwUser)	\
+    ( (This)->lpVtbl -> WaitForNext(This,dwTimeout,ppSample,pdwUser) ) 
+
+#define IAsyncReader_SyncReadAligned(This,pSample)	\
+    ( (This)->lpVtbl -> SyncReadAligned(This,pSample) ) 
+
+#define IAsyncReader_SyncRead(This,llPosition,lLength,pBuffer)	\
+    ( (This)->lpVtbl -> SyncRead(This,llPosition,lLength,pBuffer) ) 
+
+#define IAsyncReader_Length(This,pTotal,pAvailable)	\
+    ( (This)->lpVtbl -> Length(This,pTotal,pAvailable) ) 
+
+#define IAsyncReader_BeginFlush(This)	\
+    ( (This)->lpVtbl -> BeginFlush(This) ) 
+
+#define IAsyncReader_EndFlush(This)	\
+    ( (This)->lpVtbl -> EndFlush(This) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IAsyncReader_INTERFACE_DEFINED__ */
+
+
+#ifndef __IGraphVersion_INTERFACE_DEFINED__
+#define __IGraphVersion_INTERFACE_DEFINED__
+
+/* interface IGraphVersion */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IGraphVersion;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868ab-0ad4-11ce-b03a-0020af0ba770")
+    IGraphVersion : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE QueryVersion( 
+            /* [annotation] */ 
+            _Out_  LONG *pVersion) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IGraphVersionVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IGraphVersion * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IGraphVersion * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IGraphVersion * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryVersion )( 
+            IGraphVersion * This,
+            /* [annotation] */ 
+            _Out_  LONG *pVersion);
+        
+        END_INTERFACE
+    } IGraphVersionVtbl;
+
+    interface IGraphVersion
+    {
+        CONST_VTBL struct IGraphVersionVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IGraphVersion_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IGraphVersion_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IGraphVersion_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IGraphVersion_QueryVersion(This,pVersion)	\
+    ( (This)->lpVtbl -> QueryVersion(This,pVersion) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IGraphVersion_INTERFACE_DEFINED__ */
+
+
+#ifndef __IResourceConsumer_INTERFACE_DEFINED__
+#define __IResourceConsumer_INTERFACE_DEFINED__
+
+/* interface IResourceConsumer */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IResourceConsumer;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868ad-0ad4-11ce-b03a-0020af0ba770")
+    IResourceConsumer : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE AcquireResource( 
+            /* [in] */ LONG idResource) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ReleaseResource( 
+            /* [in] */ LONG idResource) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IResourceConsumerVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IResourceConsumer * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IResourceConsumer * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IResourceConsumer * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *AcquireResource )( 
+            IResourceConsumer * This,
+            /* [in] */ LONG idResource);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReleaseResource )( 
+            IResourceConsumer * This,
+            /* [in] */ LONG idResource);
+        
+        END_INTERFACE
+    } IResourceConsumerVtbl;
+
+    interface IResourceConsumer
+    {
+        CONST_VTBL struct IResourceConsumerVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IResourceConsumer_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IResourceConsumer_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IResourceConsumer_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IResourceConsumer_AcquireResource(This,idResource)	\
+    ( (This)->lpVtbl -> AcquireResource(This,idResource) ) 
+
+#define IResourceConsumer_ReleaseResource(This,idResource)	\
+    ( (This)->lpVtbl -> ReleaseResource(This,idResource) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IResourceConsumer_INTERFACE_DEFINED__ */
+
+
+#ifndef __IResourceManager_INTERFACE_DEFINED__
+#define __IResourceManager_INTERFACE_DEFINED__
+
+/* interface IResourceManager */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IResourceManager;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868ac-0ad4-11ce-b03a-0020af0ba770")
+    IResourceManager : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Register( 
+            /* [in] */ LPCWSTR pName,
+            /* [in] */ LONG cResource,
+            /* [annotation][out] */ 
+            _Out_  LONG *plToken) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RegisterGroup( 
+            /* [in] */ LPCWSTR pName,
+            /* [in] */ LONG cResource,
+            /* [annotation][size_is][in] */ 
+            _In_reads_(cResource)  LONG *palTokens,
+            /* [annotation][out] */ 
+            _Out_  LONG *plToken) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE RequestResource( 
+            /* [in] */ LONG idResource,
+            /* [in] */ IUnknown *pFocusObject,
+            /* [in] */ IResourceConsumer *pConsumer) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE NotifyAcquire( 
+            /* [in] */ LONG idResource,
+            /* [in] */ IResourceConsumer *pConsumer,
+            /* [in] */ HRESULT hr) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE NotifyRelease( 
+            /* [in] */ LONG idResource,
+            /* [in] */ IResourceConsumer *pConsumer,
+            /* [in] */ BOOL bStillWant) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE CancelRequest( 
+            /* [in] */ LONG idResource,
+            /* [in] */ IResourceConsumer *pConsumer) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetFocus( 
+            /* [in] */ IUnknown *pFocusObject) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ReleaseFocus( 
+            /* [in] */ IUnknown *pFocusObject) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IResourceManagerVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IResourceManager * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IResourceManager * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IResourceManager * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Register )( 
+            IResourceManager * This,
+            /* [in] */ LPCWSTR pName,
+            /* [in] */ LONG cResource,
+            /* [annotation][out] */ 
+            _Out_  LONG *plToken);
+        
+        HRESULT ( STDMETHODCALLTYPE *RegisterGroup )( 
+            IResourceManager * This,
+            /* [in] */ LPCWSTR pName,
+            /* [in] */ LONG cResource,
+            /* [annotation][size_is][in] */ 
+            _In_reads_(cResource)  LONG *palTokens,
+            /* [annotation][out] */ 
+            _Out_  LONG *plToken);
+        
+        HRESULT ( STDMETHODCALLTYPE *RequestResource )( 
+            IResourceManager * This,
+            /* [in] */ LONG idResource,
+            /* [in] */ IUnknown *pFocusObject,
+            /* [in] */ IResourceConsumer *pConsumer);
+        
+        HRESULT ( STDMETHODCALLTYPE *NotifyAcquire )( 
+            IResourceManager * This,
+            /* [in] */ LONG idResource,
+            /* [in] */ IResourceConsumer *pConsumer,
+            /* [in] */ HRESULT hr);
+        
+        HRESULT ( STDMETHODCALLTYPE *NotifyRelease )( 
+            IResourceManager * This,
+            /* [in] */ LONG idResource,
+            /* [in] */ IResourceConsumer *pConsumer,
+            /* [in] */ BOOL bStillWant);
+        
+        HRESULT ( STDMETHODCALLTYPE *CancelRequest )( 
+            IResourceManager * This,
+            /* [in] */ LONG idResource,
+            /* [in] */ IResourceConsumer *pConsumer);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetFocus )( 
+            IResourceManager * This,
+            /* [in] */ IUnknown *pFocusObject);
+        
+        HRESULT ( STDMETHODCALLTYPE *ReleaseFocus )( 
+            IResourceManager * This,
+            /* [in] */ IUnknown *pFocusObject);
+        
+        END_INTERFACE
+    } IResourceManagerVtbl;
+
+    interface IResourceManager
+    {
+        CONST_VTBL struct IResourceManagerVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IResourceManager_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IResourceManager_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IResourceManager_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IResourceManager_Register(This,pName,cResource,plToken)	\
+    ( (This)->lpVtbl -> Register(This,pName,cResource,plToken) ) 
+
+#define IResourceManager_RegisterGroup(This,pName,cResource,palTokens,plToken)	\
+    ( (This)->lpVtbl -> RegisterGroup(This,pName,cResource,palTokens,plToken) ) 
+
+#define IResourceManager_RequestResource(This,idResource,pFocusObject,pConsumer)	\
+    ( (This)->lpVtbl -> RequestResource(This,idResource,pFocusObject,pConsumer) ) 
+
+#define IResourceManager_NotifyAcquire(This,idResource,pConsumer,hr)	\
+    ( (This)->lpVtbl -> NotifyAcquire(This,idResource,pConsumer,hr) ) 
+
+#define IResourceManager_NotifyRelease(This,idResource,pConsumer,bStillWant)	\
+    ( (This)->lpVtbl -> NotifyRelease(This,idResource,pConsumer,bStillWant) ) 
+
+#define IResourceManager_CancelRequest(This,idResource,pConsumer)	\
+    ( (This)->lpVtbl -> CancelRequest(This,idResource,pConsumer) ) 
+
+#define IResourceManager_SetFocus(This,pFocusObject)	\
+    ( (This)->lpVtbl -> SetFocus(This,pFocusObject) ) 
+
+#define IResourceManager_ReleaseFocus(This,pFocusObject)	\
+    ( (This)->lpVtbl -> ReleaseFocus(This,pFocusObject) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IResourceManager_INTERFACE_DEFINED__ */
+
+
+#ifndef __IDistributorNotify_INTERFACE_DEFINED__
+#define __IDistributorNotify_INTERFACE_DEFINED__
+
+/* interface IDistributorNotify */
+/* [unique][uuid][object][local] */ 
+
+
+EXTERN_C const IID IID_IDistributorNotify;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("56a868af-0ad4-11ce-b03a-0020af0ba770")
+    IDistributorNotify : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Stop( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Pause( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Run( 
+            REFERENCE_TIME tStart) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SetSyncSource( 
+            /* [in] */ IReferenceClock *pClock) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE NotifyGraphChange( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IDistributorNotifyVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IDistributorNotify * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IDistributorNotify * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IDistributorNotify * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Stop )( 
+            IDistributorNotify * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Pause )( 
+            IDistributorNotify * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Run )( 
+            IDistributorNotify * This,
+            REFERENCE_TIME tStart);
+        
+        HRESULT ( STDMETHODCALLTYPE *SetSyncSource )( 
+            IDistributorNotify 

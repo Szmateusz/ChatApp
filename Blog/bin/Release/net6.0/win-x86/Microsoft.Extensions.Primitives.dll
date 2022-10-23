@@ -1,0 +1,1140 @@
+"""numpy.distutils.fcompiler
+
+Contains FCompiler, an abstract base class that defines the interface
+for the numpy.distutils Fortran compiler abstraction model.
+
+Terminology:
+
+To be consistent, where the term 'executable' is used, it means the single
+file, like 'gcc', that is executed, and should be a string. In contrast,
+'command' means the entire command line, like ['gcc', '-c', 'file.c'], and
+should be a list.
+
+But note that FCompiler.executables is actually a dictionary of commands.
+
+"""
+__all__ = ['FCompiler', 'new_fcompiler', 'show_fcompilers',
+           'dummy_fortran_file']
+
+import os
+import sys
+import re
+
+from distutils.sysconfig import get_python_lib
+from distutils.fancy_getopt import FancyGetopt
+from distutils.errors import DistutilsModuleError, \
+     DistutilsExecError, CompileError, LinkError, DistutilsPlatformError
+from distutils.util import split_quoted, strtobool
+
+from numpy.distutils.ccompiler import CCompiler, gen_lib_options
+from numpy.distutils import log
+from numpy.distutils.misc_util import is_string, all_strings, is_sequence, \
+    make_temp_file, get_shared_lib_extension
+from numpy.distutils.exec_command import find_executable
+from numpy.distutils import _shell_utils
+
+from .environment import EnvironmentConfig
+
+__metaclass__ = type
+
+class CompilerNotFound(Exception):
+    pass
+
+def flaglist(s):
+    if is_string(s):
+        return split_quoted(s)
+    else:
+        return s
+
+def str2bool(s):
+    if is_string(s):
+        return strtobool(s)
+    return bool(s)
+
+def is_sequence_of_strings(seq):
+    return is_sequence(seq) and all_strings(seq)
+
+class FCompiler(CCompiler):
+    """Abstract base class to define the interface that must be implemented
+    by real Fortran compiler classes.
+
+    Methods that subclasses may redefine:
+
+        update_executables(), find_executables(), get_version()
+        get_flags(), get_flags_opt(), get_flags_arch(), get_flags_debug()
+        get_flags_f77(), get_flags_opt_f77(), get_flags_arch_f77(),
+        get_flags_debug_f77(), get_flags_f90(), get_flags_opt_f90(),
+        get_flags_arch_f90(), get_flags_debug_f90(),
+        get_flags_fix(), get_flags_linker_so()
+
+    DON'T call these methods (except get_version) after
+    constructing a compiler instance or inside any other method.
+    All methods, except update_executables() and find_executables(),
+    may call the get_version() method.
+
+    After constructing a compiler instance, always call customize(dist=None)
+    method that finalizes compiler construction and makes the following
+    attributes available:
+      compiler_f77
+      compiler_f90
+      compiler_fix
+      linker_so
+      archiver
+      ranlib
+      libraries
+      library_dirs
+    """
+
+    # These are the environment variables and distutils keys used.
+    # Each configuration description is
+    # (<hook name>, <environment variable>, <key in distutils.cfg>, <convert>, <append>)
+    # The hook names are handled by the self._environment_hook method.
+    #  - names starting with 'self.' call methods in this class
+    #  - names starting with 'exe.' return the key in the executables dict
+    #  - names like 'flags.YYY' return self.get_flag_YYY()
+    # convert is either None or a function to convert a string to the
+    # appropriate type used.
+
+    distutils_vars = EnvironmentConfig(
+        distutils_section='config_fc',
+        noopt = (None, None, 'noopt', str2bool, False),
+        noarch = (None, None, 'noarch', str2bool, False),
+        debug = (None, None, 'debug', str2bool, False),
+        verbose = (None, None, 'verbose', str2bool, False),
+    )
+
+    command_vars = EnvironmentConfig(
+        distutils_section='config_fc',
+        compiler_f77 = ('exe.compiler_f77', 'F77', 'f77exec', None, False),
+        compiler_f90 = ('exe.compiler_f90', 'F90', 'f90exec', None, False),
+        compiler_fix = ('exe.compiler_fix', 'F90', 'f90exec', None, False),
+        version_cmd = ('exe.version_cmd', None, None, None, False),
+        linker_so = ('exe.linker_so', 'LDSHARED', 'ldshared', None, False),
+        linker_exe = ('exe.linker_exe', 'LD', 'ld', None, False),
+        archiver = (None, 'AR', 'ar', None, False),
+        ranlib = (None, 'RANLIB', 'ranlib', None, False),
+    )
+
+    flag_vars = EnvironmentConfig(
+        distutils_section='config_fc',
+        f77 = ('flags.f77', 'F77FLAGS', 'f77flags', flaglist, True),
+        f90 = ('flags.f90', 'F90FLAGS', 'f90flags', flaglist, True),
+        free = ('flags.free', 'FREEFLAGS', 'freeflags', flaglist, True),
+        fix = ('flags.fix', None, None, flaglist, False),
+        opt = ('flags.opt', 'FOPT', 'opt', flaglist, True),
+        opt_f77 = ('flags.opt_f77', None, None, flaglist, False),
+        opt_f90 = ('flags.opt_f90', None, None, flaglist, False),
+        arch = ('flags.arch', 'FARCH', 'arch', flaglist, False),
+        arch_f77 = ('flags.arch_f77', None, None, flaglist, False),
+        arch_f90 = ('flags.arch_f90', None, None, flaglist, False),
+        debug = ('flags.debug', 'FDEBUG', 'fdebug', flaglist, True),
+        debug_f77 = ('flags.debug_f77', None, None, flaglist, False),
+        debug_f90 = ('flags.debug_f90', None, None, flaglist, False),
+        flags = ('self.get_flags', 'FFLAGS', 'fflags', flaglist, True),
+        linker_so = ('flags.linker_so', 'LDFLAGS', 'ldflags', flaglist, True),
+        linker_exe = ('flags.linker_exe', 'LDFLAGS', 'ldflags', flaglist, True),
+        ar = ('flags.ar', 'ARFLAGS', 'arflags', flaglist, True),
+    )
+
+    language_map = {'.f': 'f77',
+                    '.for': 'f77',
+                    '.F': 'f77',    # XXX: needs preprocessor
+                    '.ftn': 'f77',
+                    '.f77': 'f77',
+                    '.f90': 'f90',
+                    '.F90': 'f90',  # XXX: needs preprocessor
+                    '.f95': 'f90',
+                    }
+    language_order = ['f90', 'f77']
+
+
+    # These will be set by the subclass
+
+    compiler_type = None
+    compiler_aliases = ()
+    version_pattern = None
+
+    possible_executables = []
+    executables = {
+        'version_cmd': ["f77", "-v"],
+        'compiler_f77': ["f77"],
+        'compiler_f90': ["f90"],
+        'compiler_fix': ["f90", "-fixed"],
+        'linker_so': ["f90", "-shared"],
+        'linker_exe': ["f90"],
+        'archiver': ["ar", "-cr"],
+        'ranlib': None,
+        }
+
+    # If compiler does not support compiling Fortran 90 then it can
+    # suggest using another compiler. For example, gnu would suggest
+    # gnu95 compiler type when there are F90 sources.
+    suggested_f90_compiler = None
+
+    compile_switch = "-c"
+    object_switch = "-o "   # Ending space matters! It will be stripped
+                            # but if it is missing then object_switch
+                            # will be prefixed to object file name by
+                            # string concatenation.
+    library_switch = "-o "  # Ditto!
+
+    # Switch to specify where module files are created and searched
+    # for USE statement.  Normally it is a string and also here ending
+    # space matters. See above.
+    module_dir_switch = None
+
+    # Switch to specify where module files are searched for USE statement.
+    module_include_switch = '-I'
+
+    pic_flags = []           # Flags to create position-independent code
+
+    src_extensions = ['.for', '.ftn', '.f77', '.f', '.f90', '.f95', '.F', '.F90', '.FOR']
+    obj_extension = ".o"
+
+    shared_lib_extension = get_shared_lib_extension()
+    static_lib_extension = ".a"  # or .lib
+    static_lib_format = "lib%s%s" # or %s%s
+    shared_lib_format = "%s%s"
+    exe_extension = ""
+
+    _exe_cache = {}
+
+    _executable_keys = ['version_cmd', 'compiler_f77', 'compiler_f90',
+                        'compiler_fix', 'linker_so', 'linker_exe', 'archiver',
+                        'ranlib']
+
+    # This will be set by new_fcompiler when called in
+    # command/{build_ext.py, build_clib.py, config.py} files.
+    c_compiler = None
+
+    # extra_{f77,f90}_compile_args are set by build_ext.build_extension method
+    extra_f77_compile_args = []
+    extra_f90_compile_args = []
+
+    def __init__(self, *args, **kw):
+        CCompiler.__init__(self, *args, **kw)
+        self.distutils_vars = self.distutils_vars.clone(self._environment_hook)
+        self.command_vars = self.command_vars.clone(self._environment_hook)
+        self.flag_vars = self.flag_vars.clone(self._environment_hook)
+        self.executables = self.executables.copy()
+        for e in self._executable_keys:
+            if e not in self.executables:
+                self.executables[e] = None
+
+        # Some methods depend on .customize() being called first, so
+        # this keeps track of whether that's happened yet.
+        self._is_customised = False
+
+    def __copy__(self):
+        obj = self.__new__(self.__class__)
+        obj.__dict__.update(self.__dict__)
+        obj.distutils_vars = obj.distutils_vars.clone(obj._environment_hook)
+        obj.command_vars = obj.command_vars.clone(obj._environment_hook)
+        obj.flag_vars = obj.flag_vars.clone(obj._environment_hook)
+        obj.executables = obj.executables.copy()
+        return obj
+
+    def copy(self):
+        return self.__copy__()
+
+    # Use properties for the attributes used by CCompiler. Setting them
+    # as attributes from the self.executables dictionary is error-prone,
+    # so we get them from there each time.
+    def _command_property(key):
+        def fget(self):
+            assert self._is_customised
+            return self.executables[key]
+        return property(fget=fget)
+    version_cmd = _command_property('version_cmd')
+    compiler_f77 = _command_property('compiler_f77')
+    compiler_f90 = _command_property('compiler_f90')
+    compiler_fix = _command_property('compiler_fix')
+    linker_so = _command_property('linker_so')
+    linker_exe = _command_property('linker_exe')
+    archiver = _command_property('archiver')
+    ranlib = _command_property('ranlib')
+
+    # Make our terminology consistent.
+    def set_executable(self, key, value):
+        self.set_command(key, value)
+
+    def set_commands(self, **kw):
+        for k, v in kw.items():
+            self.set_command(k, v)
+
+    def set_command(self, key, value):
+        if not key in self._executable_keys:
+            raise ValueError(
+                "unknown executable '%s' for class %s" %
+                (key, self.__class__.__name__))
+        if is_string(value):
+            value = split_quoted(value)
+        assert value is None or is_sequence_of_strings(value[1:]), (key, value)
+        self.executables[key] = value
+
+    ######################################################################
+    ## Methods that subclasses may redefine. But don't call these methods!
+    ## They are private to FCompiler class and may return unexpected
+    ## results if used elsewhere. So, you have been warned..
+
+    def find_executables(self):
+        """Go through the self.executables dictionary, and attempt to
+        find and assign appropriate executables.
+
+        Executable names are looked for in the environment (environment
+        variables, the distutils.cfg, and command line), the 0th-element of
+        the command list, and the self.possible_executables list.
+
+        Also, if the 0th element is "<F77>" or "<F90>", the Fortran 77
+        or the Fortran 90 compiler executable is used, unless overridden
+        by an environment setting.
+
+        Subclasses should call this if overridden.
+        """
+        assert self._is_customised
+        exe_cache = self._exe_cache
+        def cached_find_executable(exe):
+            if exe in exe_cache:
+                return exe_cache[exe]
+            fc_exe = find_executable(exe)
+            exe_cache[exe] = exe_cache[fc_exe] = fc_exe
+            return fc_exe
+        def verify_command_form(name, value):
+            if value is not None and not is_sequence_of_strings(value):
+                raise ValueError(
+                    "%s value %r is invalid in class %s" %
+                    (name, value, self.__class__.__name__))
+        def set_exe(exe_key, f77=None, f90=None):
+            cmd = self.executables.get(exe_key, None)
+            if not cmd:
+                return None
+            # Note that we get cmd[0] here if the environment doesn't
+            # have anything set
+            exe_from_environ = getattr(self.command_vars, exe_key)
+            if not exe_from_environ:
+                possibles = [f90, f77] + self.possible_executables
+            else:
+                possibles = [exe_from_environ] + self.possible_executables
+
+            seen = set()
+            unique_possibles = []
+            for e in possibles:
+                if e == '<F77>':
+                    e = f77
+                elif e == '<F90>':
+                    e = f90
+                if not e or e in seen:
+                    continue
+                seen.add(e)
+                unique_possibles.append(e)
+
+            for exe in unique_possibles:
+                fc_exe = cached_find_executable(exe)
+                if fc_exe:
+                    cmd[0] = fc_exe
+                    return fc_exe
+            self.set_command(exe_key, None)
+            return None
+
+        ctype = self.compiler_type
+        f90 = set_exe('compiler_f90')
+        if not f90:
+            f77 = set_exe('compiler_f77')
+            if f77:
+                log.warn('%s: no Fortran 90 compiler found' % ctype)
+            else:
+                raise CompilerNotFound('%s: f90 nor f77' % ctype)
+        else:
+            f77 = set_exe('compiler_f77', f90=f90)
+            if not f77:
+                log.warn('%s: no Fortran 77 compiler found' % ctype)
+            set_exe('compiler_fix', f90=f90)
+
+        set_exe('linker_so', f77=f77, f90=f90)
+        set_exe('linker_exe', f77=f77, f90=f90)
+        set_exe('version_cmd', f77=f77, f90=f90)
+        set_exe('archiver')
+        set_exe('ranlib')
+
+    def update_executables(self):
+        """Called at the beginning of customisation. Subclasses should
+        override this if they need to set up the executables dictionary.
+
+        Note that self.find_executables() is run afterwards, so the
+        self.executables dictionary values can contain <F77> or <F90> as
+        the command, which will be replaced by the found F77 or F90
+        compiler.
+        """
+        pass
+
+    def get_flags(self):
+        """List of flags common to all compiler types."""
+        return [] + self.pic_flags
+
+    def _get_command_flags(self, key):
+        cmd = self.executables.get(key, None)
+        if cmd is None:
+            return []
+        return cmd[1:]
+
+    def get_flags_f77(self):
+        """List of Fortran 77 specific flags."""
+        return self._get_command_flags('compiler_f77')
+    def get_flags_f90(self):
+        """List of Fortran 90 specific flags."""
+        return self._get_command_flags('compiler_f90')
+    def get_flags_free(self):
+        """List of Fortran 90 free format specific flags."""
+        return []
+    def get_flags_fix(self):
+        """List of Fortran 90 fixed format specific flags."""
+        return self._get_command_flags('compiler_fix')
+    def get_flags_linker_so(self):
+        """List of linker flags to build a shared library."""
+        return self._get_command_flags('linker_so')
+    def get_flags_linker_exe(self):
+        """List of linker flags to build an executable."""
+        return self._get_command_flags('linker_exe')
+    def get_flags_ar(self):
+        """List of archiver flags. """
+        return self._get_command_flags('archiver')
+    def get_flags_opt(self):
+        """List of architecture independent compiler flags."""
+        return []
+    def get_flags_arch(self):
+        """List of architecture dependent compiler flags."""
+        return []
+    def get_flags_debug(self):
+        """List of compiler flags to compile with debugging information."""
+        return []
+
+    get_flags_opt_f77 = get_flags_opt_f90 = get_flags_opt
+    get_flags_arch_f77 = get_flags_arch_f90 = get_flags_arch
+    get_flags_debug_f77 = get_flags_debug_f90 = get_flags_debug
+
+    def get_libraries(self):
+        """List of compiler libraries."""
+        return self.libraries[:]
+    def get_library_dirs(self):
+        """List of compiler library directories."""
+        return self.library_dirs[:]
+
+    def get_version(self, force=False, ok_status=[0]):
+        assert self._is_customised
+        version = CCompiler.get_version(self, force=force, ok_status=ok_status)
+        if version is None:
+            raise CompilerNotFound()
+        return version
+
+
+    ############################################################
+
+    ## Public methods:
+
+    def customize(self, dist = None):
+        """Customize Fortran compiler.
+
+        This method gets Fortran compiler specific information from
+        (i) class definition, (ii) environment, (iii) distutils config
+        files, and (iv) command line (later overrides earlier).
+
+        This method should be always called after constructing a
+        compiler instance. But not in __init__ because Distribution
+        instance is needed for (iii) and (iv).
+        """
+        log.info('customize %s' % (self.__class__.__name__))
+
+        self._is_customised = True
+
+        self.distutils_vars.use_distribution(dist)
+        self.command_vars.use_distribution(dist)
+        self.flag_vars.use_distribution(dist)
+
+        self.update_executables()
+
+        # find_executables takes care of setting the compiler commands,
+        # version_cmd, linker_so, linker_exe, ar, and ranlib
+        self.find_executables()
+
+        noopt = self.distutils_vars.get('noopt', False)
+        noarch = self.distutils_vars.get('noarch', noopt)
+        debug = self.distutils_vars.get('debug', False)
+
+        f77 = self.command_vars.compiler_f77
+        f90 = self.command_vars.compiler_f90
+
+        f77flags = []
+        f90flags = []
+        freeflags = []
+        fixflags = []
+
+        if f77:
+            f77 = _shell_utils.NativeParser.split(f77)
+            f77flags = self.flag_vars.f77
+        if f90:
+            f90 = _shell_utils.NativeParser.split(f90)
+            f90flags = self.flag_vars.f90
+            freeflags = self.flag_vars.free
+        # XXX Assuming that free format is default for f90 compiler.
+        fix = self.command_vars.compiler_fix
+        # NOTE: this and similar examples are probably just
+        # excluding --coverage flag when F90 = gfortran --coverage
+        # instead of putting that flag somewhere more appropriate
+        # this and similar examples where a Fortran compiler
+        # environment variable has been customized by CI or a user
+        # should perhaps eventually be more thoroughly tested and more
+        # robustly handled
+        if fix:
+            fix = _shell_utils.NativeParser.split(fix)
+            fixflags = self.flag_vars.fix + f90flags
+
+        oflags, aflags, dflags = [], [], []
+        # examine get_flags_<tag>_<compiler> for extra flags
+        # only add them if the method is different from get_flags_<tag>
+        def get_flags(tag, flags):
+            # note that self.flag_vars.<tag> calls self.get_flags_<tag>()
+            flags.extend(getattr(self.flag_vars, tag))
+            this_get = getattr(self, 'get_flags_' + tag)
+            for name, c, flagvar in [('f77', f77, f77flags),
+                                     ('f90', f90, f90flags),
+                                     ('f90', fix, fixflags)]:
+                t = '%s_%s' % (tag, name)
+                if c and this_get is not getattr(self, 'get_flags_' + t):
+                    flagvar.extend(getattr(self.flag_vars, t))
+        if not noopt:
+            get_flags('opt', oflags)
+            if not noarch:
+                get_flags('arch', aflags)
+        if debug:
+            get_flags('debug', dflags)
+
+        fflags = self.flag_vars.flags + dflags + oflags + aflags
+
+        if f77:
+            self.set_commands(compiler_f77=f77+f77flags+fflags)
+        if f90:
+            self.set_commands(compiler_f90=f90+freeflags+f90flags+fflags)
+        if fix:
+            self.set_commands(compiler_fix=fix+fixflags+fflags)
+
+
+        #XXX: Do we need LDSHARED->SOSHARED, LDFLAGS->SOFLAGS
+        linker_so = self.linker_so
+        if linker_so:
+            linker_so_flags = self.flag_vars.linker_so
+            if sys.platform.startswith('aix'):
+                python_lib = get_python_lib(standard_lib=1)
+                ld_so_aix = os.path.join(python_lib, 'config', 'ld_so_aix')
+                python_exp = os.path.join(python_lib, 'config', 'python.exp')
+                linker_so = [ld_so_aix] + linker_so + ['-bI:'+python_exp]
+            self.set_commands(linker_so=linker_so+linker_so_flags)
+
+        linker_exe = self.linker_exe
+        if linker_exe:
+            linker_exe_flags = self.flag_vars.linker_exe
+            self.set_commands(linker_exe=linker_exe+linker_exe_flags)
+
+        ar = self.command_vars.archiver
+        if ar:
+            arflags = self.flag_vars.ar
+            self.set_commands(archiver=[ar]+arflags)
+
+        self.set_library_dirs(self.get_library_dirs())
+        self.set_libraries(self.get_libraries())
+
+    def dump_properties(self):
+        """Print out the attributes of a compiler instance."""
+        props = []
+        for key in list(self.executables.keys()) + \
+                ['version', 'libraries', 'library_dirs',
+                 'object_switch', 'compile_switch']:
+            if hasattr(self, key):
+                v = getattr(self, key)
+                props.append((key, None, '= '+repr(v)))
+        props.sort()
+
+        pretty_printer = FancyGetopt(props)
+        for l in pretty_printer.generate_help("%s instance properties:" \
+                                              % (self.__class__.__name__)):
+            if l[:4]=='  --':
+                l = '  ' + l[4:]
+            print(l)
+
+    ###################
+
+    def _compile(self, obj, src, ext, cc_args, extra_postargs, pp_opts):
+        """Compile 'src' to product 'obj'."""
+        src_flags = {}
+        if is_f_file(src) and not has_f90_header(src):
+            flavor = ':f77'
+            compiler = self.compiler_f77
+            src_flags = get_f77flags(src)
+            extra_compile_args = self.extra_f77_compile_args or []
+        elif is_free_format(src):
+            flavor = ':f90'
+            compiler = self.compiler_f90
+            if compiler is None:
+                raise DistutilsExecError('f90 not supported by %s needed for %s'\
+                      % (self.__class__.__name__, src))
+            extra_compile_args = self.extra_f90_compile_args or []
+        else:
+            flavor = ':fix'
+            compiler = self.compiler_fix
+            if compiler is None:
+                raise DistutilsExecError('f90 (fixed) not supported by %s needed for %s'\
+                      % (self.__class__.__name__, src))
+            extra_compile_args = self.extra_f90_compile_args or []
+        if self.object_switch[-1]==' ':
+            o_args = [self.object_switch.strip(), obj]
+        else:
+            o_args = [self.object_switch.strip()+obj]
+
+        assert self.compile_switch.strip()
+        s_args = [self.compile_switch, src]
+
+        if extra_compile_args:
+            log.info('extra %s options: %r' \
+                     % (flavor[1:], ' '.join(extra_compile_args)))
+
+        extra_flags = src_flags.get(self.compiler_type, [])
+        if extra_flags:
+            log.info('using compile options from source: %r' \
+                     % ' '.join(extra_flags))
+
+        command = compiler + cc_args + extra_flags + s_args + o_args \
+                  + extra_postargs + extra_compile_args
+
+        display = '%s: %s' % (os.path.basename(compiler[0]) + flavor,
+                              src)
+        try:
+            self.spawn(command, display=display)
+        except DistutilsExecError as e:
+            msg = str(e)
+            raise CompileError(msg) from None
+
+    def module_options(self, module_dirs, module_build_dir):
+        options = []
+        if self.module_dir_switch is not None:
+            if self.module_dir_switch[-1]==' ':
+                options.extend([self.module_dir_switch.strip(), module_build_dir])
+            else:
+                options.append(self.module_dir_switch.strip()+module_build_dir)
+        else:
+            print('XXX: module_build_dir=%r option ignored' % (module_build_dir))
+            print('XXX: Fix module_dir_switch for ', self.__class__.__name__)
+        if self.module_include_switch is not None:
+            for d in [module_build_dir]+module_dirs:
+                options.append('%s%s' % (self.module_include_switch, d))
+        else:
+            print('XXX: module_dirs=%r option ignored' % (module_dirs))
+            print('XXX: Fix module_include_switch for ', self.__class__.__name__)
+        return options
+
+    def library_option(self, lib):
+        return "-l" + lib
+    def library_dir_option(self, dir):
+        return "-L" + dir
+
+    def link(self, target_desc, objects,
+             output_filename, output_dir=None, libraries=None,
+             library_dirs=None, runtime_library_dirs=None,
+             export_symbols=None, debug=0, extra_preargs=None,
+             extra_postargs=None, build_temp=None, target_lang=None):
+        objects, output_dir = self._fix_object_args(objects, output_dir)
+        libraries, library_dirs, runtime_library_dirs = \
+            self._fix_lib_args(libraries, library_dirs, runtime_library_dirs)
+
+        lib_opts = gen_lib_options(self, library_dirs, runtime_library_dirs,
+                                   libraries)
+        if is_string(output_dir):
+            output_filename = os.path.join(output_dir, output_filename)
+        elif output_dir is not None:
+            raise TypeError("'output_dir' must be a string or None")
+
+        if self._need_link(objects, output_filename):
+            if self.library_switch[-1]==' ':
+                o_args = [self.library_switch.strip(), output_filename]
+            else:
+                o_args = [self.library_switch.strip()+output_filename]
+
+            if is_string(self.objects):
+                ld_args = objects + [self.objects]
+            else:
+                ld_args = objects + self.objects
+            ld_args = ld_args + lib_opts + o_args
+            if debug:
+                ld_args[:0] = ['-g']
+            if extra_preargs:
+                ld_args[:0] = extra_preargs
+            if extra_postargs:
+                ld_args.extend(extra_postargs)
+            self.mkpath(os.path.dirname(output_filename))
+            if target_desc == CCompiler.EXECUTABLE:
+                linker = self.linker_exe[:]
+            else:
+                linker = self.linker_so[:]
+            command = linker + ld_args
+            try:
+                self.spawn(command)
+            except DistutilsExecError as e:
+                msg = str(e)
+                raise LinkError(msg) from None
+        else:
+            log.debug("skipping %s (up-to-date)", output_filename)
+
+    def _environment_hook(self, name, hook_name):
+        if hook_name is None:
+            return None
+        if is_string(hook_name):
+            if hook_name.startswith('self.'):
+                hook_name = hook_name[5:]
+                hook = getattr(self, hook_name)
+                return hook()
+            elif hook_name.startswith('exe.'):
+                hook_name = hook_name[4:]
+                var = self.executables[hook_name]
+                if var:
+                    return var[0]
+                else:
+                    return None
+            elif hook_name.startswith('flags.'):
+                hook_name = hook_name[6:]
+                hook = getattr(self, 'get_flags_' + hook_name)
+                return hook()
+        else:
+            return hook_name()
+
+    def can_ccompiler_link(self, ccompiler):
+        """
+        Check if the given C compiler can link objects produced by
+        this compiler.
+        """
+        return True
+
+    def wrap_unlinkable_objects(self, objects, output_dir, extra_dll_dir):
+        """
+        Convert a set of object files that are not compatible with the default
+        linker, to a file that is compatible.
+
+        Parameters
+        ----------
+        objects : list
+            List of object files to include.
+        output_dir : str
+            Output directory to place generated object files.
+        extra_dll_dir : str
+            Output directory to place extra DLL files that need to be
+            included on Windows.
+
+        Returns
+        -------
+        converted_objects : list of str
+             List of converted object files.
+             Note that the number of output files is not necessarily
+             the same as inputs.
+
+        """
+        raise NotImplementedError()
+
+    ## class FCompiler
+
+_default_compilers = (
+    # sys.platform mappings
+    ('win32', ('gnu', 'intelv', 'absoft', 'compaqv', 'intelev', 'gnu95', 'g95',
+               'intelvem', 'intelem', 'flang')),
+    ('cygwin.*', ('gnu', 'intelv', 'absoft', 'compaqv', 'intelev', 'gnu95', 'g95')),
+    ('linux.*', ('arm', 'gnu95', 'intel', 'lahey', 'pg', 'nv', 'absoft', 'nag',
+                 'vast', 'compaq', 'intele', 'intelem', 'gnu', 'g95', 
+                 'pathf95', 'nagfor', 'fujitsu')),
+    ('darwin.*', ('gnu95', 'nag', 'nagfor', 'absoft', 'ibm', 'intel', 'gnu',
+                 'g95', 'pg')),
+    ('sunos.*', ('sun', 'gnu', 'gnu95', 'g95')),
+    ('irix.*', ('mips', 'gnu', 'gnu95',)),
+    ('aix.*', ('ibm', 'gnu', 'gnu95',)),
+    # os.name mappings
+    ('posix', ('gnu', 'gnu95',)),
+    ('nt', ('gnu', 'gnu95',)),
+    ('mac', ('gnu95', 'gnu', 'pg')),
+    )
+
+fcompiler_class = None
+fcompiler_aliases = None
+
+def load_all_fcompiler_classes():
+    """Cache all the FCompiler classes found in modules in the
+    numpy.distutils.fcompiler package.
+    """
+    from glob import glob
+    global fcompiler_class, fcompiler_aliases
+    if fcompiler_class is not None:
+        return
+    pys = os.path.join(os.path.dirname(__file__), '*.py')
+    fcompiler_class = {}
+    fcompiler_aliases = {}
+    for fname in glob(pys):
+        module_name, ext = os.path.splitext(os.path.basename(fname))
+        module_name = 'numpy.distutils.fcompiler.' + module_name
+        __import__ (module_name)
+        module = sys.modules[module_name]
+        if hasattr(module, 'compilers'):
+            for cname in module.compilers:
+                klass = getattr(module, cname)
+                desc = (klass.compiler_type, klass, klass.description)
+                fcompiler_class[klass.compiler_type] = desc
+                for alias in klass.compiler_aliases:
+                    if alias in fcompiler_aliases:
+                        raise ValueError("alias %r defined for both %s and %s"
+                                         % (alias, klass.__name__,
+                                            fcompiler_aliases[alias][1].__name__))
+                    fcompiler_aliases[alias] = desc
+
+def _find_existing_fcompiler(compiler_types,
+                             osname=None, platform=None,
+                             requiref90=False,
+                             c_compiler=None):
+    from numpy.distutils.core import get_distribution
+    dist = get_distribution(always=True)
+    for compiler_type in compiler_types:
+        v = None
+        try:
+            c = new_fcompiler(plat=platform, compiler=compiler_type,
+                              c_compiler=c_compiler)
+            c.customize(dist)
+            v = c.get_version()
+            if requiref90 and c.compiler_f90 is None:
+                v = None
+                new_compiler = c.suggested_f90_compiler
+                if new_compiler:
+                    log.warn('Trying %r compiler as suggested by %r '
+                             'compiler for f90 support.' % (compiler_type,
+                                                            new_compiler))
+                    c = new_fcompiler(plat=platform, compiler=new_compiler,
+                                      c_compiler=c_compiler)
+                    c.customize(dist)
+                    v = c.get_version()
+                    if v is not None:
+                        compiler_type = new_compiler
+            if requiref90 and c.compiler_f90 is None:
+                raise ValueError('%s does not support compiling f90 codes, '
+                                 'skipping.' % (c.__class__.__name__))
+        except DistutilsModuleError:
+            log.debug("_find_existing_fcompiler: compiler_type='%s' raised DistutilsModuleError", compiler_type)
+        except CompilerNotFound:
+            log.debug("_find_existing_fcompiler: compiler_type='%s' not found", compiler_type)
+        if v is not None:
+            return compiler_type
+    return None
+
+def available_fcompilers_for_platform(osname=None, platform=None):
+    if osname is None:
+        osname = os.name
+    if platform is None:
+        platform = sys.platform
+    matching_compiler_types = []
+    for pattern, compiler_type in _default_compilers:
+        if re.match(pattern, platform) or re.match(pattern, osname):
+            for ct in compiler_type:
+                if ct not in matching_compiler_types:
+                    matching_compiler_types.append(ct)
+    if not matching_compiler_types:
+        matching_compiler_types.append('gnu')
+    return matching_compiler_types
+
+def get_default_fcompiler(osname=None, platform=None, requiref90=False,
+                          c_compiler=None):
+    """Determine the default Fortran compiler to use for the given
+    platform."""
+    matching_compiler_types = available_fcompilers_for_platform(osname,
+                                                                platform)
+    log.info("get_default_fcompiler: matching types: '%s'",
+             matching_compiler_types)
+    compiler_type =  _find_existing_fcompiler(matching_compiler_types,
+                                              osname=osname,
+                                              platform=platform,
+                                              requiref90=requiref90,
+                                              c_compiler=c_compiler)
+    return compiler_type
+
+# Flag to avoid rechecking for Fortran compiler every time
+failed_fcompilers = set()
+
+def new_fcompiler(plat=None,
+                  compiler=None,
+                  verbose=0,
+                  dry_run=0,
+                  force=0,
+                  requiref90=False,
+                  c_compiler = None):
+    """Generate an instance of some FCompiler subclass for the supplied
+    platform/compiler combination.
+    """
+    global failed_fcompilers
+    fcompiler_key = (plat, compiler)
+    if fcompiler_key in failed_fcompilers:
+        return None
+
+    load_all_fcompiler_classes()
+    if plat is None:
+        plat = os.name
+    if compiler is None:
+        compiler = get_default_fcompiler(plat, requiref90=requiref90,
+                                         c_compiler=c_compiler)
+    if compiler in fcompiler_class:
+        module_name, klass, long_description = fcompiler_class[compiler]
+    elif compiler in fcompiler_aliases:
+        module_name, klass, long_description = fcompiler_aliases[compiler]
+    else:
+        msg = "don't know how to compile Fortran code on platform '%s'" % plat
+        if compiler is not None:
+            msg = msg + " with '%s' compiler." % compiler
+            msg = msg + " Supported compilers are: %s)" \
+                  % (','.join(fcompiler_class.keys()))
+        log.warn(msg)
+        failed_fcompilers.add(fcompiler_key)
+        return None
+
+    compiler = klass(verbose=verbose, dry_run=dry_run, force=force)
+    compiler.c_compiler = c_compiler
+    return compiler
+
+def show_fcompilers(dist=None):
+    """Print list of available compilers (used by the "--help-fcompiler"
+    option to "config_fc").
+    """
+    if dist is None:
+        from distutils.dist import Distribution
+        from numpy.distutils.command.config_compiler import config_fc
+        dist = Distribution()
+        dist.script_name = os.path.basename(sys.argv[0])
+        dist.script_args = ['config_fc'] + sys.argv[1:]
+        try:
+            dist.script_args.remove('--help-fcompiler')
+        except ValueError:
+            pass
+        dist.cmdclass['config_fc'] = config_fc
+        dist.parse_config_files()
+        dist.parse_command_line()
+    compilers = []
+    compilers_na = []
+    compilers_ni = []
+    if not fcompiler_class:
+        load_all_fcompiler_classes()
+    platform_compilers = available_fcompilers_for_platform()
+    for compiler in platform_compilers:
+        v = None
+        log.set_verbosity(-2)
+        try:
+            c = new_fcompiler(compiler=compiler, verbose=dist.verbose)
+            c.customize(dist)
+            v = c.get_version()
+        except (DistutilsModuleError, CompilerNotFound) as e:
+            log.debug("show_fcompilers: %s not found" % (compiler,))
+            log.debug(repr(e))
+
+        if v is None:
+            compilers_na.append(("fcompiler="+compiler, None,
+                              fcompiler_class[compiler][2]))
+        else:
+            c.dump_properties()
+            compilers.append(("fcompiler="+compiler, None,
+                              fcompiler_class[compiler][2] + ' (%s)' % v))
+
+    compilers_ni = list(set(fcompiler_class.keys()) - set(platform_compilers))
+    compilers_ni = [("fcompiler="+fc, None, fcompiler_class[fc][2])
+                    for fc in compilers_ni]
+
+    compilers.sort()
+    compilers_na.sort()
+    compilers_ni.sort()
+    pretty_printer = FancyGetopt(compilers)
+    pretty_printer.print_help("Fortran compilers found:")
+    pretty_printer = FancyGetopt(compilers_na)
+    pretty_printer.print_help("Compilers available for this "
+                              "platform, but not found:")
+    if compilers_ni:
+        pretty_printer = FancyGetopt(compilers_ni)
+        pretty_printer.print_help("Compilers not available on this platform:")
+    print("For compiler details, run 'config_fc --verbose' setup command.")
+
+
+def dummy_fortran_file():
+    fo, name = make_temp_file(suffix='.f')
+    fo.write("      subroutine dummy()\n      end\n")
+    fo.close()
+    return name[:-2]
+
+
+is_f_file = re.compile(r'.*\.(for|ftn|f77|f)\Z', re.I).match
+_has_f_header = re.compile(r'-\*-\s*fortran\s*-\*-', re.I).search
+_has_f90_header = re.compile(r'-\*-\s*f90\s*-\*-', re.I).search
+_has_fix_header = re.compile(r'-\*-\s*fix\s*-\*-', re.I).search
+_free_f90_start = re.compile(r'[^c*!]\s*[^\s\d\t]', re.I).match
+
+def is_free_format(file):
+    """Check if file is in free format Fortran."""
+    # f90 allows both fixed and free format, assuming fixed unless
+    # signs of free format are detected.
+    result = 0
+    with open(file, encoding='latin1') as f:
+        line = f.readline()
+        n = 10000 # the number of non-comment lines to scan for hints
+        if _has_f_header(line) or _has_fix_header(line):
+            n = 0
+        elif _has_f90_header(line):
+            n = 0
+            result = 1
+        while n>0 and line:
+            line = line.rstrip()
+            if line and line[0]!='!':
+                n -= 1
+                if (line[0]!='\t' and _free_f90_start(line[:5])) or line[-1:]=='&':
+                    result = 1
+                    break
+            line = f.readline()
+    return result
+
+def has_f90_header(src):
+    with open(src, encoding='latin1') as f:
+        line = f.readline()
+    return _has_f90_header(line) or _has_fix_header(line)
+
+_f77flags_re = re.compile(r'(c|)f77flags\s*\(\s*(?P<fcname>\w+)\s*\)\s*=\s*(?P<fflags>.*)', re.I)
+def get_f77flags(src):
+    """
+    Search the first 20 lines of fortran 77 code for line pattern
+      `CF77FLAGS(<fcompiler type>)=<f77 flags>`
+    Return a dictionary {<fcompiler type>:<f77 flags>}.
+    """
+    flags = {}
+    with open(src, encoding='latin1') as f:
+        i = 0
+        for line in f:
+            i += 1
+            if i>20: break
+            m = _f77flags_re.match(line)
+            if not m: continue
+            fcname = m.group('fcname').strip()
+            fflags = m.group('fflags').strip()
+            flags[fcname] = split_quoted(fflags)
+    return flags
+
+# TODO: implement get_f90flags and use it in _compile similarly to get_f77flags
+
+if __name__ == '__main__':
+    show_fcompilers()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       MZê       ˇˇ  ∏       @                                   »   ∫ ¥	Õ!∏LÕ!This program cannot be run in DOS mode.
+$       'ª
+¡c⁄díc⁄díc⁄díádìb⁄díá`ìa⁄díáõíb⁄díáfìb⁄díRichc⁄dí                PE  dÜ Æ0oX         "       ,                Ä         
+   
+   
+        P     ˝v   `                                   @  ú%           @              0  ¿<             8                                                                           .rdata  x&      (                 @  @.rsrc       @      ,              @  @                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Æ0oX       7   ‹5  ‹)      Æ0oX       d   6  *              	oX    º     "  "  h    x  „  ¸    /  J  e  Ä  õ  ∂  Ÿ  ˘    -  J  h  É  õ  ≤  «  ›  ı    %  =  S  i  É  ü  π  ”  Ï      4  N  h  Ç  ú  ¥  Ã  Ë        9   U   y   ö   ≤       ‚   ˜   !  !  .!  H!  a!  x!  ë!  ´!  ≈!  ﬂ!  ˜!  "  +"  E"  ["  v"  ñ"  ≤"   "  Ï"  
+#  #  ,#  >#  R#  g#  }#  î#  ©#  Ω#  “#  Ë#  ˇ#  $  ($  >$  T$  i$  $  ñ$  ´$  ø$  ‘$  È$  ˇ$  %  .%  G%  _%  t%  à%  ù%  ≤%  »%  ﬂ%  ˜%  &  (&  >&  T&  k&  É&  ú&  ¥&  …&  ›&  Ú&  '  '  /'  E'  \'  r'  Ü'  ö'  Æ'  ¬'  ◊'  Ï'  (  (  .(  C(  [(  t(  ã(  †(  ¥(  »(  ›(  ı(  )  .)  E)  W)  j)  ~)  í)  ¶)  ª)  –)  Ê)  ˝)  *  )*  @*  U*  i*  ~*  î*  ´*  ¡*  ÷*  Ï*  +  +  ,+  A+  W+  n+  Ñ+  ó+  ©+  Ω+  “+  Ê+  ˘+  ,  ,  1,  F,  Z,  n,  Ñ,  õ,  ∞,  √,  ◊,  Ï,  -  -  +-  =-  P-  c-  w-  å-  †-  ¥-  …-  ›-  Ò-  .  .  0.  F.  ].  s.  â.  °.  ∫.  “.  Í.  /  /  6/  Q/  g/  z/  ê/  ¶/  º/  ”/  Ë/  ¸/  0  %0  90  N0  b0  v0  å0  £0  ∫0  “0  Î0  1  1  (1  :1  M1  e1  É1  ¢1  ¿1  ﬁ1  ˝1  2  <2  ]2  w2  ã2  †2  ≥2  ≈2  ›2  ˚2  3  53  M3  f3  |3  ê3  •3  ∫3  –3  Á3  ˇ3  4  44  M4  e4  ~4  ì4  •4  ∏4  Ã4  ‡4  Ù4  5  5  ,5  @5  V5  n5  á5  û5  ¥5  À5  €  Ù    &  A  \  w  í  ≠  »  Û    #  @  ]  |  ì  ¨  ¡  ÷  Ì      6  M  b  y  ñ  ±     Â  ¸    ,  E  `  y  î  ≠  ƒ  ›  ¸     0   K   h   ì   ™   √   ⁄   Û   !  !  &!  ?!  Z!  q!  à!  £!  º!  ◊!  !  "   "  ?"  T"  k"  ä"  ´"  ¬"  €"  #  #  (#  9#  L#  a#  v#  ç#  §#  ∑#  Ã#  ·#  ¯#  $  "$  7$  N$  c$  x$  è$  ¶$  π$  Œ$  „$  ¯$  %  &%  ?%  X%  o%  Ç%  ó%  ¨%  ¡%  ÿ%  Ô%  &  !&  8&  M&  d&  {&  î&  ≠&  ƒ&  ◊&  Ï&  '  '  )'  >'  U'  l'  Å'  î'  ©'  º'  —'  Ê'  ˚'  (  )(  <(  S(  l(  Ö(  ö(  Ø(  ¬(  ◊(  Ï(  )  $)  A)  R)  e)  x)  ç)  †)  µ)   )  ﬂ)  ˆ)  *  "*  9*  P*  c*  x*  ç*  §*  ª*  –*  Â*  ¸*  +  &+  ;+  P+  g+  ~+  ì+  §+  ∑+  Ã+  ·+  Ù+  ,  ,  +,  @,  U,  h,  },  î,  ´,  æ,  —,  Ê,  ˚,  -  '-  8-  K-  ^-  q-  Ü-  õ-  Æ-  √-  ÿ-  Î-   .  .  *.  ?.  V.  m.  Ç.  ô.  ≤.  À.  ‚.  ˚.  /  -/  H/  c/  t/  â/  †/  µ/  Ã/  „/  ˆ/  0   0  30  H0  ]0  p0  Ö0  ú0  ≥0   0  „0  ¸0  1  $1  51  H1  [1  x1  ó1  ∂1  ”1  Ú1  2  02  Q2  r2  Ö2  ö2  Ø2  ¿2  ”2  2  3  .3  E3  ^3  w3  ä3  ü3  ¥3  …3  ‡3  ˜3  4  +4  F4  ]4  v4  è4  †4  ≥4  ∆4  €4  Ó4  5  5  '5  :5  O5  f5  5  ò5  ≠5  ƒ5            	 
+                        ! " # $ % & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; < = > ? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ _ ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~  Ä Å Ç É Ñ Ö Ü á à â ä ã å ç é è ê ë í ì î ï ñ ó ò ô ö õ ú ù û ü † ° ¢ £ § • ¶ ß ® © ™ ´ ¨ ≠ Æ Ø ∞ ± ≤ ≥ ¥ µ ∂ ∑ ∏ π ∫ ª º Ω æ ø ¿ ¡ ¬ √ ƒ ≈ ∆ « » …   À Ã Õ Œ œ – — “ ” ‘ ’ ÷ ◊ ÿ Ÿ ⁄ € ‹ › ﬁ ﬂ ‡ · ‚ „ ‰ Â Ê Á Ë È Í Î Ï Ì Ó Ô  Ò Ú Û Ù ı ˆ ˜ ¯ ˘ ˙ ˚ ¸ ˝ ˛ ˇ  	
+ !api-ms-win-crt-math-l1-1-0.dll _Cbuild ucrtbase._Cbuild _Cmulcc ucrtbase._Cmulcc _Cmulcr ucrtbase._Cmulcr _FCbuild ucrtbase._FCbuild _FCmulcc ucrtbase._FCmulcc _FCmulcr ucrtbase._FCmulcr _LCbuild ucrtbase._LCbuild _LCmulcc ucrtbase._LCmulcc _LCmulcr ucrtbase._LCmulcr __setusermatherr ucrtbase.__setusermatherr _cabs ucrtbase._cabs _chgsign ucrtbase._chgsign _chgsignf ucrtbase._chgsignf _copysign ucrtbase._copysign _copysignf ucrtbase._copysignf _d_int ucrtbase._d_int _dclass ucrtbase._dclass _dexp ucrtbase._dexp _dlog ucrtbase._dlog _dnorm ucrtbase._dnorm _dpcomp ucrtbase._dpcomp _dpoly ucrtbase._dpoly _dscale ucrtbase._dscale _dsign ucrtbase._dsign _dsin ucrtbase._dsin _dtest ucrtbase._dtest _dunscale ucrtbase._dunscale _except1 ucrtbase._except1 _fd_int ucrtbase._fd_int _fdclass ucrtbase._fdclass _fdexp ucrtbase._fdexp _fdlog ucrtbase._fdlog _fdnorm ucrtbase._fdnorm _fdopen ucrtbase._fdopen _fdpcomp ucrtbase._fdpcomp _fdpoly ucrtbase._fdpoly _fdscale ucrtbase._fdscale _fdsign ucrtbase._fdsign _fdsin ucrtbase._fdsin _fdtest ucrtbase._fdtest _fdunscale ucrtbase._fdunscale _finite ucrtbase._finite _finitef ucrtbase._finitef _fpclass ucrtbase._fpclass _fpclassf ucrtbase._fpclassf _get_FMA3_enable ucrtbase._get_FMA3_enable _hypot ucrtbase._hypot _hypotf ucrtbase._hypotf _isnan ucrtbase._isnan _isnanf ucrtbase._isnanf _j0 ucrtbase._j0 _j1 ucrtbase._j1 _jn ucrtbase._jn _ld_int ucrtbase._ld_int _ldclass ucrtbase._ldclass _ldexp ucrtbase._ldexp _ldlog ucrtbase._ldlog _ldpcomp ucrtbase._ldpcomp _ldpoly ucrtbase._ldpoly _ldscale ucrtbase._ldscale _ldsign ucrtbase._ldsign _ldsin ucrtbase._ldsin _ldtest ucrtbase._ldtest _ldunscale ucrtbase._ldunscale _logb ucrtbase._logb _logbf ucrtbase._logbf _nextafter ucrtbase._nextafter _nextafterf ucrtbase._nextafterf _scalb ucrtbase._scalb _scalbf ucrtbase._scalbf _set_FMA3_enable ucrtbase._set_FMA3_enable _y0 ucrtbase._y0 _y1 ucrtbase._y1 _yn ucrtbase._yn acos ucrtbase.acos acosf ucrtbase.acosf acosh ucrtbase.acosh acoshf ucrtbase.acoshf acoshl ucrtbase.acoshl asin ucrtbase.asin asinf ucrtbase.asinf asinh ucrtbase.asinh asinhf ucrtbase.asinhf asinhl ucrtbase.asinhl atan ucrtbase.atan atan2 ucrtbase.atan2 atan2f ucrtbase.atan2f atanf ucrtbase.atanf atanh ucrtbase.atanh atanhf ucrtbase.atanhf atanhl ucrtbase.atanhl cabs ucrtbase.cabs cabsf ucrtbase.cabsf cabsl ucrtbase.cabsl cacos ucrtbase.cacos cacosf ucrtbase.cacosf cacosh ucrtbase.cacosh cacoshf ucrtbase.cacoshf cacoshl ucrtbase.cacoshl cacosl ucrtbase.cacosl carg ucrtbase.carg cargf ucrtbase.cargf cargl ucrtbase.cargl casin ucrtbase.casin casinf ucrtbase.casinf casinh ucrtbase.casinh casinhf ucrtbase.casinhf casinhl ucrtbase.casinhl casinl ucrtbase.casinl catan ucrtbase.catan catanf ucrtbase.catanf catanh ucrtbase.catanh catanhf ucrtbase.catanhf catanhl ucrtbase.catanhl catanl ucrtbase.catanl cbrt ucrtbase.cbrt cbrtf ucrtbase.cbrtf cbrtl ucrtbase.cbrtl ccos ucrtbase.ccos ccosf ucrtbase.ccosf ccosh ucrtbase.ccosh ccoshf ucrtbase.ccoshf ccoshl ucrtbase.ccoshl ccosl ucrtbase.ccosl ceil ucrtbase.ceil ceilf ucrtbase.ceilf cexp ucrtbase.cexp cexpf ucrtbase.cexpf cexpl ucrtbase.cexpl cimag ucrtbase.cimag cimagf ucrtbase.cimagf cimagl ucrtbase.cimagl clog ucrtbase.clog clog10 ucrtbase.clog10 clog10f ucrtbase.clog10f clog10l ucrtbase.clog10l clogf ucrtbase.clogf clogl ucrtbase.clogl conj ucrtbase.conj conjf ucrtbase.conjf conjl ucrtbase.conjl copysign ucrtbase.copysign copysignf ucrtbase.copysignf copysignl ucrtbase.copysignl cos ucrtbase.cos cosf ucrtbase.cosf cosh ucrtbase.cosh coshf ucrtbase.coshf cpow ucrtbase.cpow cpowf ucrtbase.cpowf cpowl ucrtbase.cpowl cproj ucrtbase.cproj cprojf ucrtbase.cprojf cprojl ucrtbase.cprojl creal ucrtbase.creal crealf ucrtbase.crealf creall ucrtbase.creall csin ucrtbase.csin csinf ucrtbase.csinf csinh ucrtbase.csinh csinhf ucrtbase.csinhf csinhl ucrtbase.csinhl csinl ucrtbase.csinl csqrt ucrtbase.csqrt csqrtf ucrtbase.csqrtf csqrtl ucrtbase.csqrtl ctan ucrtbase.ctan ctanf ucrtbase.ctanf ctanh ucrtbase.ctanh ctanhf ucrtbase.ctanhf ctanhl ucrtbase.ctanhl ctanl ucrtbase.ctanl erf ucrtbase.erf erfc ucrtbase.erfc erfcf ucrtbase.erfcf erfcl ucrtbase.erfcl erff ucrtbase.erff erfl ucrtbase.erfl exp ucrtbase.exp exp2 ucrtbase.exp2 exp2f ucrtbase.exp2f exp2l ucrtbase.exp2l expf ucrtbase.expf expm1 ucrtbase.expm1 expm1f ucrtbase.expm1f expm1l ucrtbase.expm1l fabs ucrtbase.fabs fdim ucrtbase.fdim fdimf ucrtbase.fdimf fdiml ucrtbase.fdiml floor ucrtbase.floor floorf ucrtbase.floorf fma ucrtbase.fma fmaf ucrtbase.fmaf fmal ucrtbase.fmal fmax ucrtbase.fmax fmaxf ucrtbase.fmaxf fmaxl ucrtbase.fmaxl fmin ucrtbase.fmin fminf ucrtbase.fminf fminl ucrtbase.fminl fmod ucrtbase.fmod fmodf ucrtbase.fmodf frexp ucrtbase.frexp hypot ucrtbase.hypot ilogb ucrtbase.ilogb ilogbf ucrtbase.ilogbf ilogbl ucrtbase.ilogbl ldexp ucrtbase.ldexp lgamma ucrtbase.lgamma lgammaf ucrtbase.lgammaf lgammal ucrtbase.lgammal llrint ucrtbase.llrint llrintf ucrtbase.llrintf llrintl ucrtbase.llrintl llround ucrtbase.llround llroundf ucrtbase.llroundf llroundl ucrtbase.llroundl log ucrtbase.log log10 ucrtbase.log10 log10f ucrtbase.log10f log1p ucrtbase.log1p log1pf ucrtbase.log1pf log1pl ucrtbase.log1pl log2 ucrtbase.log2 log2f ucrtbase.log2f log2l ucrtbase.log2l logb ucrtbase.logb logbf ucrtbase.logbf logbl ucrtbase.logbl logf ucrtbase.logf lrint ucrtbase.lrint lrintf ucrtbase.lrintf lrintl ucrtbase.lrintl lround ucrtbase.lround lroundf ucrtbase.lroundf lroundl ucrtbase.lroundl modf ucrtbase.modf modff ucrtbase.modff nan ucrtbase.nan nanf ucrtbase.nanf nanl ucrtbase.nanl nearbyint ucrtbase.nearbyint nearbyintf ucrtbase.nearbyintf nearbyintl ucrtbase.nearbyintl nextafter ucrtbase.nextafter nextafterf ucrtbase.nextafterf nextafterl ucrtbase.nextafterl nexttoward ucrtbase.nexttoward nexttowardf ucrtbase.nexttowardf nexttowardl ucrtbase.nexttowardl norm ucrtbase.norm normf ucrtbase.normf norml ucrtbase.norml pow ucrtbase.pow powf ucrtbase.powf remainder ucrtbase.remainder remainderf ucrtbase.remainderf remainderl ucrtbase.remainderl remquo ucrtbase.remquo remquof ucrtbase.remquof remquol ucrtbase.remquol rint ucrtbase.rint rintf ucrtbase.rintf rintl ucrtbase.rintl round ucrtbase.round roundf ucrtbase.roundf roundl ucrtbase.roundl scalbln ucrtbase.scalbln scalblnf ucrtbase.scalblnf scalblnl ucrtbase.scalblnl scalbn ucrtbase.scalbn scalbnf ucrtbase.scalbnf scalbnl ucrtbase.scalbnl sin ucrtbase.sin sinf ucrtbase.sinf sinh ucrtbase.sinh sinhf ucrtbase.sinhf sqrt ucrtbase.sqrt sqrtf ucrtbase.sqrtf tan ucrtbase.tan tanf ucrtbase.tanf tanh ucrtbase.tanh tanhf ucrtbase.tanhf tgamma ucrtbase.tgamma tgammaf ucrtbase.tgammaf tgammal ucrtbase.tgammal trunc ucrtbase.trunc truncf ucrtbase.truncf truncl ucrtbase.truncl  RSDSÒCÌ[îèCüQöÓ‘"∂Ì   api-ms-win-crt-math-l1-1-0.pdb         @   .rdata  @  ú%  .edata  ‹5  ú   .rdata$zzzdbg    @  `   .rsrc$01    `@  †  .rsrc$02                                                                                                                                                                                                                                                                                                                                                                                                                                Ä                  0  Ä               	  H   `@  ú                  î4   V S _ V E R S I O N _ I N F O     ΩÔ˛     
+ 98  
+ 98?                        Ú   S t r i n g F i l e I n f o   Œ   0 4 0 9 0 4 B 0   L   C o m p a n y N a m e     M i c r o s o f t   C o r p o r a t i o n   H   F i l e D e s c r i p t i o n     A p i S e t   S t u b   D L L   z -  F i l e V e r s i o n     1 0 . 0 . 1 4 3 9 3 . 7 9 5   ( r s 1 _ r e l e a s e _ s e c . 1 7 0 1 0 5 - 1 8 5 0 )     6   I n t e r n a l N a m e   a p i s e t s t u b     Ä .  L e g a l C o p y r i g h t   ©   M i c r o s o f t   C o r p o r a t i o n .   A l l   r i g h t s   r e s e r v e d .   >   O r i g i n a l F i l e n a m e   a p i s e t s t u b     j %  P r o d u c t N a m e     M i c r o s o f t Æ   W i n d o w s Æ   O p e r a t i n g   S y s t e m     B   P r o d u c t V e r s i o n   1 0 . 0 . 1 4 3 9 3 . 7 9 5     D    V a r F i l e I n f o     $    T r a n s l a t i o n     	∞            ¿<    0Ç<¥	*ÜHÜ˜†Ç<•0Ç<°10	+ 0L
++Ç7†>0<0
++Ç70	 †¢Ä 0!0	+ G}aR»ÖbOpM¬œ¬ó≠¯–†ÇÉ0Ç√0Ç´†3    }2|~˝      0	*ÜHÜ˜ 0w10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1!0UMicrosoft Time-Stamp PCA0160907175855Z180907175855Z0Å≥10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMOPR1'0%UnCipher DSE ESN:728D-C45F-F9EB1%0#UMicrosoft Time-Stamp Service0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç èpû]•ó¥∏˜®≠À3≠·π#QnsÈN˘%%íŒbX≈»Å¨¸≤‚Ë|á¯,‡Òw†49âMfúGÂ€‰Òà˘8≥åèX±ê9Y˘Û¸(9YÑvÇkEAD,,ÇlÓ|¸ŒAuì˚lLûM≥êﬂÄ&˘{}f˜ú¢#é/€qU§©”c–î%≤+Ú=º;v‚Ô≠\HÁ±ôü93¡èCMË–—ÇcU•Ó‘çç∂\Ωî´ÕzØHÁ*—+p⁄àÇ	W"Í…‘&ª∫ÛF7ì0≠ÊçvÜ˚k∫ôÇ§†9Môpµd±ÿ7‚vö‡ÛÚëxÜ4êîPÑ_ £Ç	0Ç0Uf˜“Z 1È'lñgöﬁß≤ 0U#0Ä#4¯ŸRFp
+Ì@˚v˚≥+∞√5≥0TUM0K0I†G†EÜChttp://crl.microsoft.com/pki/crl/products/MicrosoftTimeStampPCA.crl0X+L0J0H+0Ü<http://www.microsoft.com/pki/certs/MicrosoftTimeStampPCA.crt0U%0
++0	*ÜHÜ˜ Ç l†ˇ\–yª◊ÁÆ‡ªb1kˆõg®Ó
+h=%ùÄDHÃ©–L‚ﬂ´6wÚ°†˙{9@A´Æ◊[}ºÀÌßê√l¿(ù@é≥sáGNP éë]ÜÒ¥2û$‘?ú&(ÇI‡4Í“‡’∑õ≤≤ÁØfE“:
+≥hÓv2e:◊K¨`‰:›zÔ€3}ˇ≠fmz¿≤Uì‹¬®±QcûŒî)EL˘:¨lçˆ7€(†Ï”kç"dea∆±*2&$èÑ∏;+…⁄Ëp˝™{u∫-L'Ÿª\éÁ¥îÚ±4ËÆ£Û5Å‰ønk`r•‡›…ΩŸñU`kqh'ö£Lb˘—t≥}Ù0ÇÌ0Ç’†3  @ñ©ÓpV˛Ã   @0	*ÜHÜ˜ 0y10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1#0!UMicrosoft Code Signing PCA0160818201717Z171102201717Z0ÅÉ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMOPR10UMicrosoft Corporation0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç €KãÈj_»]
+9‰’í–ƒ·ãË§X¿<◊)›â∑hnKü~ºöΩTÜ9©Ò85Ê¨˚Æk‹	0Ô∏ﬂl¯JöUóH»#â≥Y'4Ωï1GúŒ@527˛ÈÛO§§≥yºÄõ?$òƒ—o’ÁCç‰‹Ú“ÊÆfÌ:!î¶W‹€,∆ˇ+9®]øU˛›IﬂTî´3ﬂ§}1¶MΩVœ1h?ÑkmÛÓ’0äÓeû∑)~ìΩÚ}Bv8"‘{|Ù∏πqû√îÙÇÜ5Ç¶tΩ3˙TÜÖ£%æ™â^‚9_&AòﬁπÊFÖxªQ2GÏ‰˘ΩQuÊõvÎÖó"
+°˜a £Ça0Ç]0U%0
++0UúÂËmÇWÆ7$ﬁÍ^©ƒ_êŒŸ{0RUK0I§G0E10UMOPR1402U+229803+f785b1c0-5d9f-4316-8d6a-74ae642dde1c0U#0ÄÀË “¥X…7.3πLö
+0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicCodSigPCA_08-31-2010.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicCodSigPCA_08-31-2010.crt0	*ÜHÜ˜ Ç k‰V„◊ @˘mÈﬁN€]∆l&£˜Â	ÄˇW·¥‘Ÿ˘\H·¬§T∏ñzıç…Éqø¯¸ª.ÃsÛ kN%™Ùƒ
+rîRüwM)ì(1Ÿﬂnt´ƒËN±ôDNII,¨yÓøÖOÑnGÔæÿ“ãIi)Éı•Ω£!≠¢•>ê úıü=zYudÔ⁄£ÖÑ2jdw¶9ò≥Ó¢(Il¨$2(>®ãf,˚ÿÉ/#íë˜Weˇ§’ÈQîˆ÷˝¿’¿ E˝CIOyÓd`N‚ƒ SN˚Zë[Õ$É|sË…Bw_1&…∞ŒSäaT˜¬çrôÒ≈∂~™êÑ:óy≠`0Çº0Ç§†
+a3&     10	*ÜHÜ˜ 0_10
+	í&âìÚ,dcom10
+	í&âìÚ,d	microsoft1-0+U$Microsoft Root Certificate Authority0100831221932Z200831222932Z0y10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1#0!UMicrosoft Code Signing PCA0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ≤rY\0døö`  BôvSl>÷oÃÀÒÍk˛ó‡ﬂ:tÉ∑/†2Ïˇﬁ¬BN#’r €5W
+â Æ IÙh¨MKç•ΩyKqõG⁄˝%ﬂùuàœ™sD◊Å€ÛΩÚ6§…\E‹Ø≠=‡(hóß•rsVÒî‰˝5îr†÷v_wEÉÖ8–s[∫gRç•≤i/⁄˛ít)‚v/T›0Y¯“çb˝À…_F1Pπ'‰@0œr)("«7N=†2=êÕ°8Ö\NVÇ(*2∑K◊OcÁ“-bÒE=Á¨ ˆF°û—[å&SËz™JÚFœ7<8û¥w\•ûçÀèV<¡¨	_” £Ç^0ÇZ0Uˇ0ˇ0UÀË “¥X…7.3πLö
+0UÜ0	+Ç7 0#	+Ç7˝—1N”&äï·ò`;®1o¶<ºÿ-0	+Ç7
+ S u b C A0U#0Ä¨Ç`@V'óÂ%¸*·
+SïY‰§0PUI0G0E†C†AÜ?http://crl.microsoft.com/pki/crl/products/microsoftrootcert.crl0T+H0F0D+0Ü8http://www.microsoft.com/pki/certs/MicrosoftRootCert.crt0	*ÜHÜ˜ Ç Y9>&FØÎo@±2µjÎ/n®I˜Î_uÌL;-◊C≠˛ÀÈ-1£#Ã|PòÄ!]¨=/L∫¢®Vú„pª∏¥¯yµIr˜>ÍA ·iÀ•ú -˙PƒVÕ-„J“ºpÁ®¢•V‡∏äKWÚïBúÒÛÔÓ„Ü4<∏VöS#Ö*§Çì‚îÚ‚N¯å° Ë•ëN»“èrï*qmõ¯S÷gÃ"ˇ\Õ¢åΩ'≤ycVD¢QÕ˘È£XV›õED/_Ù⁄Æ‘Ç2n¸§ï‰ÎiÁ©¢,æ»+eéô€ı¢˙&	e8îÒzJª—·VË–xñ\…5_›ìIé-æ≠4DÓ ]›5[!Œò«	ÓÖåOmN=|)Húr—Ûl ¡Ïp£WíW}îç†HZ˜œ£g
+t•6Ì-/»Êr7Ùo±<gÇ˘R≤ç3eä›ﬁdÙoŒF‘”Èyƒ¥”˚,ﬂäû¨
+˚'@≠‰˘·©Fª`Ge`@N∞BÏNÌ≥vyÿ
+4	mÄ1‚T›Â°˚ÂG≠dòˇP.|ø!z‚ïA'i√ìèï…çÿõ!Æ\ú¢ÆÜhÉj-ªvk ñ≠Ú{ˆÉ$πàœj®G1/ö‹„q=◊ ~bG—Œà…∏˙rç¡£=Ø@jˇiõñ‚®¥7P÷√=0Ç0ÇÔ†
+ah4     0	*ÜHÜ˜ 0_10
+	í&âìÚ,dcom10
+	í&âìÚ,d	microsoft1-0+U$Microsoft Root Certificate Authority0070403125309Z210403130309Z0w10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1!0UMicrosoft Time-Stamp PCA0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ü°l±ﬂ€Hí*|k.·Ω‚„≈ôQ#P≠Œ›N$Ó—ß—L≠t0 Î’TïIîBíÆò\0&⁄ kË{ΩÏâ˜òâÃÀ3$áùÚÙg,¸{ÁàÍÁN£°¡#S ç˙Eœ	–^Ø–∞B¢˘¶lìg◊(‹FS∞Ü–Â(F.'¨ÜOUR‰,˚jêê0náÛY0ù˙~÷ó≥Ë!ó~¯“Û∑SmR¥EêüH JGf')f®ó‰”ÅJ¢˘ÑßG	ÇüÑÌUx˛öPÖ 0FÌ∑ﬁ#Fªƒ-TüØxA1wÃõﬂ;Éì°aµ±¸˜õ≤Œ"KTˇ˘√¬  £Ç´0Çß0Uˇ0ˇ0U#4¯ŸRFp
+Ì@˚v˚≥+∞√5≥0UÜ0	+Ç7 0ÅòU#Åê0ÅçÄ¨Ç`@V'óÂ%¸*·
+SïY‰§°c§a0_10
+	í&âìÚ,dcom10
+	í&âìÚ,d	microsoft1-0+U$Microsoft Root Certificate AuthorityÇy≠°J†•≠LsXÙ.e0PUI0G0E†C†AÜ?http://crl.microsoft.com/pki/crl/products/microsoftrootcert.crl0T+H0F0D+0Ü8http://www.microsoft.com/pki/certs/MicrosoftRootCert.crt0U%0
++0	*ÜHÜ˜ Ç óä√\D6›È¥≠w€ŒyQM±.tq[m´Œæ{è∏.‘¢åmb∏WÀN Pô›z@‚WªØXö·Ü¨ªxÚã–Ï;Ó‚æè
+»çH‚S›O´í‰Áçj’Ä¡ÊîÚ/ÖÈë*$"p˚ˆ¸‰xô.˜‚pºNùék
+rï∏°9úg-≈QÍb\?òã ?‚2˘Ã1Jv1=+r»Íp=ˇÖ
+ﬂ¬
+aé◊∏ÎNã≈5+^£øÎº}B{‘Sr!Ó0 ªxe\[
+“⁄òı<πfX≥-/Á˘ÖÜÃQVËùpîl¨9L‘ˆyø™zb)Ô¢õ)4wb…=mÇ«,ªœC≥Â˘Ï}µ„§®t5∏N≈q#&v<RåqZFCº≥≥∞Mg»üBˇÄy!Äû0fËB^»û"!–CÈ+ÈªÙHÃ,‘ÿ2ÄL&*H$_ZÍVÔ¶ﬁôù :oΩÅ'tÓv!øõÇ¡'T∂±j=â°va¥n°¶ø™Go˝ä2l≤˛ﬂQ»å#…fΩùád=-ØYè∏‰!Âµ∞ c¥xT‘A.P¨î∞•x´≥†ñuŸíáu"/2®n†[å%ø†ÔÑ !÷ÎO…öÓI‡˜eoâ}»i»ÊnÍßóŒ1)ˇ≈[\ÿM°ÿ˙/û?.Uk…£˝1Ç&∏0Ç&¥0Åê0y10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1#0!UMicrosoft Code Signing PCA3  @ñ©ÓpV˛Ã   @0	+ †Å∫0	*ÜHÜ˜	1
++Ç70
++Ç710
++Ç70#	*ÜHÜ˜	1´JŸÜËºX;o,-Mª~S2lü√0Z
++Ç71L0J†$Ä" M i c r o s o f t   W i n d o w s°"Ä http://www.microsoft.com/windows0	*ÜHÜ˜ Ç gÑ?ç}'È®íNk=]J_ßh04È!h>¥ xå˘òb±ÃÍ@∏óK¶‚Âz’Œ≠mÄL1uÌ#«•uı9dO .® ˇ—öølÃãÒ–≈⁄aö∞u1ÿP*ÉIìíº‹@°≥õÂjêsºïÙ‚d §ò?}Ô·}˚πlÜÉ›π7ã?Ú´‹8‘>◊ Îü…Xº0ÔRøå¥∫ïÿ!‚ë*R}√089î=ı√Ø'rΩæræc9ëj¥â©sËï… ñSñü;3k°}!Ò<ÂÂç“oÏ÷ˇ˛1c!‡Rr8¶w}ˆV≈E•‚0πÜä¢Ã$VèEî≥'7„í°Ç$?0Ç$	*ÜHÜ˜	1Ç0Ç0Åé0w10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1!0UMicrosoft Time-Stamp PCA3    }2|~˝      0	+ †]0	*ÜHÜ˜	1	*ÜHÜ˜0	*ÜHÜ˜	1170106183908Z0#	*ÜHÜ˜	1iguµ|˙=â¡®=± «Öˇ0	*ÜHÜ˜ Ç 6(É˚ïÛÔu;™
+pÉˇ%çï€h®cÀ÷'.Ê™`÷kVè≠êıÚà= ⁄3v»lÆê::1€®‰£‚1Ö\FgÃrcFÙ_Äˇ`ø¯üôÏYh∑O	ëü5/£gâƒ(wÌÃm}/¸jÑïx∞MâöπŸÒ;$†2lHMÍz û◊dë…j.fOyja∂º-˘#æ˚’©}¬¡Pe¡ï]j3™“»)kJ5~~·î‡Q’´U∆ËÄ≠iΩª1jü˜p¬Ñ±UEå/dìjü˚ü≤™øêÎ-¨£•ùÙI
+óqóKèÎz†4,ÚH>≠»b%ÇπàÕ”$ÛˇaYö∏õ>æToÑ0Ç"
++Ç71Ç"0Ç!ˇ	*ÜHÜ˜†Ç!0Ç!Ï10	`ÜHe 0\
++Ç7†N0L0
++Ç70	 †¢Ä 010	`ÜHe   ÆŒÌB∫fc¯•PıµÁ+q™÷rzÇ›˜º¡ıèò?c†ÇÑ0Ç0ÇÙ†3  OÁ∆b…FÙ©    O0	*ÜHÜ˜ 0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20100161117215914Z180217215914Z0ÅÉ10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMOPR10UMicrosoft Corporation0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ¥âêäv¨≈=°ºÅË◊PªZißÆ«Ã∏[Ω8!QF#—Ω"ôs∑(Ô˜´+˘H˜•©M$mañúÉù3¿,yô]ÛÏ’Dﬂ•ÕY˙v≠?∆JÊÍ-î¬fo˝b–Pä—"ë#óe4°ƒö^í‚∏|(x¬^„F˜ Ô8Wà¨VX ò«®◊^6ÆöE0„∂∑=¬ß'∞yMSÿ2Êv£P*ˆ?∫ªA$ÜMòõzûˆ,‚ºê`e˚ñi˙‡h‚â*.uù¬m∏!Ùô^*1†ßÃÔOn˛IBNaﬁ7À+û@ÔŒ´^ps•r{∑FŒ[2S]ä9Qo∞◊®x›£(o^ÓB £Ç{0Çw0U%0
++Ç7=+0Uí°q∂/U√Ù…\t.Zjø0RUK0I§G0E10UMOPR1402U+230865+b4b12878-e293-43e9-b21e-7d30719d452f0U#0ÄÊ¸_{ª" X‰rNµÙ!t#2ÊÔ¨0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicCodSigPCA_2010-07-06.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicCodSigPCA_2010-07-06.crt0Uˇ0 0	*ÜHÜ˜ Ç ¿πjC5˛Ö±8Ä∏tu,çqI∏<AÌ-Ω‚6êv+âÂ∂ÅÈÜ„åñì2Bßßˆ∑4%9–∆zCÍ€wpÃ‘ÈBÎ®≈Uuxûÿæ îc˚<qÓ‘Ug◊)ˆjøºÂèÇÍ¯°‚s3?í^°∫eW7EÖÄ\÷,∆ã<já£ÀÏŸq8 5$=TΩÃUâÙwõÂô™Æ∆<éü⁄ Oœ}·≥¿ ˜R1˜"H’aç&}ÉÃaì*›∏‹‚≥ßﬂ·w`»Ù¨5À1ÂluQ≈7{jNïkè@û»M>ÆΩY≈ ÷¬x≠∑d[;–¿p4Â≈û¶«ÙˇˆÀH¡‚çÛnŒ™¥†0Çp0ÇX†
+aRL     0	*ÜHÜ˜ 0Åà10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100100706204017Z250706205017Z0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20100Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ÈdPygµƒ„˝	 Lûî¨˜VhÍDÿœ≈XO©•v|mE∫”9í¥§˘˘eÇ‰“è˝DúËeìŒ,UÑø}„.+®A+∑¢KnILkﬁ—“¬âqîÕµK¥ØÿÃà÷kî:ìŒ&?ÏÊ˛4òW’]Iˆ≤*.’ÖªY?¯ê¥+Ét +≥;F„FI¡fT…ΩƒUbWr¯gπ% 4ﬁ]¶•ï^´(ÄÕ’≤ûÂµc”≤»¡»ä&
+YÏˇÌÄ5L¶æR[ı¶⁄‡ãHw÷ÖG’π∆Ë™Óãj-\`∆¥*[ú#_E„o7À3ÄjâM£jfcxì’0œï £Ç„0Çﬂ0	+Ç7 0UÊ¸_{ª" X‰rNµÙ!t#2ÊÔ¨0	+Ç7
+ S u b C A0UÜ0Uˇ0ˇ0U#0Ä’ˆVÀèË¢\bh—=îê[◊Œöƒ0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0ÅùU Åï0Åí0Åè	+Ç7.0ÅÅ0=+1http://www.microsoft.com/PKI/docs/CPS/default.htm0@+042  L e g a l _ P o l i c y _ S t a t e m e n t . 0	*ÜHÜ˜ Ç tÔWO){ƒÖx∏P”"¸	ù¨Çó¯4ˇ*,óïÂ‰øœøì»„4©€Å∏‹ æ“5oØÂyïwÂ‘ÒÎÿÕNa¢¬Z#å®bQEg„?<ì¯0Ö»9@¶◊≥!)Â•°iå"ìÃtòÁ°GCÚS¨¿0i˛“% moa”ﬂ’Ÿr ,iÜv=Q€¶9H…7am›SÀß÷a¬ø‚É´‡kõï÷}(Q∞âJQ§öl»∑Ji©◊‹¡~—Ip™∂≠ªrGc˙¶÷¢¶ÜÏ®Dõc∂≤iâ«FÜz?Ë≈!’{˘#-≈AÀøL»Ô±ú¸"KIän„¶v[—SyëÖù’“€=s5Û<ÆT≤RGj¿™ï“é⁄ôg^2å˚7Ö—‹uÖúá∆ZWÖ¬ø›èåõ-Î¥Óœ'”µ^i˙§ß$gsœMO∂ﬁVóz˜ÈRMÙwOÖ∆ÿÒéÌB	—v„#Vx"&6æ ±ån™‰Ö⁄G3bè§…ë3_q@Øòe…"ËB!%ä-`Ÿ7âAâ*◊a<îh`RÔ÷Gô†Ä@ÓÅw>ú‡SP8ïõf3'9xá6ŒN√_≤ı=GS∂‡Â€a=*◊í,Œ7Z>@B1§¬Vúø$]Qùjy“”⁄¡îé{%qD´jÊ‘∆ﬂ#öñu≈1ÇÓ0ÇÍ0Åï0~10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1(0&UMicrosoft Code Signing PCA 20103  OÁ∆b…FÙ©    O0	`ÜHe †ÅŸ0
+*ÜHÜ˜	10	*ÜHÜ˜	1
++Ç70
++Ç710
++Ç70/	*ÜHÜ˜	1" ˛Ø˙fNY»~ú3¶∂q∑ÀmFI©∂oÈCñ(g0Z
++Ç71L0J†$Ä" M i c r o s o f t   W i n d o w s°"Ä http://www.microsoft.com/windows0	*ÜHÜ˜ Ç ú^‡Ú÷Û¬VÃ·†©Z=˙+¸ˇV=E&Êì˚sÚ®…‹=•»®Éû¢U¡π‹D{ÊÎö‰_ô°ÜΩ∑⁄Îcm‡ÌèÇq d≥ßzò„AyeÄÿ åv»(a@˜˘rπ•!jôqbÂá}VgDcëËYÓ¢≈©≥È9!u(≤(r,|∆ƒTºè‘+Eìë*T˝tp+Æt|ïòM7.ºˆ≥êÃïla_®_9¬G£5Œ†DÁY4p∆é≥nÖ-cùæù2Ã˚ŒL¡fÃXB“S`wCMYw¬≥Å†›óÍ°uçqúÚ>õôE÷![œI˝¿e*øz”˛ôä5E¿Ö◊]N°ÇM0ÇI
++Ç71Ç90Ç5	*ÜHÜ˜†Ç&0Ç"10	`ÜHe 0Ç=*ÜHÜ˜	†Ç,Ç(0Ç$
++ÑY
+010	`ÜHe  ò˘Óå"◊tÏÓ="T|î5Ùg€6pÈ’t˚õõåHXi‹G»20170106183918.997Z0ÄÙ†Åπ§Å∂0Å≥10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMOPR1'0%UnCipher DSE ESN:728D-C45F-F9EB1%0#UMicrosoft Time-Stamp Service†Ç–0Çq0ÇY†
+a	Å*     0	*ÜHÜ˜ 0Åà10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1200U)Microsoft Root Certificate Authority 20100100701213655Z250701214655Z0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç ©ºwä: Ï¸óı˙iîktT’•
+ ÇÖ˚Ì|hK,_≈√Âa¬v∑>f+[S'1AïŒ	é|a0Y±0DÒ`àÑTC◊M∏8≥B›ì¨÷s0W&Ç£E–ÍıGÅÕø$`2X`FÚXGÜ2Ñtagë_ÅT±œìLí¡ƒ¶]—an(∆˘ÜÄªﬂa¸F¡'$gr!äØKdâPb±]˝w=Wu¨ΩäBM@Q—ú>gıf¿ñD~Ô–K˝nÂö ±®Úz*
+1⁄Në∂à5Ëx∞ÈôÕ<Á/D∫ßÙ‹dΩ§¡ 	ìxÕ¸º¿…D]^úO"M £ÇÊ0Ç‚0	+Ç7 0U’c:\ä1êÛC{|F≈3hZÖmU0	+Ç7
+ S u b C A0UÜ0Uˇ0ˇ0U#0Ä’ˆVÀèË¢\bh—=îê[◊Œöƒ0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/crl/products/MicRooCerAut_2010-06-23.crl0Z+N0L0J+0Ü>http://www.microsoft.com/pki/certs/MicRooCerAut_2010-06-23.crt0Å†U ˇÅï0Åí0Åè	+Ç7.0ÅÅ0=+1http://www.microsoft.com/PKI/docs/CPS/default.htm0@+042  L e g a l _ P o l i c y _ S t a t e m e n t . 0	*ÜHÜ˜ Ç ÊàQ‚∆‡ò?Åq=ù£°!o≥Î¶Ãı1æœ‚©˛˙Wm0≥¬≈f…jﬂıÁxΩ«®û%„˘ºÌkTW+QÇD˚πSåÃÙ`ävÃ@@Aõ‹\ˇ\˘^5ò$VKtÔB»Øø∆Ú7}Z?ÚôyJëR Ø8ı/yÅeŸ©µk‰«Œˆ z oK0D$"<œÌ•ñèY)º∂˝·pü2J'˝UØ/˛∂Âé3ªb_ö€W@ÈÒŒôfêåˇjb›≈Jë&‚9ÏJqcù{!m√ú£¢<˙}ñjêx¶m“·ú˘¸8ÿîÙ∆•
+ñÜ§ΩûÆBÉ∏µÄõ"8 µ%ÂdÏ˜Ùø~cY%z.9Wv¢q™äâ∫aßÀöÿGöÄ≈–Õß–Ô}É·;q	ﬂ]tò"a⁄∞PoΩÒ· ﬂÁ1§ì:˜eGxË¯®H´˜ﬁr~akow©ÅÀß	¨9ªÏ∆ÀÿÇ¥rÕÙ∏ÖÄ˚â*T9≤[⁄»Uôzás;Êò-Íç‡3.)ı¿/T'!˜»¨N⁄(∏±©€ñ≤ßB¢…œAM‡Ü˘*ö£f0”ªt2Kﬂc{ıôä/«!ØYµÆ‹D<óPq◊°“≈U„iﬁW¡—ﬁ0¿˝ÃÊM˚ø]OÈù8/ºœX.Ô†P5⁄Ô	'’≥~5∫⁄6€”_èﬁtàI0Ç⁄0Ç¬†3   ≤5h7"ß     ≤0	*ÜHÜ˜ 0|10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation1&0$UMicrosoft Time-Stamp PCA 20100160907175657Z180907175657Z0Å≥10	UUS10U
+Washington10URedmond10U
+Microsoft Corporation10UMOPR1'0%UnCipher DSE ESN:728D-C45F-F9EB1%0#UMicrosoft Time-Stamp Service0Ç"0	*ÜHÜ˜ Ç 0Ç
+Ç òJª—XıtëBÈ°.S]Ú, o.õ”◊ïï‹ùoâ|kp)M∞.5VˆèK¯|UmPÕ?«™xÚ®kª¸+™%ù›¸Òcp$eoÑ˙KD^Œr(}¬≥≈oÜjôáÆ∫˛ÃòæoæÇGe∑/u º⁄zõ;2O⁄Hí"Á±±BmY¬bû,*
+57 	Ï·„µ„Ä~TÓ]QìŸöJ3…Ø&Îˆk#ï/?]!7J$œéΩõS?ÓÈÓåp{⁄;ıjπô<∑€|À?UŒÙØ÷π:<ﬂ|'‘rîÕØJ	6∆"Ï]sΩ:‚ÄıΩwpçcp{¿¿ˆÓû4iá∑ £Ç0Ç0U3dægk‹˘cDH‰≈C…êˆÇï0U#0Ä’c:\ä1êÛC{|F≈3hZÖmU0VUO0M0K†I†GÜEhttp://crl.microsoft.com/pki/c
