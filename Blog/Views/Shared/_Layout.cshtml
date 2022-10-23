@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Room>;
 @{
     var currentId = ViewData["currentRoom"];
-
+   
 }
 <!DOCTYPE html>
 <html lang="pl">
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     
 </head>
-<body class="bg-dark">
+<body class="bg-dark" onload="setGroup(@currentId.ToString())">
     
     
         <header>
@@ -40,22 +40,25 @@
             </div>
         </nav>
     </header>
-    
     <aside>
         <div class="customScroll "id="sidebar">
             <hr />
+            
             <ul class="list-unstyled components">
                 @foreach(var r in Model){
                     string klasa = "nav-link";
-                    @if (r.Id.Equals(currentId)){ klasa = "sidebar_selected"; }
+                    @if (r.Id.Equals(currentId)) { klasa = "sidebar_selected joinGroup"; }
 
                     <li class="@klasa">
-                        @Html.ActionLink(r.Name, "SelectGroup", new { roomId = r.Id })
+                        @Html.ActionLink(r.Name, "SelectGroup", new { roomId = r.Id})
                     </li>
 
                 }
             </ul>
+            
+           
             <hr />
+
         </div>
     </aside>
         
@@ -84,7 +87,16 @@
     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    
+
+
+        
+
+    
 </body>
 </html>
