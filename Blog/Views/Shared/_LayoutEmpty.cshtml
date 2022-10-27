@@ -1,14 +1,4 @@
-﻿@model BigView;
-@{
-    var currentId = ViewData["currentRoom"];
-
-
-
-    
-   
-
-   
-}
+﻿
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -16,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] -Evalon</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     
 </head>
-<body class="bg-dark" onload="setGroup(@currentId.ToString())">
+<body class="bg-dark">
     
     
         <header>
@@ -46,47 +35,12 @@
             </div>
         </nav>
     </header>
-    <aside>
-        <div class="customScroll "id="sidebar">
-            <hr />
-
-            <input type="button" value="+" onclick="location.href='@Url.Action("CreateRoom", "Blog")'" />
-
-            
-            <ul class="list-unstyled components">
-                @foreach(var r in Model.Connecting){
-                    string klasa = "nav-link";
-                    @if (r.Roomsender.Id.Equals(currentId)) { klasa = "sidebar_selected joinGroup"; }
-                    
-                    <li class="@klasa">
-                        @Html.ActionLink(r.Roomsender.Name, "SelectGroup", new { roomId = r.Roomsender.Id})
-                    </li>
-
-                }
-            </ul>
-            
-           
-            <hr />
-
-        </div>
-    </aside>
         
         <div id="main">
             <main role="main">
                 @RenderBody()
             </main>
         </div>
-
-    <aside>
-        <div id="chatbar">
-            <ul class="list-unstyled components">
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-
-            </ul>
-        </div>
-    </aside>
     
         <footer class="border-top footer text-muted">
             <div class="container">

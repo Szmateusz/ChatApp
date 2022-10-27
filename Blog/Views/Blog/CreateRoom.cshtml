@@ -1,0 +1,12 @@
+﻿@model CreateRoom;
+@{
+    Layout = "_LayoutEmpty";
+}
+    <h1>Stwórz Grupę</h1>
+<centre> @using(@Html.BeginForm("CreateRoom","Blog",FormMethod.Post)){
+
+        <span>Nazwa: </span> @Html.TextBoxFor(x => x.Name)
+         <input type="submit" value="Stwórz" />
+
+    }
+</centre>

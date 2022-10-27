@@ -1,15 +1,31 @@
-﻿@model IEnumerable<Room>;
+﻿@model BigView;
 @{
 	var userName = User.Identity.Name;
 	var RoomId = ViewData["currentRoom"];
 
-	Room room = Model.FirstOrDefault(r => r.Id.Equals(RoomId));
+
+	Room room = Model.Rooms.FirstOrDefault(x => x.Id.Equals(RoomId));
+
 	var messageList = room.Messages;
 	
 	
 }
 
 <div id="messagesBox"><h1>Pokój rozmów </h1>
+
+	<div id="options">
+		@using (@Html.BeginForm("Invite", "Blog", FormMethod.Post)){
+
+			<select name="userList" id="userList">
+				@foreach(var u in Model.Users){
+					<option value="@u.Id">@u.UserName</option>
+				}
+			</select>
+
+			<input type="button" onclick="Invite()" value="Zaproś" />
+		}
+	</div>
+
 <hr class="" />
 
 

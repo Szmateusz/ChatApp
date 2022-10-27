@@ -1,4 +1,36 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿let RoomId = "";
 
-// Write your JavaScript code.
+
+var connection = new signalR.HubConnectionBuilder()
+	.withUrl("/messageHub")
+	.build();
+
+
+connection.on('receiveMessage', addMessageToChat);
+
+connection.start()
+	.catch(error => {
+		console.error(error.message);
+	});
+
+
+
+
+function setGroup(id) {
+	RoomId = id;
+
+	setTimeout(function () {
+
+		console.log("Dolaczylem..");
+		connection.invoke("JoinGroup", RoomId.toString());
+	}, 500);  
+	
+
+	
+}
+
+function sendMessageToHub(message) {
+	
+	
+	connection.invoke('SendMessageToGroup', RoomId.toString(), message);
+}

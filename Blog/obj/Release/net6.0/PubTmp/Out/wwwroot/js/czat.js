@@ -1,9 +1,9 @@
 ﻿class Message {
-    constructor(username, text, when) {
-        this.userName = username;
-        this.text = text;
-        this.when = when;
-    }
+	constructor(username, text, when) {
+		this.userName = username;
+		this.text = text;
+		this.when = when;
+	}
 }
 
 // userName is declared in razor page.
@@ -14,46 +14,46 @@ const chat = document.getElementById('chat');
 const messagesQueue = [];
 
 document.getElementById('submitButton').addEventListener('click', () => {
-    var currentdate = new Date();
+	var currentdate = new Date();
 });
 
 function clearInputField() {
-    messagesQueue.push(textInput.value);
-    textInput.value = "";
+	messagesQueue.push(textInput.value);
+	textInput.value = "";
 }
 
 function sendMessage() {
-    let text = messagesQueue.shift() || "";
-    if (text.trim() === "") return;
+	let text = messagesQueue.shift() || "";
+	if (text.trim() === "") return;
 
-    let when = new Date();
-    let message = new Message(username, text);
-    sendMessageToHub(message);
+	let when = new Date();
+	let message = new Message(username, text);
+	sendMessageToHub(message);
 }
 
 function addMessageToChat(message) {
-    let isCurrentUserMessage = message.userName === username;
+	let isCurrentUserMessage = message.userName === username;
 
-    let container = document.createElement('div');
-    container.className = isCurrentUserMessage ? "container darker text-right text-white" : "container text-left ";
+	let container = document.createElement('div');
+	container.className = isCurrentUserMessage ? "container darker text-right text-white" : "container text-left ";
 
-    let sender = document.createElement('p');
-    sender.className = "sender";
-    sender.innerHTML = message.userName;
-    let text = document.createElement('p');
-    text.innerHTML = message.text;
+	let sender = document.createElement('p');
+	sender.className = "sender";
+	sender.innerHTML = message.userName;
+	let text = document.createElement('p');
+	text.innerHTML = message.text;
 
-    let when = document.createElement('span');
-    when.className = isCurrentUserMessage ? "time-right time" : "time-left time";
-    var currentdate = new Date();
-    when.innerHTML =
-         currentdate.getDate() + "."
-        + (currentdate.getMonth() + 1) + "."
-        + currentdate.getFullYear() + " "
-        + currentdate.toLocaleString('pl-PL', { hour: 'numeric', minute: 'numeric', hour12: false })
+	let when = document.createElement('span');
+	when.className = isCurrentUserMessage ? "time-right time" : "time-left time";
+	var currentdate = new Date();
+	when.innerHTML =
+		 currentdate.getDate() + "."
+		+ (currentdate.getMonth() + 1) + "."
+		+ currentdate.getFullYear() + " "
+		+ currentdate.toLocaleString('pl-PL', { hour: 'numeric', minute: 'numeric', hour12: false })
 
-    container.appendChild(sender);
-    container.appendChild(text);
-    container.appendChild(when);
-    chat.appendChild(container);
+	container.appendChild(sender);
+	container.appendChild(text);
+	container.appendChild(when);
+	chat.appendChild(container);
 }

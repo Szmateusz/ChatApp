@@ -36,7 +36,7 @@ namespace Blog.Controllers
                 ViewBag.CurrentUserName = currentUser.UserName;
             }
 
-
+            
             
             IEnumerable<Room> roomsList =  _context.Rooms.ToList();
 
@@ -45,8 +45,18 @@ namespace Blog.Controllers
             
             ViewData["currentRoom"] = currentRoom;
 
-            
-            return View(roomsList);
+            IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
+            IEnumerable<UserModel> usersList = await _context.Users.ToListAsync();
+
+            BigView model = new BigView();
+
+
+            model.Rooms = roomsList;
+            model.Connecting = connectingGroups;
+            model.Users = usersList;
+
+
+            return View(model);
 
         }
 
@@ -78,5 +88,61 @@ namespace Blog.Controllers
 
             return RedirectToAction("Index","Blog");
         }
+
+        [HttpGet]
+        public IActionResult CreateRoom()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateRoom(CreateRoom cr)
+        {
+            var sender = await _userManager.GetUserAsync(User);
+
+            var newRoom = new Room
+            {   
+                
+                Name = cr.Name
+            };
+
+            _context.Rooms.Add(newRoom);
+            _context.SaveChanges();
+
+            int id = newRoom.Id;
+
+            currentRoom = id;
+            var newConnect = new ConnectingToGroups
+            {
+                Roomsender = newRoom,
+                UserSender = sender
+
+        };
+
+            _context.ConnectingToRooms.Add(newConnect);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Blog");
+        }
+        
+        public IActionResult Invite(string usrId)
+        {
+            var usrSender = _context.Users.FirstOrDefault(x => x.Id.Equals(usrId));
+
+            var roomSender = _context.Rooms.FirstOrDefault(x => x.Id.Equals(currentRoom));
+
+
+            var newConnect = new ConnectingToGroups
+            {
+                UserSender = usrSender,
+                Roomsender = roomSender
+            };
+
+            _context.ConnectingToRooms.Add(newConnect);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Blog");
+        }
+
     }
 }

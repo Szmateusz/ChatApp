@@ -11,6 +11,8 @@ namespace Blog
 
        
         public DbSet<Message> Messages {get; set;}
+        public DbSet<ConnectingToGroups> ConnectingToRooms { get; set; }
+
 
         public DbSet<Room> Rooms { get; set;}
         protected override void OnModelCreating(ModelBuilder builder)
@@ -26,6 +28,14 @@ namespace Blog
                .HasOne<Room>(a => a.RoomSender)
                .WithMany(d => d.Messages)
                .HasForeignKey(d => d.RoomId);
+
+            builder.Entity<ConnectingToGroups>()
+              .HasOne<Room>(a => a.Roomsender);
+
+            builder.Entity<ConnectingToGroups>()
+             .HasOne<UserModel>(a => a.UserSender);
+
+
         }
         
     }
