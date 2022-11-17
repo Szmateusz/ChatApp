@@ -29,8 +29,13 @@ function setGroup(id) {
 	
 }
 
+
+
 function sendMessageToHub(message) {
 	
 	
 	connection.invoke('SendMessageToGroup', RoomId.toString(), message);
 }
+
+
+

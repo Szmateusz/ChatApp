@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "yoCd1W2HjiBuphRslhexgqZakIrnG3N0SzOcNcKF9Cc=",
+  "Hash": "yOJw572kq0aaaYUuSXci1wFxiJhoK/dF1WaFIR1c7z8=",
   "Source": "Blog",
   "BasePath": "_content/Blog",
   "Mode": "Default",
@@ -100,6 +100,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\js\\Added.js",
+      "SourceId": "Blog",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "BasePath": "_content/Blog",
+      "RelativePath": "js/Added.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Added.js"
     },
     {
       "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\js\\connect.js",
