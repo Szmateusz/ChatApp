@@ -80,9 +80,20 @@
     <aside>
         <div id="chatbar">
             <ul class="list-unstyled components">
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
+             
+                
+
+                @foreach(var r in Model.UsersInGroup)
+                {
+                    string klasa ="";
+                    if (r.UserSender.UserName == User.Identity.Name)
+                    {
+                        klasa = "userOnUserList";
+                    }
+                    <hr />
+
+                    <li class="@klasa">@r.UserSender.UserName</li>
+                }
 
             </ul>
         </div>

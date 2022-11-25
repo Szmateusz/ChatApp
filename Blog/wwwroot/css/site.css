@@ -49,11 +49,18 @@ body {
 
 
 }
-#messagesBox{
-    margin-left:150px;
-    padding:20px;
-    border:1px solid grey;
-    
+#chatbar{
+    float:left;
+}
+.userOnUserList{
+    font-weight:bold;
+    color:white;
+    letter-spacing:1px;
+}
+#messagesBox {
+    margin-left: 150px;
+    padding: 20px;
+    border: 1px solid grey;
 }
 
 #main {

@@ -42,18 +42,28 @@ namespace Blog.Controllers
 
             var room = roomsList.FirstOrDefault(r=>r.Id==currentRoom);
             room.Messages = await _context.Messages.Where(m=>m.RoomId==room.Id).ToListAsync();
+
             
             ViewData["currentRoom"] = currentRoom;
 
+            IEnumerable<ConnectingToGroups> usersInGroupList = await _context.ConnectingToRooms.Where(x=>x.Roomsender.Id.Equals(currentRoom)).ToListAsync();
+            IEnumerable<ConnectingToGroups> usersInGroupListUnique = usersInGroupList.DistinctBy(x => x.UserSender.UserName);
+
             IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
+            IEnumerable<ConnectingToGroups> connectingGroupsUnique = connectingGroups.DistinctBy(x => x.Roomsender.Name);
+
             IEnumerable<UserModel> usersList = await _context.Users.ToListAsync();
+            
+
+
 
             BigView model = new BigView();
 
 
             model.Rooms = roomsList;
-            model.Connecting = connectingGroups;
+            model.Connecting = connectingGroupsUnique;
             model.Users = usersList;
+            model.UsersInGroup = usersInGroupListUnique;
 
 
             return View(model);
