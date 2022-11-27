@@ -22,9 +22,9 @@
 <body class="bg-dark" onload="setGroup(@currentId.ToString())">
     
     
-        <header>
+    <header>
             
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm  border-bottom box-shadow mb-3">
             <div class="container-fluid">
 
                 <h3 class="text-white">@User.Identity.Name</h3>
@@ -46,64 +46,21 @@
             </div>
         </nav>
     </header>
-    <aside>
-        <div class="customScroll "id="sidebar">
-            <hr />
-
-            <input type="button" value="+" onclick="location.href='@Url.Action("CreateRoom", "Blog")'" />
-
-            
-            <ul class="list-unstyled components">
-                @foreach(var r in Model.Connecting){
-                    string klasa = "nav-link";
-                    @if (r.Roomsender.Id.Equals(currentId)) { klasa = "sidebar_selected joinGroup"; }
-                    
-                    <li class="@klasa">
-                        @Html.ActionLink(r.Roomsender.Name, "SelectGroup", new { roomId = r.Roomsender.Id})
-                    </li>
-
-                }
-            </ul>
-            
-           
-            <hr />
-
-        </div>
-    </aside>
+    
         
-        <div id="main">
             <main role="main">
                 @RenderBody()
             </main>
-        </div>
+        
 
-    <aside>
-        <div id="chatbar">
-            <ul class="list-unstyled components">
-             
-                
+ 
+<div style="clear:both"></div>
 
-                @foreach(var r in Model.UsersInGroup)
-                {
-                    string klasa ="";
-                    if (r.UserSender.UserName == User.Identity.Name)
-                    {
-                        klasa = "userOnUserList";
-                    }
-                    <hr />
-
-                    <li class="@klasa">@r.UserSender.UserName</li>
-                }
-
-            </ul>
-        </div>
-    </aside>
-    
         <footer class="border-top footer text-muted">
-            <div class="container">
+              <div class="container">
             &copy; 2022 - Blog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+              </div>
+        </footer>
     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

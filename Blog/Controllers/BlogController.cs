@@ -7,10 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNet.SignalR;
 using Blog.Hubs;
 using AuthorizeAttribute = Microsoft.AspNetCore.Authorization.AuthorizeAttribute;
+using System.Linq;
 
 namespace Blog.Controllers
 {
-    //[Authorize]
+  //  [Authorize]
     public class BlogController : Controller
     {
         public readonly DBcontext _context;
@@ -52,18 +53,33 @@ namespace Blog.Controllers
             IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
             IEnumerable<ConnectingToGroups> connectingGroupsUnique = connectingGroups.DistinctBy(x => x.Roomsender.Name);
 
-            IEnumerable<UserModel> usersList = await _context.Users.ToListAsync();
+            IList<UserModel> usersList = await _context.Users.ToListAsync();
+
             
+
+             List<string> listOfNames = new List<string>();
+
+            foreach (var user in connectingGroupsUnique)
+            {
+                listOfNames.Add(user.UserSender.UserName);
+            }
+
+            foreach (var x in usersInGroupList)
+            {
+                usersList.Remove(x.UserSender);
+
+            }
+
+
 
 
 
             BigView model = new BigView();
 
-
-            model.Rooms = roomsList;
-            model.Connecting = connectingGroupsUnique;
-            model.Users = usersList;
-            model.UsersInGroup = usersInGroupListUnique;
+                model.Rooms = roomsList;
+                model.Connecting = connectingGroupsUnique;
+                model.Users = usersList;
+                model.UsersInGroup = usersInGroupListUnique;
 
 
             return View(model);

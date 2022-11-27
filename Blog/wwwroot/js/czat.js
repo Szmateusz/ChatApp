@@ -34,6 +34,9 @@ function sendMessage() {
 function addMessageToChat(message) {
 	let isCurrentUserMessage = message.userName === username;
 
+	let row = document.createElement('div');
+	row.className = "row";
+
 	let container = document.createElement('div');
 	container.className = isCurrentUserMessage ? "container darker text-right text-white" : "container text-left ";
 
@@ -55,5 +58,6 @@ function addMessageToChat(message) {
 	container.appendChild(sender);
 	container.appendChild(text);
 	container.appendChild(when);
+	row.appendChild(container);
 	chat.appendChild(container);
 }
