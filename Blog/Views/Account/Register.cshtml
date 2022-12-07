@@ -1,9 +1,16 @@
 ﻿@model Blog.Models.Register
 
 @{
-    
+
     ViewData["Title"] = "Rejestracja";
     Layout = "_Layout-login";
+
+    var isRegistered = ViewData["isRegistered"];
+    var isPasswordLenght = ViewData["isPasswordLenght"];
+
+                
+
+
 }
 
 <div id="divlogin">
@@ -26,4 +33,12 @@
 
 
     <input type="submit" value="Zarejestruj" />
+}
+@if (isRegistered.Equals(true))
+{
+    <p class="adultInfo">Użytkownik, o tym loginie juz istnieje!</p>
+}
+@if (isPasswordLenght.Equals(false))
+{
+    <p class="adultInfo">Hasło musi zawierać conajmniej 5 znaków!</p>
 }

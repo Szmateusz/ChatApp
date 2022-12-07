@@ -18,6 +18,7 @@ namespace Blog.Controllers
             _context = context;
             _usermanager = usermanager;
             _signInManager = signInManager;
+
         }
 
         public IActionResult Index()
@@ -56,15 +57,37 @@ namespace Blog.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            ViewData["isRegistered"] = false;
+            ViewData["isPasswordLenght"] = true;
+
+
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Register(Register userRegisterData)
         {
-            if(!ModelState.IsValid)
+            ViewData["isPasswordLenght"] = true;
+            ViewData["isRegistered"] = false;
+
+
+            if (!ModelState.IsValid)
             {
                 return View(userRegisterData);
             }
+            if (_context.Users.Any(x => x.UserName.Equals(userRegisterData.UserName))){
+                ViewData["isRegistered"] = true;
+                
+                return View(userRegisterData);
+            }
+            if (userRegisterData.Password.Length < 5)
+            {
+                ViewData["isPasswordLenght"] = false;
+                return View(userRegisterData);
+
+            }
+
+
+
 
             var newUser = new UserModel
             {

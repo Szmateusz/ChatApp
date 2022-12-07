@@ -18,7 +18,7 @@ namespace Blog.Controllers
         public readonly UserManager<UserModel> _userManager;
 
 
-        public static int currentRoom=1;
+        public static int currentRoom=10;
 
        
         public BlogController(DBcontext context, UserManager<UserModel> userManager)
@@ -30,7 +30,10 @@ namespace Blog.Controllers
 
         public async Task<IActionResult> Index()
         {
-            
+            if (currentRoom == 0)
+            {
+              return RedirectToAction("CreateRoom","Blog");
+            }
             var currentUser = await _userManager.GetUserAsync(User);
             if (User.Identity.IsAuthenticated)
             {
@@ -39,30 +42,29 @@ namespace Blog.Controllers
 
             
             
-            IEnumerable<Room> roomsList =  _context.Rooms.ToList();
+           IEnumerable<Room> roomsList =  _context.Rooms.ToList();
 
-            var room = roomsList.FirstOrDefault(r=>r.Id==currentRoom);
-            room.Messages = await _context.Messages.Where(m=>m.RoomId==room.Id).ToListAsync();
+           var room = roomsList.FirstOrDefault(r=>r.Id==currentRoom);
+           room.Messages = await _context.Messages.Where(m=>m.RoomId==room.Id).ToListAsync();
 
             
             ViewData["currentRoom"] = currentRoom;
 
             IEnumerable<ConnectingToGroups> usersInGroupList = await _context.ConnectingToRooms.Where(x=>x.Roomsender.Id.Equals(currentRoom)).ToListAsync();
-            IEnumerable<ConnectingToGroups> usersInGroupListUnique = usersInGroupList.DistinctBy(x => x.UserSender.UserName);
 
             IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
-            IEnumerable<ConnectingToGroups> connectingGroupsUnique = connectingGroups.DistinctBy(x => x.Roomsender.Name);
+           
 
-            IList<UserModel> usersList = await _context.Users.ToListAsync();
+    
+            List<string> listOfNames = new List<string>();
 
-            
-
-             List<string> listOfNames = new List<string>();
-
-            foreach (var user in connectingGroupsUnique)
+            foreach (var user in connectingGroups)
             {
                 listOfNames.Add(user.UserSender.UserName);
             }
+
+
+            IList<UserModel> usersList = await _context.Users.ToListAsync();
 
             foreach (var x in usersInGroupList)
             {
@@ -70,16 +72,12 @@ namespace Blog.Controllers
 
             }
 
-
-
-
-
             BigView model = new BigView();
 
                 model.Rooms = roomsList;
-                model.Connecting = connectingGroupsUnique;
+                model.Connecting = connectingGroups;
                 model.Users = usersList;
-                model.UsersInGroup = usersInGroupListUnique;
+                model.UsersInGroup = usersInGroupList;
 
 
             return View(model);
@@ -121,9 +119,15 @@ namespace Blog.Controllers
 
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateRoom(CreateRoom cr)
         {
+            if (_context.Rooms.Any(r => r.Name == cr.Name))
+            {
+                ViewData["isCreated"]=true;
+                return View();
+            }
             var sender = await _userManager.GetUserAsync(User);
 
             var newRoom = new Room
@@ -153,6 +157,12 @@ namespace Blog.Controllers
         
         public IActionResult Invite(string usrId)
         {
+            if(_context.ConnectingToRooms.Any(c=>c.UserSender.Id==usrId && c.Roomsender.Id == currentRoom))
+            {
+                return RedirectToAction("Index", "Blog");
+
+            }
+
             var usrSender = _context.Users.FirstOrDefault(x => x.Id.Equals(usrId));
 
             var roomSender = _context.Rooms.FirstOrDefault(x => x.Id.Equals(currentRoom));
@@ -167,7 +177,9 @@ namespace Blog.Controllers
             _context.ConnectingToRooms.Add(newConnect);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Blog");
+            string name = usrSender.UserName;
+            return Json(new { success = true, name });
+
         }
 
     }

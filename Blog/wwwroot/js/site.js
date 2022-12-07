@@ -1,20 +1,47 @@
-﻿let RoomId = "";
+﻿
+function Invite() {
+
+	let SelectUser = document.getElementById('userList');
+
+	let user = SelectUser.value;
+	let name = "";
+
+	let list = document.getElementById("usersInGroupList");
+
+	let element = document.createElement('li');
+
+	$.ajax({
+		type: 'POST',
+		url: "/Blog/Invite",
+		data: {
+			usrId: userList.value
+		},
+		success: function (data) {
+			name = data.name;
+			console.log("sukces");
+			element.innerHTML = name;
+			list.appendChild(element);
+			
 
 
-var connection = new signalR.HubConnectionBuilder()
-	.withUrl("/messageHub")
-	.build();
+		},
+		error: function () {
+			console.log("niepowodzenie");
 
-
-connection.on('receiveMessage', addMessageToChat);
-
-connection.start()
-	.catch(error => {
-		console.error(error.message);
+		},
+		dataType: "json"
 	});
+	
+	
 
 
 
+	for (var i = 0; i < SelectUser.length; i++) {
+		if (SelectUser.options[i].value == user)
+			SelectUser.remove(i);
+	}
+
+}
 
 function setGroup(id) {
 	RoomId = id;
@@ -23,19 +50,8 @@ function setGroup(id) {
 
 		console.log("Dolaczylem..");
 		connection.invoke("JoinGroup", RoomId.toString());
-	}, 500);  
-	
+	}, 500);
 
-	
+
+
 }
-
-
-
-function sendMessageToHub(message) {
-	
-	
-	connection.invoke('SendMessageToGroup', RoomId.toString(), message);
-}
-
-
-

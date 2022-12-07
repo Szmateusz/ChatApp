@@ -17,10 +17,6 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\js\\Added.js",
-      "PackagePath": "staticwebassets\\js\\Added.js"
-    },
-    {
       "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\js\\connect.js",
       "PackagePath": "staticwebassets\\js\\connect.js"
     },

@@ -3,10 +3,16 @@
     Layout = "_LayoutEmpty";
 }
     <h1>Stwórz Grupę</h1>
-<centre> @using(@Html.BeginForm("CreateRoom","Blog",FormMethod.Post)){
+
+<centre>
+    @using(@Html.BeginForm("CreateRoom","Blog",FormMethod.Post)){
 
         <span>Nazwa: </span> @Html.TextBoxFor(x => x.Name)
          <input type="submit" value="Stwórz" />
 
+    }
+    @if (ViewData["isCreated"] != null)
+    {
+        <span>Pokój o danej nazwie już istnieje, wybierz inną!</span>
     }
 </centre>
