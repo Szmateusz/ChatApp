@@ -1,8 +1,8 @@
 ﻿class Message {
-	constructor(username, text, when) {
+	constructor(username, text) {
 		this.userName = username;
 		this.text = text;
-		this.when = when;
+		
 	}
 }
 

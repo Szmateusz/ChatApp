@@ -18,7 +18,7 @@
         <input type="button" value="+" onclick="location.href='@Url.Action("CreateRoom", "Blog")'" />
 
 
-        <ul class="list-unstyled components">
+        <ul class="list-unstyled components" id="groupList">
             @foreach (var r in Model.Connecting)
             {
                 string klasa = "nav-link";
@@ -174,8 +174,9 @@
 		<script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
 		
 		<script src="~/js/czat.js"></script>
+        <script src="~/js/site.js"></script>
+
 		<script src="~/js/connect.js"></script>
-		<script src="~/js/site.js"></script>
 		
 
 		

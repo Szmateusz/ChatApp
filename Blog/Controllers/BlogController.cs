@@ -18,7 +18,7 @@ namespace Blog.Controllers
         public readonly UserManager<UserModel> _userManager;
 
 
-        public static int currentRoom=10;
+        public static int currentRoom=1;
 
        
         public BlogController(DBcontext context, UserManager<UserModel> userManager)

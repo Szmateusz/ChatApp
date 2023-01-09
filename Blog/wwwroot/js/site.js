@@ -33,7 +33,7 @@ function Invite() {
 	});
 	
 	
-
+	sendInviteGroupToHub(user);
 
 
 	for (var i = 0; i < SelectUser.length; i++) {
@@ -43,15 +43,24 @@ function Invite() {
 
 }
 
-function setGroup(id) {
-	RoomId = id;
+function addGroupToList(group) {
 
-	setTimeout(function () {
-
-		console.log("Dolaczylem..");
-		connection.invoke("JoinGroup", RoomId.toString());
-	}, 500);
+	console.log("sukces-lista");
 
 
+
+	var list = document.getElementById("groupList");
+
+	var li = document.createElement("li");
+	var a = document.createElement("a");
+	
+	a.href = "/Blog/SelectGroup?roomId=13";
+	a.innerHTML = group;
+	//li.innerHTML = group;
+	li.className = "nav-link";
+
+	
+	li.appendChild(a);
+	list.appendChild(li);
 
 }

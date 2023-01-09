@@ -5,6 +5,12 @@ namespace Blog.Hubs
 {
     public class ChatHub : Hub
     {
+        public readonly DBcontext _context;
+
+        public ChatHub(DBcontext context) { 
+            _context = context;
+            
+        }
         public async Task SendMessage(Message message) =>
         await Clients.All.SendAsync("receiveMessage", message);
 
@@ -18,7 +24,14 @@ namespace Blog.Hubs
             return Clients.Group(group).SendAsync("receiveMessage", message);
         }
 
-
+        public Task InviteToGroup(string group,string user)
+        {
+            //var room = _context.Rooms.FirstOrDefault(r => r.Id.Equals(group));
+            var room = _context.Rooms.FirstOrDefault(r => r.Id.Equals(group));
+     
+            string g = room.Name;
+            return Clients.User(user).SendAsync("receiveToGroup", g);
+        }
 
 
     }
