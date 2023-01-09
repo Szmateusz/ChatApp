@@ -24,13 +24,14 @@ namespace Blog.Hubs
             return Clients.Group(group).SendAsync("receiveMessage", message);
         }
 
-        public Task InviteToGroup(string group,string user)
+        public Task InviteToGroup(int group,string user)
         {
+            
             //var room = _context.Rooms.FirstOrDefault(r => r.Id.Equals(group));
             var room = _context.Rooms.FirstOrDefault(r => r.Id.Equals(group));
-     
-            string g = room.Name;
-            return Clients.User(user).SendAsync("receiveToGroup", g);
+            string groupName = room.Name;
+            string groupId = room.Id.ToString();
+            return Clients.User(user).SendAsync("receiveToGroup", groupName, groupId);
         }
 
 

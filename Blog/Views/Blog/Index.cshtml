@@ -41,9 +41,7 @@
         <h1>Pokój rozmów </h1>
 
         <div id="options">
-            @using (@Html.BeginForm("Invite", "Blog", FormMethod.Post))
-            {
-
+            
                 <select name="userList" id="userList">
                     @foreach (var u in Model.Users)
                     {
@@ -52,7 +50,7 @@
                 </select>
 
                 <input type="button" onclick="Invite()" value="Zaproś" />
-            }
+            
         </div>
 
         <hr class="" />

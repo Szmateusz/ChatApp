@@ -43,7 +43,7 @@ function Invite() {
 
 }
 
-function addGroupToList(group) {
+function addGroupToList(groupName,groupId) {
 
 	console.log("sukces-lista");
 
@@ -54,8 +54,8 @@ function addGroupToList(group) {
 	var li = document.createElement("li");
 	var a = document.createElement("a");
 	
-	a.href = "/Blog/SelectGroup?roomId=13";
-	a.innerHTML = group;
+	a.href = "/Blog/SelectGroup?roomId="+groupId;
+	a.innerHTML = groupName;
 	//li.innerHTML = group;
 	li.className = "nav-link";
 

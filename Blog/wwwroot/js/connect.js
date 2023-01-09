@@ -38,7 +38,7 @@ function sendMessageToHub(message) {
 function sendInviteGroupToHub(user) {
 
 	console.log("TEST" + user + RoomId.toString());
-	connection.invoke('InviteToGroup', RoomId.toString(), user);
+	connection.invoke('InviteToGroup', RoomId, user);
 }
 
 
