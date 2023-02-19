@@ -55,14 +55,26 @@ body {
     color:white;
     letter-spacing:1px;
 }
-#messagesBox {
-    height:auto;
-    padding: 20px;
-    border: 1px solid grey;
-    width: 70%;
+.userListBlock{
+    border-bottom:0.5px solid black;
+    padding:5px;
     
-    float: left;
+    
+
+
 }
+.userListBlock:hover{
+    font-weight:bold;
+    font-size:120%;
+    background-color:aliceblue;
+}
+    #messagesBox {
+        height: auto;
+        padding: 20px;
+        border: 1px solid grey;
+        width: 70%;
+        float: left;
+    }
 #box {
     overflow-y: scroll;
     height: 300px;

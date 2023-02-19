@@ -8,6 +8,8 @@ var connection = new signalR.HubConnectionBuilder()
 
 connection.on('receiveMessage', addMessageToChat);
 connection.on('receiveToGroup', addGroupToList);
+connection.on('deleteFromGroup',deleteUserFromList);
+
 
 
 connection.start()

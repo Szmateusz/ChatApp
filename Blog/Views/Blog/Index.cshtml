@@ -132,20 +132,24 @@
 
     </div>
     <div id="chatbar">
+
+        <input type="button" onclick="leaveFromGroup('@userName')" value="Opuść"/>
+
         <ul id="usersInGroupList" class="list-unstyled components">
-
-
 
             @foreach (var r in Model.UsersInGroup)
             {
-                string klasa = "";
-                if (r.UserSender.UserName == User.Identity.Name)
-                {
-                    klasa = "userOnUserList";
-                }
-                <hr />
+                string klasa = "userListBlock ";
+
+                
+                    @if (r.UserSender.UserName == User.Identity.Name)
+                    {
+                    klasa += "userOnUserList";
+                    }
 
                 <li class="@klasa">@r.UserSender.UserName</li>
+                
+                
             }
 
         </ul>

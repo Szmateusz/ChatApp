@@ -19,8 +19,10 @@ namespace Blog.Controllers
 
 
         public static int currentRoom=1;
+        public static bool firstStart=true;
 
-       
+
+
         public BlogController(DBcontext context, UserManager<UserModel> userManager)
         {
             _context = context;
@@ -30,7 +32,19 @@ namespace Blog.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (currentRoom == 0)
+            
+            string usrId = _userManager.GetUserId(User);
+            var roomList = _context.ConnectingToRooms.Where(u => u.UserSender.Id.Equals(usrId));
+            
+            if (firstStart == true)
+            {
+                var first = roomList.FirstOrDefault();
+                currentRoom = first.Id;
+
+                firstStart=false;
+            }
+
+            if (currentRoom == null)
             {
               return RedirectToAction("CreateRoom","Blog");
             }

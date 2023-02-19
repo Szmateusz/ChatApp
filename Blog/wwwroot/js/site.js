@@ -64,3 +64,30 @@ function addGroupToList(groupName,groupId) {
 	list.appendChild(li);
 
 }
+
+function leaveFromGroup(userName) {
+
+	connection.invoke("LeaveGroup", RoomId.toString(), userName);
+
+	
+	connection.invoke("DeleteUserFromGroup",userName,RoomId.toString());
+
+	window.location.reload();
+
+}
+
+function deleteUserFromList(userName) {
+
+	let list = document.getElementById("usersInGroupList");
+	
+	let listItems = list.getElementsByTagName('li');
+
+	for (let i = 0; i < listItems.length; i++) {
+		if (listItems[i].textContent == userName) {
+
+			listItems[i].remove();
+			
+		}	
+	}
+	
+}

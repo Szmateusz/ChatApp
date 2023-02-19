@@ -1,4 +1,5 @@
 ﻿using Blog.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Blog.Hubs
@@ -6,17 +7,39 @@ namespace Blog.Hubs
     public class ChatHub : Hub
     {
         public readonly DBcontext _context;
+        
+
 
         public ChatHub(DBcontext context) { 
             _context = context;
+            
+
             
         }
         public async Task SendMessage(Message message) =>
         await Clients.All.SendAsync("receiveMessage", message);
 
-       public Task JoinGroup(string group)
+        public Task JoinGroup(string group)
         {
             return Groups.AddToGroupAsync(Context.ConnectionId, group);
+        }
+        public Task LeaveGroup(string group,string user)
+        {
+            
+            string userId = _context.Users.FirstOrDefault(u => u.UserName.Equals(user)).Id;
+            var ConnToDelete = _context.ConnectingToRooms.FirstOrDefault(r => r.Roomsender.Id == int.Parse(group) && r.UserSender.Id == userId);
+           
+            
+            _context.ConnectingToRooms.Remove(ConnToDelete);
+            _context.SaveChanges();
+
+            return Groups.RemoveFromGroupAsync(Context.ConnectionId, group);
+        }
+
+        public Task DeleteUserFromGroup(string user,string group)
+        {
+            return Clients.Group(group).SendAsync("deleteFromGroup", user);
+
         }
 
         public Task SendMessageToGroup(string group, Message message)
