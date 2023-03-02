@@ -34,14 +34,14 @@ namespace Blog.Controllers
         {
             
             string usrId = _userManager.GetUserId(User);
-            var roomList = _context.ConnectingToRooms.Where(u => u.UserSender.Id.Equals(usrId));
+      
             
             if (firstStart == true)
             {
-                var first = roomList.FirstOrDefault();
-                currentRoom = first.Id;
+                int firstRoom = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)).Roomsender.Id;
+                currentRoom = _context.Rooms.FirstOrDefault(r=>r.Id==firstRoom).Id;
 
-                firstStart=false;
+                firstStart =false;
             }
 
             if (currentRoom == null)
