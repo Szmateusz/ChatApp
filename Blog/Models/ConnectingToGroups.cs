@@ -6,6 +6,7 @@
        
         public UserModel UserSender { get; set; }
 
+        public int RoomId { get; set; }
         public Room Roomsender { get; set; }
     }
 }

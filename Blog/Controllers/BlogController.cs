@@ -38,8 +38,8 @@ namespace Blog.Controllers
             
             if (firstStart == true)
             {
-                int firstRoom = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)).Roomsender.Id;
-                currentRoom = _context.Rooms.FirstOrDefault(r=>r.Id==firstRoom).Id;
+                int firstRoom = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)).RoomId;
+                currentRoom = firstRoom;
 
                 firstStart =false;
             }
@@ -64,7 +64,7 @@ namespace Blog.Controllers
             
             ViewData["currentRoom"] = currentRoom;
 
-            IEnumerable<ConnectingToGroups> usersInGroupList = await _context.ConnectingToRooms.Where(x=>x.Roomsender.Id.Equals(currentRoom)).ToListAsync();
+            IEnumerable<ConnectingToGroups> usersInGroupList = await _context.ConnectingToRooms.Where(x=>x.RoomId.Equals(currentRoom)).ToListAsync();
 
             IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
            
