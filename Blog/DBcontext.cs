@@ -10,7 +10,7 @@ namespace Blog
         public DBcontext(DbContextOptions<DBcontext> options) : base(options) { }
 
        
-        public DbSet<Message> Messages {get; set;}
+        public DbSet<GroupMessage> Messages {get; set;}
         public DbSet<ConnectingToGroups> ConnectingToRooms { get; set; }
 
 
@@ -19,12 +19,12 @@ namespace Blog
         {
             base.OnModelCreating(builder);
 
-              builder.Entity<Message>()
+              builder.Entity<GroupMessage>()
                 .HasOne<UserModel>(a => a.Sender)
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.UserID);
 
-            builder.Entity<Message>()
+            builder.Entity<GroupMessage>()
                .HasOne<Room>(a => a.RoomSender)
                .WithMany(d => d.Messages)
                .HasForeignKey(d => d.RoomId);

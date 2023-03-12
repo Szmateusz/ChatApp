@@ -16,7 +16,7 @@ namespace Blog.Hubs
 
             
         }
-        public async Task SendMessage(Message message) =>
+        public async Task SendMessage(GroupMessage message) =>
         await Clients.All.SendAsync("receiveMessage", message);
 
         public Task JoinGroup(string group)
@@ -42,7 +42,7 @@ namespace Blog.Hubs
 
         }
 
-        public Task SendMessageToGroup(string group, Message message)
+        public Task SendMessageToGroup(string group, GroupMessage message)
         {
             return Clients.Group(group).SendAsync("receiveMessage", message);
         }

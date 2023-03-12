@@ -98,7 +98,7 @@ namespace Blog.Controllers
 
         }
 
-        public async Task<IActionResult> Create(Message message)
+        public async Task<IActionResult> Create(GroupMessage message)
         {
             
             if(message.Text!=String.Empty)

@@ -1,28 +1,23 @@
 ﻿@model BigView;
 @{
-	var userName = User.Identity.Name;
-	var RoomId = ViewData["currentRoom"];
-
-
-	Room room = Model.Rooms.FirstOrDefault(x => x.Id.Equals(RoomId));
-
-	var messageList = room.Messages;
-	
-	
+    var userName = User.Identity.Name;
+    
 }
 
 <div id="main">
     <div class="customScroll " id="sidebar">
         <hr />
 
-        <input type="button" value="+" onclick="location.href='@Url.Action("CreateRoom", "Blog")'" />
+        <input type="text" placeholder="Search.." onchange="findUser()">
 
 
-        <ul class="list-unstyled components" id="groupList">
-            @foreach (var r in Model.Connecting)
+        <ul class="list-unstyled components" id="chatList">
+
+            <li>Lista chatów</li>
+            @foreach (var r in )
             {
                 string klasa = "nav-link";
-                @if (r.Roomsender.Id.Equals(RoomId)) { klasa = "sidebar_selected joinGroup"; }
+                @if (r.Roomsender.Id.Equals()) { klasa = "sidebar_selected joinGroup"; }
 
 
                 <li class="@klasa">
@@ -40,19 +35,6 @@
     <div id="messagesBox">
         <h1>Pokój rozmów </h1>
 
-        <div id="options">
-            
-                <select name="userList" id="userList">
-                    @foreach (var u in Model.Users)
-                    {
-                        <option value="@u.Id">@u.UserName</option>
-                    }
-                </select>
-
-                <input type="button" onclick="Invite()" value="Zaproś" />
-            
-        </div>
-
         <hr class="" />
 
 
@@ -63,13 +45,13 @@
 
                     if (messageList != null)
                     {
-                        @foreach (GroupMessage message in messageList)
+                        @foreach (PrivateMessage message in messageList)
                         {
 
 
                             string containerClass, timePosition, textAlign, contcolor, offset;
 
-                            if (userName == message.UserName)
+                            if (userName == message.Grantor.UserName)
                             {
                                 containerClass = "container darker";
                                 timePosition = "time-right text-light time";
@@ -92,7 +74,7 @@
                                 <div class="@offset">
                                     <div class="@containerClass @contcolor">
 
-                                        <p class="sender @textAlign">@message.UserName</p>
+                                        <p class="sender @textAlign">@message.Grantor.UserName</p>
                                         <p class="@textAlign">@message.Text</p>
                                         <span class="@timePosition">@message.When.ToString("dd/MM/yyyy HH/mm")</span>
 
@@ -133,54 +115,35 @@
     </div>
     <div id="chatbar">
 
-        <input type="button" onclick="leaveFromGroup('@userName')" value="Opuść"/>
-
-        <ul id="usersInGroupList" class="list-unstyled components">
-
-            @foreach (var r in Model.UsersInGroup)
-            {
-                string klasa = "userListBlock ";
-
-                
-                    @if (r.UserSender.UserName == User.Identity.Name)
-                    {
-                    klasa += "userOnUserList";
-                    }
-
-                <li class="@klasa">@r.UserSender.UserName</li>
-                
-                
-            }
-
-        </ul>
+       
     </div>
 
 
 
 
 </div>
-	
 
-@if(User.Identity.IsAuthenticated)
+
+@if (User.Identity.IsAuthenticated)
 {
-	<script>
-		const userName = "@ViewBag.CurrentUserName";
-	</script>
+    <script>
+        const userName = "@ViewBag.CurrentUserName";
+    </script>
 }
 
-	@section scripts{
-		
+@section scripts{
 
-		<script src="~/lib/microsoft-signalr/signalr.js"></script>
-		
-		<script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
-		
-		<script src="~/js/czat.js"></script>
-        <script src="~/js/site.js"></script>
 
-		<script src="~/js/connect.js"></script>
-		
+    <script src="~/lib/microsoft-signalr/signalr.js"></script>
 
-		
+    <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script src="~/js/czat.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <script src="~/js/connect.js"></script>
+
+
+
 	}
 

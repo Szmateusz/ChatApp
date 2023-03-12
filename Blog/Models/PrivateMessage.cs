@@ -2,22 +2,23 @@
 
 namespace Blog.Models
 {
-    public class Message
+    public class PrivateMessage
     {
 
         public int Id { get; set; }
 
-        public int RoomId { get; set; }
+        public int GrantorId { get; set; }
+        public int RecipientId { get; set; }
 
-        public string UserName { get; set; }
         [Required]
         public string Text { get; set; }
         
         public DateTime When { get; set; }
 
-        public string UserID { get; set; }
-        public virtual UserModel Sender { get; set; }
-        public virtual Room RoomSender { get; set; }
+        public virtual UserModel Grantor { get; set; }
+        public virtual UserModel Recipient { get; set; }
+
+
 
 
 

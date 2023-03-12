@@ -7,9 +7,9 @@ namespace Blog.Models
     {
         public UserModel()
         {
-            Messages = new HashSet<Message>();
+            Messages = new HashSet<GroupMessage>();
         }
-        public virtual ICollection<Message> Messages { get; set; }
+        public virtual ICollection<GroupMessage> Messages { get; set; }
        
     }
 }
