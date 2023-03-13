@@ -90,3 +90,4 @@ E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\staticwebassets\msbuild.build.Blog.pro
 E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.Blog.props
 E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.Blog.props
 E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\staticwebassets.pack.json
+E:\ASP.NET-App\Blog\Blog\obj\Debug\net6.0\scopedcss\Views\Shared\_LayoutPrivate.cshtml.rz.scp.css

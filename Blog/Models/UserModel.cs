@@ -10,6 +10,8 @@ namespace Blog.Models
             Messages = new HashSet<GroupMessage>();
         }
         public virtual ICollection<GroupMessage> Messages { get; set; }
+
+
        
     }
 }

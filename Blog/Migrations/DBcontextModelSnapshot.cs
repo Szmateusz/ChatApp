@@ -45,7 +45,7 @@ namespace Blog.Migrations
                     b.ToTable("ConnectingToRooms");
                 });
 
-            modelBuilder.Entity("Blog.Models.Message", b =>
+            modelBuilder.Entity("Blog.Models.GroupMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,7 +77,35 @@ namespace Blog.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Messages");
+                    b.ToTable("GroupMessages");
+                });
+
+            modelBuilder.Entity("Blog.Models.PrivateMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("GrantorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("When")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrivateMessages");
                 });
 
             modelBuilder.Entity("Blog.Models.Room", b =>
@@ -312,7 +340,7 @@ namespace Blog.Migrations
                     b.Navigation("UserSender");
                 });
 
-            modelBuilder.Entity("Blog.Models.Message", b =>
+            modelBuilder.Entity("Blog.Models.GroupMessage", b =>
                 {
                     b.HasOne("Blog.Models.Room", "RoomSender")
                         .WithMany("Messages")

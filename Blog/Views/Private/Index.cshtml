@@ -1,6 +1,11 @@
-﻿@model BigView;
+﻿@model BigViewPrivate;
 @{
+    Layout = "_LayoutPrivate";
+
     var userName = User.Identity.Name;
+    var receiverId = ViewData["currentChat"];
+
+    var messageList = Model.PrivateMessages;
     
 }
 
@@ -11,17 +16,15 @@
         <input type="text" placeholder="Search.." onchange="findUser()">
 
 
-        <ul class="list-unstyled components" id="chatList">
-
-            <li>Lista chatów</li>
-            @foreach (var r in )
+        <ul class="list-unstyled components" id="groupList">
+            @foreach (var u in Model.Users)
             {
                 string klasa = "nav-link";
-                @if (r.Roomsender.Id.Equals()) { klasa = "sidebar_selected joinGroup"; }
+                @if (u.Id.Equals(receiverId)) { klasa = "sidebar_selected joinGroup"; }
 
-
+                
                 <li class="@klasa">
-                    @Html.ActionLink(r.Roomsender.Name, "SelectGroup", new { roomId = r.Roomsender.Id})
+                    @Html.ActionLink(u.UserName, "SelectGroup", new { userId = u.Id})
                 </li>
 
             }
@@ -48,10 +51,10 @@
                         @foreach (PrivateMessage message in messageList)
                         {
 
-
+                            
                             string containerClass, timePosition, textAlign, contcolor, offset;
 
-                            if (userName == message.Grantor.UserName)
+                            if (userName==message.GrantorId)
                             {
                                 containerClass = "container darker";
                                 timePosition = "time-right text-light time";
@@ -74,10 +77,10 @@
                                 <div class="@offset">
                                     <div class="@containerClass @contcolor">
 
-                                        <p class="sender @textAlign">@message.Grantor.UserName</p>
+                                        <p class="sender @textAlign"></p>
                                         <p class="@textAlign">@message.Text</p>
                                         <span class="@timePosition">@message.When.ToString("dd/MM/yyyy HH/mm")</span>
-
+                                        
                                     </div>
 
                                 </div>

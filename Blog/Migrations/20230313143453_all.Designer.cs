@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Migrations
 {
     [DbContext(typeof(DBcontext))]
-    [Migration("20221025143215_a")]
-    partial class a
+    [Migration("20230313143453_all")]
+    partial class all
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,30 +32,22 @@ namespace Blog.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("RoomId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RoomsenderId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserSenderId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomsenderId");
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("UserSenderId");
 
                     b.ToTable("ConnectingToRooms");
                 });
 
-            modelBuilder.Entity("Blog.Models.Message", b =>
+            modelBuilder.Entity("Blog.Models.GroupMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +79,7 @@ namespace Blog.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Messages");
+                    b.ToTable("GroupMessages");
                 });
 
             modelBuilder.Entity("Blog.Models.Room", b =>
@@ -309,7 +301,7 @@ namespace Blog.Migrations
                 {
                     b.HasOne("Blog.Models.Room", "Roomsender")
                         .WithMany()
-                        .HasForeignKey("RoomsenderId")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -322,7 +314,7 @@ namespace Blog.Migrations
                     b.Navigation("UserSender");
                 });
 
-            modelBuilder.Entity("Blog.Models.Message", b =>
+            modelBuilder.Entity("Blog.Models.GroupMessage", b =>
                 {
                     b.HasOne("Blog.Models.Room", "RoomSender")
                         .WithMany("Messages")

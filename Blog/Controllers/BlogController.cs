@@ -18,33 +18,42 @@ namespace Blog.Controllers
         public readonly UserManager<UserModel> _userManager;
 
 
-        public static int currentRoom=1;
+        public static int currentRoom=-1;
         public static bool firstStart=true;
 
-
+       
 
         public BlogController(DBcontext context, UserManager<UserModel> userManager)
         {
             _context = context;
             _userManager = userManager;
-            
+
         }
 
         public async Task<IActionResult> Index()
         {
             
             string usrId = _userManager.GetUserId(User);
+           
       
             
             if (firstStart == true)
             {
-                int firstRoom = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)).RoomId;
-                currentRoom = firstRoom;
+                try
+                {
+                    int firstRoom = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)).RoomId;
+                    currentRoom = firstRoom;
+                }
+                catch
+                {
+
+                }
+                
 
                 firstStart =false;
             }
 
-            if (currentRoom == null)
+            if (currentRoom == -1)
             {
               return RedirectToAction("CreateRoom","Blog");
             }
@@ -59,7 +68,7 @@ namespace Blog.Controllers
            IEnumerable<Room> roomsList =  _context.Rooms.ToList();
 
            var room = roomsList.FirstOrDefault(r=>r.Id==currentRoom);
-           room.Messages = await _context.Messages.Where(m=>m.RoomId==room.Id).ToListAsync();
+           room.Messages = await _context.GroupMessages.Where(m=>m.RoomId==room.Id).ToListAsync();
 
             
             ViewData["currentRoom"] = currentRoom;
@@ -110,7 +119,7 @@ namespace Blog.Controllers
 
                 var sender = await _userManager.GetUserAsync(User);
                 message.UserID = sender.Id;
-                await _context.Messages.AddAsync(message);
+                await _context.GroupMessages.AddAsync(message);
                
         
                 await _context.SaveChangesAsync();

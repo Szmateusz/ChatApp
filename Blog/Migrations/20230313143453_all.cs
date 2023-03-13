@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Blog.Migrations
 {
-    public partial class test : Migration
+    public partial class all : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -168,7 +168,32 @@ namespace Blog.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
+                name: "ConnectingToRooms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserSenderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RoomId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConnectingToRooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConnectingToRooms_AspNetUsers_UserSenderId",
+                        column: x => x.UserSenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ConnectingToRooms_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupMessages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -181,15 +206,15 @@ namespace Blog.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.PrimaryKey("PK_GroupMessages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_UserID",
+                        name: "FK_GroupMessages_AspNetUsers_UserID",
                         column: x => x.UserID,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_Rooms_RoomId",
+                        name: "FK_GroupMessages_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
@@ -236,13 +261,23 @@ namespace Blog.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_RoomId",
-                table: "Messages",
+                name: "IX_ConnectingToRooms_RoomId",
+                table: "ConnectingToRooms",
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_UserID",
-                table: "Messages",
+                name: "IX_ConnectingToRooms_UserSenderId",
+                table: "ConnectingToRooms",
+                column: "UserSenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMessages_RoomId",
+                table: "GroupMessages",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMessages_UserID",
+                table: "GroupMessages",
                 column: "UserID");
         }
 
@@ -264,7 +299,10 @@ namespace Blog.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "ConnectingToRooms");
+
+            migrationBuilder.DropTable(
+                name: "GroupMessages");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

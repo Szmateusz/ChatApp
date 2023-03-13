@@ -67,3 +67,7 @@ build_metadata.AdditionalFiles.CssScope = b-kl6z7ye37h
 [E:/ASP.NET-App/Blog/Blog/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-9b4f8crvh3
+
+[E:/ASP.NET-App/Blog/Blog/Views/Shared/_LayoutPrivate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRQcml2YXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = b-dfwhabveou
