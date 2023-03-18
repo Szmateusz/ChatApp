@@ -44,7 +44,8 @@ namespace Blog.Hubs
 
         public Task SendMessageToGroup(string group, GroupMessage message)
         {
-            return Clients.Group(group).SendAsync("receiveMessage", message);
+            string img = _context.Users.FirstOrDefault(x => x.UserName == message.UserName).ImgUrl;
+            return Clients.Group(group).SendAsync("receiveMessage", message, img);
         }
 
         public Task InviteToGroup(int group,string user)

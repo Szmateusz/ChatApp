@@ -26,6 +26,7 @@
 
 
                 <li class="@klasa">
+                    <img class="avatar_room" src="~/lib/room_avatar/@r.Roomsender.ImgUrl" alt="room avatar" />
                     @Html.ActionLink(r.Roomsender.Name, "SelectGroup", new { roomId = r.Roomsender.Id})
                 </li>
 
@@ -92,7 +93,10 @@
                                 <div class="@offset">
                                     <div class="@containerClass @contcolor">
 
-                                        <p class="sender @textAlign">@message.UserName</p>
+                                        <p class="sender @textAlign">
+                                            <img class="avatar_user" src="~/lib/user_avatar/@message.UserSender.ImgUrl" alt="avatar" />
+                                            @message.UserName
+                                        </p>
                                         <p class="@textAlign">@message.Text</p>
                                         <span class="@timePosition">@message.When.ToString("dd/MM/yyyy HH/mm")</span>
 
@@ -147,7 +151,12 @@
                     klasa += "userOnUserList";
                     }
 
-                <li class="@klasa">@r.UserSender.UserName</li>
+                <li class="@klasa">
+
+                    <img class="avatar_user" src="~/lib/user_avatar/@r.UserSender.ImgUrl" alt="avatar" />
+
+                    @r.UserSender.UserName
+                    </li>
                 
                 
             }
@@ -170,7 +179,7 @@
 
 	@section scripts{
 		
-
+       
 		<script src="~/lib/microsoft-signalr/signalr.js"></script>
 		
 		<script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>

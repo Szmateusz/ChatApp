@@ -173,6 +173,22 @@
       "PackagePath": "staticwebassets\\lib\\microsoft-signalr\\signalr.min.js"
     },
     {
+      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\room_avatar\\obraz1.png",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\obraz1.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\room_avatar\\obraz2.png",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\obraz2.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\user_avatar\\obraz1.png",
+      "PackagePath": "staticwebassets\\lib\\user_avatar\\obraz1.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\user_avatar\\obraz2.png",
+      "PackagePath": "staticwebassets\\lib\\user_avatar\\obraz2.png"
+    },
+    {
       "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.Blog.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

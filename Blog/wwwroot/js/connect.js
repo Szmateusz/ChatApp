@@ -1,6 +1,4 @@
-﻿let RoomId = "";
-
-
+﻿
 var connection = new signalR.HubConnectionBuilder()
 	.withUrl("/messageHub")
 	.build();
@@ -12,22 +10,14 @@ connection.on('deleteFromGroup',deleteUserFromList);
 
 
 
-connection.start()
+	connection.start().then(() => {
+		console.log("Success.");
+		connection.invoke("JoinGroup", RoomId.toString());
+	})
 	.catch(error => {
-		console.error(error.message);
+			console.error(error.message);
 	});
 
-
-
-function setGroup(id) {
-	RoomId = id;
-
-	setTimeout(function () {
-
-		console.log("Dolaczylem..");
-		connection.invoke("JoinGroup", RoomId.toString());
-	}, 500);
-}
 
 
 

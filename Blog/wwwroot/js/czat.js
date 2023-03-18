@@ -31,7 +31,7 @@ function sendMessage() {
 	sendMessageToHub(message);
 }
 
-function addMessageToChat(message) {
+function addMessageToChat(message,imgUrl) {
 	let isCurrentUserMessage = message.userName === username;
 
 	let row = document.createElement('div');
@@ -54,7 +54,11 @@ function addMessageToChat(message) {
 		+ (currentdate.getMonth() + 1) + "."
 		+ currentdate.getFullYear() + " "
 		+ currentdate.toLocaleString('pl-PL', { hour: 'numeric', minute: 'numeric', hour12: false })
-
+	let img = document.createElement('img');
+	img.src = "/lib/user_avatar/" + imgUrl;
+	img.alt = "user avatar";
+	img.classList.add("avatar_user");
+	container.appendChild(img);
 	container.appendChild(sender);
 	container.appendChild(text);
 	container.appendChild(when);

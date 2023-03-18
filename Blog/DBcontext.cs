@@ -23,7 +23,7 @@ namespace Blog
             base.OnModelCreating(builder);
 
               builder.Entity<GroupMessage>()
-                .HasOne<UserModel>(a => a.Sender)
+                .HasOne<UserModel>(a => a.UserSender)
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.UserID);
 

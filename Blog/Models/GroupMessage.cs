@@ -16,7 +16,7 @@ namespace Blog.Models
         public DateTime When { get; set; }
 
         public string UserID { get; set; }
-        public virtual UserModel Sender { get; set; }
+        public virtual UserModel UserSender { get; set; }
         public virtual Room RoomSender { get; set; }
 
 
