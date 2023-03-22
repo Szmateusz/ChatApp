@@ -5,12 +5,16 @@
       "PackagePath": "staticwebassets\\ChatApp.bundle.scp.css"
     },
     {
+      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\chat.css",
+      "PackagePath": "staticwebassets\\css\\chat.css"
+    },
+    {
       "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\login.css",
       "PackagePath": "staticwebassets\\css\\login.css"
     },
     {
-      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\site.css",
-      "PackagePath": "staticwebassets\\css\\site.css"
+      "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\settings.css",
+      "PackagePath": "staticwebassets\\css\\settings.css"
     },
     {
       "Id": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\favicon.ico",

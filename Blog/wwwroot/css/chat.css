@@ -238,9 +238,27 @@ button.accept-policy {
     color: #999;
 }
 
-
-
-
+/* SETTINGS*/
+#container {
+    display: flex;
+}
+#profil{
+    text-align:right;
+}
+#profil img{
+    background-color:aliceblue;
+    padding:10px;
+    border:1px solid black;
+}
+main--settings{
+    height:auto;
+    width:1200px !important;
+}
+aside--settings {
+    height: auto;
+    width: 20%;
+}
+/*scroll*/
 .customScroll::-webkit-scrollbar {
     width: 2px;
 }

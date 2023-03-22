@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "UIOs49clHQY0CA1jTXiOE2W6EBu/SJmhgpcfVhG5Xrk=",
+  "Hash": "GGvyLVWwEyglHv4qWdlWXjzFxuuo4UWv+hfqx+kft8w=",
   "Source": "ChatApp",
   "BasePath": "_content/ChatApp",
   "Mode": "Default",
@@ -51,6 +51,23 @@
       "OriginalItemSpec": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\ChatApp.bundle.scp.css"
     },
     {
+      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\chat.css",
+      "SourceId": "ChatApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "BasePath": "_content/ChatApp",
+      "RelativePath": "css/chat.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\chat.css"
+    },
+    {
       "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\login.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
@@ -68,12 +85,12 @@
       "OriginalItemSpec": "wwwroot\\css\\login.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\site.css",
+      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\settings.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
-      "RelativePath": "css/site.css",
+      "RelativePath": "css/settings.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -82,7 +99,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\site.css"
+      "OriginalItemSpec": "wwwroot\\css\\settings.css"
     },
     {
       "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\favicon.ico",

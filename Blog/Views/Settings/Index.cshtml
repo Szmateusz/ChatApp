@@ -7,26 +7,37 @@
     
 }
 
+<div id="profil">
+    <img src="~/lib/room_avatar/@Model.User.ImgUrl" alt="User Avatar" />
+    <p>@Model.User.UserName</p>
+</div>
 
-<img src="@Model.User.ImgUrl" alt="User Avatar" />
-<span>@Model.User.UserName</span>
+<div class="form">
+    @using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post))
+    {
+        @Html.ValidationSummary();
+        
 
-@using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post))
-{
-    @Html.ValidationSummary();
+        <label asp-for="User.UserName">Nazwa użytkownika:</label>
+        @Html.TextBoxFor(x => x.User.UserName)
+        <br />
 
-    <label asp-for="User.UserName">Nazwa użytkownika:</label>
-    @Html.TextBoxFor(x => x.User.UserName)
-    <br />
+        <label asp-for="Password">Hasło:</label>
+        @Html.PasswordFor(x => x.Password)
 
-    <label asp-for="Password">Hasło:</label>
-    @Html.PasswordFor(x => x.Password)
+        <br />
+        <label asp-for="User.Email">Email:</label>
+        @Html.TextBoxFor(x => x.User.Email)
+        <br />
 
-    <br />
+        <label asp-for="User.PhoneNumber">Numer telefonu:</label>
+        @Html.TextBoxFor(x => x.User.PhoneNumber)
+        <br />
 
-    <label for="File">Image:</label>
+       @* <label for="File">Image:</label>
 
-    <input type="file" name="File" asp-for="File" accept="image" />
+        <input type="file" name="File" asp-for="File" accept="image" />*@
 
-    <input type="submit" value="Zmień" />
-}
+        <input type="submit" value="Zapisz" />
+    }
+</div>

@@ -1,0 +1,101 @@
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 14px;
+    
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+
+body {
+    color: darkgrey;
+    margin-bottom: 10px;
+    font-family: 'Shadows Into Light', cursive;
+    font-size: 1.4em;
+    
+}
+
+.navbar {
+    font-size: 80%;
+    height: 50px;
+}
+
+.navbar-nav {
+    margin-left:900px;
+    font-weight:700;
+
+}
+
+
+
+
+aside{
+    width:20%;
+}
+main {
+    width:80%;
+    height:600px;
+    display:flex;
+    padding: 0px 60px 0px 60px;
+    background-color:whitesmoke;
+}
+
+.nav-hover:hover {
+    background-color: #4b4f4c !important;
+}
+
+
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+
+
+
+
+#container {
+    display: flex;
+}
+#profil{
+    font-weight:700;
+    text-align:center;
+}
+#profil img{
+    background-color:aliceblue;
+    padding:10px;
+    border:1px solid black;
+}
+
+.footer {
+    font-size: 80%;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 20px;
+    line-height: 30px; /* Vertically center the text there */
+
+    margin-top: 0px;
+}
+
+
+/*scroll*/
+.customScroll::-webkit-scrollbar {
+    width: 2px;
+}
+
+.customScroll::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.customScroll::-webkit-scrollbar-thumb {
+    background-color: darkseagreen;
+    outline: 1px solid slategrey;
+}
