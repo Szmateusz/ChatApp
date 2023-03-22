@@ -25,7 +25,7 @@ namespace Blog.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Blog");
+                return RedirectToAction("Index", "Chat");
             }
             
             return View();

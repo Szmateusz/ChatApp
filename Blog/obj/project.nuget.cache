@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OpptvOnXdE0Wby48Gk6QH/sqsfjo33lajaejdv/E5+3t0dzB+hH4lLw8A6/efx/+cU/+Nd94nfh/IubEDPqBZg==",
+  "dgSpecHash": "MhvCM7R061G+/VnWQDBXx2R8DhSLmr9m5BHSewHrp3A6VT6wZunSRkhhONPDGLaBLwPeNbzML5UUyVPaIi4HjQ==",
   "success": true,
-  "projectFilePath": "E:\\ASP.NET-App\\Blog\\Blog\\Blog.csproj",
+  "projectFilePath": "E:\\ASP.NET-App\\Blog\\Blog\\ChatApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mati\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Mati\\.nuget\\packages\\jquery\\1.6.4\\jquery.1.6.4.nupkg.sha512",

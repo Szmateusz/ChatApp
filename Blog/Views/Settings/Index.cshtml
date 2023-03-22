@@ -1,0 +1,32 @@
+﻿@using ChatApp.Models;
+
+@model SettingsView;
+@{
+    Layout = "_Layout-Settings";
+
+    
+}
+
+
+<img src="@Model.User.ImgUrl" alt="User Avatar" />
+<span>@Model.User.UserName</span>
+
+@using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post))
+{
+    @Html.ValidationSummary();
+
+    <label asp-for="User.UserName">Nazwa użytkownika:</label>
+    @Html.TextBoxFor(x => x.User.UserName)
+    <br />
+
+    <label asp-for="Password">Hasło:</label>
+    @Html.PasswordFor(x => x.Password)
+
+    <br />
+
+    <label for="File">Image:</label>
+
+    <input type="file" name="File" asp-for="File" accept="image" />
+
+    <input type="submit" value="Zmień" />
+}

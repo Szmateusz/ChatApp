@@ -1,15 +1,4 @@
-﻿@model ChatView;
-@{
-    var currentId = ViewData["currentRoom"];
-
-
-
-    
-   
-
-   
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="utf-8" />
@@ -17,17 +6,13 @@
     <title>@ViewData["Title"] -Evalon</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    
-    <script>
-        let RoomId = @currentId.ToString();
-    </script>
 
 </head>
 <body class="bg-dark">
-    
-    
+
+
     <header>
-            
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm  border-bottom box-shadow mb-3">
             <div class="container-fluid">
 
@@ -40,16 +25,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Chat" asp-action="Index">Chat Grupowy</a>
+                            <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Private" asp-action="Index">Chat Grupowy</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Private" asp-action="Index">Chat Prywatny</a>
                         </li>
-                         <li class="nav-item">
-                           
+                        <li class="nav-item">
+
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Settings" asp-action="Index">Ustawienia</a>
+                            <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Home" asp-action="Index">Ustawienia</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Account" asp-action="LogOut">Wyloguj</a>
@@ -59,34 +44,47 @@
             </div>
         </nav>
     </header>
-    
-        
-            <main role="main">
-                @RenderBody()
-            </main>
-        
 
- 
-<div style="clear:both"></div>
+    <aside>
+        <ul>
+            <li>
+                <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Index">Profil</a>
+            </li>
+            <li>
+                <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings=" asp-action="Groups">Grupy</a>
+            </li>
+            <li>
+                <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Preference">Preferencje</a>
+            </li>
+        </ul>
+    </aside>
 
-        <footer class="border-top footer text-muted">
-              <div class="container">
+    <main role="main">
+        @RenderBody()
+    </main>
+
+
+
+    <div style="clear:both"></div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
             &copy; 2022 - Blog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-              </div>
-        </footer>
-    
+        </div>
+    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    
+
 
 
     @await RenderSectionAsync("Scripts", required: false)
 
-    
 
 
-        
 
-    
+
+
+
 </body>
 </html>

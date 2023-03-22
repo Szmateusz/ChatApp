@@ -7,8 +7,8 @@ build_property.InvariantGlobalization =
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
-build_property.RootNamespace = Blog
-build_property.RootNamespace = Blog
+build_property.RootNamespace = ChatApp
+build_property.RootNamespace = ChatApp
 build_property.ProjectDir = E:\ASP.NET-App\Blog\Blog\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
@@ -40,8 +40,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpdmF0ZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/ASP.NET-App/Blog/Blog/Views/Settings/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGluZ3NcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/ASP.NET-App/Blog/Blog/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/ASP.NET-App/Blog/Blog/Views/Shared/_Layout-Settings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQtU2V0dGluZ3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/ASP.NET-App/Blog/Blog/Views/Shared/_LayoutEmpty.cshtml]
@@ -62,12 +70,12 @@ build_metadata.AdditionalFiles.CssScope =
 
 [E:/ASP.NET-App/Blog/Blog/Views/Shared/_Layout-login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQtbG9naW4uY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-kl6z7ye37h
+build_metadata.AdditionalFiles.CssScope = b-fo3lji4wny
 
 [E:/ASP.NET-App/Blog/Blog/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-9b4f8crvh3
+build_metadata.AdditionalFiles.CssScope = b-8xcsltfbpu
 
 [E:/ASP.NET-App/Blog/Blog/Views/Shared/_LayoutPrivate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRQcml2YXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = b-dfwhabveou
+build_metadata.AdditionalFiles.CssScope = b-ufx4yexxvn

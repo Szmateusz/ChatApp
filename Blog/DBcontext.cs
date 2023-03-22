@@ -33,7 +33,7 @@ namespace Blog
                .HasForeignKey(d => d.RoomId);
 
            
-
+           
 
             builder.Entity<ConnectingToGroups>()
               .HasOne<Room>(a => a.Roomsender);

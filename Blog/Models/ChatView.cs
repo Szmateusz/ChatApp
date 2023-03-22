@@ -2,7 +2,7 @@
 
 namespace Blog.Models
 {
-    public class BigView
+    public class ChatView
     {
         public IEnumerable<GroupMessage> GroupMessages  { get; set; }
 

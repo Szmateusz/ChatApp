@@ -12,7 +12,7 @@ using System.Linq;
 namespace Blog.Controllers
 {
   //  [Authorize]
-    public class BlogController : Controller
+    public class ChatController : Controller
     {
         public readonly DBcontext _context;
         public readonly UserManager<UserModel> _userManager;
@@ -23,7 +23,7 @@ namespace Blog.Controllers
 
        
 
-        public BlogController(DBcontext context, UserManager<UserModel> userManager)
+        public ChatController(DBcontext context, UserManager<UserModel> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -79,13 +79,6 @@ namespace Blog.Controllers
            
 
     
-            List<string> listOfNames = new List<string>();
-
-            foreach (var user in connectingGroups)
-            {
-                listOfNames.Add(user.UserSender.UserName);
-            }
-
 
             IList<UserModel> usersList = await _context.Users.ToListAsync();
 
@@ -95,7 +88,7 @@ namespace Blog.Controllers
 
             }
 
-            BigView model = new BigView();
+            ChatView model = new ChatView();
 
                 model.Rooms = roomsList;
                 model.Connecting = connectingGroups;
