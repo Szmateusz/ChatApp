@@ -41,7 +41,7 @@ main {
     width:80%;
     height:600px;
     display:flex;
-    padding: 0px 60px 0px 60px;
+    padding: 30px 60px 0px 60px;
     background-color:whitesmoke;
 }
 
@@ -60,7 +60,9 @@ a.navbar-brand {
 
 
 
-
+#form{
+    margin-left:100px;
+}
 #container {
     display: flex;
 }

@@ -3,6 +3,7 @@
 	var userName = User.Identity.Name;
 	var RoomId = ViewData["currentRoom"];
 
+    var Role= ViewData["role"].ToString();
 
 	Room room = Model.Rooms.FirstOrDefault(x => x.Id.Equals(RoomId));
 
@@ -156,7 +157,12 @@
                     <img class="avatar_user" src="~/lib/user_avatar/@r.UserSender.ImgUrl" alt="avatar" />
 
                     @r.UserSender.UserName
-                    </li>
+
+                    if (Role == "admin")
+                    {
+                        <button onclick="leaveFromGroup(@r.UserSender.UserName)"></button>
+                    }
+                </li>
                 
                 
             }

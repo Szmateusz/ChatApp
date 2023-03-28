@@ -42,6 +42,7 @@ namespace Blog.Controllers
                 try
                 {
                     int firstRoom = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)).RoomId;
+
                     currentRoom = firstRoom;
                 }
                 catch
@@ -70,16 +71,25 @@ namespace Blog.Controllers
            var room = roomsList.FirstOrDefault(r=>r.Id==currentRoom);
            room.Messages = await _context.GroupMessages.Where(m=>m.RoomId==room.Id).ToListAsync();
 
-            
             ViewData["currentRoom"] = currentRoom;
 
             IEnumerable<ConnectingToGroups> usersInGroupList = await _context.ConnectingToRooms.Where(x=>x.RoomId.Equals(currentRoom)).ToListAsync();
 
             IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
-           
 
-    
 
+            string? role = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)&& u.Roomsender.Equals(currentRoom)).Role;
+
+            if (role!= null)
+            {
+                ViewData["role"] = role;
+
+            }
+            else
+            {
+                ViewData["role"] = "none";
+
+            }
             IList<UserModel> usersList = await _context.Users.ToListAsync();
 
             foreach (var x in usersInGroupList)

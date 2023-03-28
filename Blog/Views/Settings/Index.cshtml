@@ -12,7 +12,7 @@
     <p>@Model.User.UserName</p>
 </div>
 
-<div class="form">
+<div id="form">
     @using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post))
     {
         @Html.ValidationSummary();
