@@ -3,6 +3,7 @@ using Blog.Models;
 using ChatApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Controllers
 {
@@ -26,7 +27,7 @@ namespace ChatApp.Controllers
 
         public IActionResult Index()
         {
-          SettingsView model = new SettingsView();
+          SettingsIndexView model = new SettingsIndexView();
             
           var userId = _userManager.GetUserId(User);
 
@@ -38,7 +39,7 @@ namespace ChatApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeUserData(SettingsView model, IFormFile file)
+        public async Task<IActionResult> ChangeUserData(SettingsIndexView model, IFormFile file)
         {
 
             // Pobierz i zapisz plik na dysku
@@ -82,9 +83,41 @@ namespace ChatApp.Controllers
 
         public IActionResult Groups()
         {
+            SettingsGroupsView model = new SettingsGroupsView();
 
-            return View();
+            string userId = _userManager.GetUserId(User);
+
+            var belongRooms = _context.ConnectingToRooms.Where(x => x.UserSender.Id.Equals(userId)).Include(c => c.Roomsender).Include(b=>b.UserSender).ToList();
+          
+            var adminRooms = belongRooms.Where(x => x.Role == "admin").ToList();
+
+            model.Connectings = belongRooms;
+            model.ConnectingsWhereAdmin = adminRooms;
+
+            return View(model);
         }
 
+        public IActionResult EditGroup([FromQuery] int id)
+        {
+            int _id = id;
+
+            var room = _context.Rooms.FirstOrDefault(x => x.Id==_id);
+            var users = _context.ConnectingToRooms.Where(x => x.Roomsender.Id.Equals(room.Id)).Include(c=>c.UserSender).ToList();
+
+            EditGroupView model = new EditGroupView();
+            model.Room = room;
+            model.Users = users;
+
+            return View(model);
+        }
+        public async Task<IActionResult> DeleteUser(string userId, int groupId)
+        {
+           var connecting = await _context.ConnectingToRooms.FirstOrDefaultAsync(x => x.UserSender.Id.Equals(userId) && x.Roomsender.Id==groupId);
+
+            _context.ConnectingToRooms.Remove(connecting);
+            await _context.SaveChangesAsync();
+            int id = groupId;
+            return RedirectToAction("EditGroup","Settings",id);
+        }
     }
 }

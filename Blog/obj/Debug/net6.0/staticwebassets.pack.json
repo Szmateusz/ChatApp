@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\js\\czat.js"
     },
     {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\settings.js",
+      "PackagePath": "staticwebassets\\js\\settings.js"
+    },
+    {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
@@ -175,6 +179,10 @@
     {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\microsoft-signalr\\signalr.min.js",
       "PackagePath": "staticwebassets\\lib\\microsoft-signalr\\signalr.min.js"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\TABLICZKA-NA-SLODYCZE-PREZENT-NA-WALENTYNKI.jpg",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\TABLICZKA-NA-SLODYCZE-PREZENT-NA-WALENTYNKI.jpg"
     },
     {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\obraz1.png",

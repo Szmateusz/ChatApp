@@ -1,0 +1,54 @@
+﻿@using ChatApp.Models;
+@model EditGroupView
+@{
+    Layout = "_Layout-Settings";
+}
+
+        <h1>@Model.Room.Name</h1>
+        <hr />
+        <br />
+<section>
+    <h2>Modyfikuj grupę</h2>
+    <br />
+    <div class="flex">
+        <img src="~/lib/room_avatar/@Model.Room.ImgUrl" alt="Room Avatar" />
+
+        @using (Html.BeginForm("EditGroup", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <label asp-for="Room.Name">Nazwa grupy:</label>
+            @Html.TextBoxFor(x=>x.Room.Name);
+            
+
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" value="Zapisz" />
+
+
+
+        }
+
+    </div>
+</section>
+
+<hr />
+
+<section>
+    <h2>Członkowie grupy</h2>
+    <br />
+    <table>
+        @{
+            int i = 0;
+        }
+        @foreach(var u in Model.Users){
+            i++;
+            <tr id="@i">
+                <td> <img class="avatar_room"  src="~/lib/user_avatar/@u.UserSender.ImgUrl" alt="User Avatar" /></td>
+                <td>@u.UserSender.UserName</td>
+                <td>@u.UserSender.PhoneNumber</td>
+                <td>@u.Role</td>
+                <td><a class="nav-link nav-hover text-black" asp-area=" " asp-controller="Settings" asp-action="DeleteUser" asp-route-userId="@u.UserSender.Id" asp-route-groupId="@Model.Room.Id" onclick="DeleteTr(@i)">Usuń z grupy</a></td>
+            </tr>
+        }
+    </table>
+
+</section>

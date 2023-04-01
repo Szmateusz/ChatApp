@@ -1,0 +1,39 @@
+﻿@using ChatApp.Models;
+@model SettingsGroupsView
+
+@{
+    Layout = "_Layout-Settings";
+}
+
+<section>
+    <h2>Grupy do których należysz</h2>
+
+    <table>
+        @foreach(var g in Model.Connectings)
+        {
+            <tr>
+                <td>   <img class="avatar_room" src="~/lib/room_avatar/@g.Roomsender.ImgUrl" alt="room avatar" /> </td>
+                <td>@g.Roomsender.Name</td>
+            </tr>
+        }
+      
+    </table>
+</section>
+<br />
+<hr />
+<br />
+<section>
+    <h2>Grupy w których jesteś administratorem</h2>
+
+    <table>
+        @foreach (var g in Model.ConnectingsWhereAdmin)
+        {
+            <tr>
+                <td class="room">   <img class="avatar_room" src="~/lib/room_avatar/@g.Roomsender.ImgUrl" alt="room avatar" /> </td>
+                <td class="room">@g.Roomsender.Name</td>
+                <td class="room"><a class="nav-link nav-hover text-black" asp-area=" " asp-controller="Settings" asp-action="EditGroup" asp-route-id="@g.Roomsender.Id" >Edytuj</a></td>
+            </tr>
+        }
+
+    </table>
+</section>

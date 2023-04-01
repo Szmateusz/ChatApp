@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "saGN/S6JrBSKT+8vg4WgleBZzhX3RBMaryE+h9HWOo0=",
+  "Hash": "Srev6/O7/Q7KZZFP7VJZSTbJx5tbD9qmcZY/Wj4Jb+s=",
   "Source": "ChatApp",
   "BasePath": "_content/ChatApp",
   "Mode": "Default",
@@ -151,6 +151,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\czat.js"
+    },
+    {
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\settings.js",
+      "SourceId": "ChatApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
+      "BasePath": "_content/ChatApp",
+      "RelativePath": "js/settings.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\settings.js"
     },
     {
       "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\site.js",
@@ -814,6 +831,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\room_avatar\\obraz2.png"
+    },
+    {
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\TABLICZKA-NA-SLODYCZE-PREZENT-NA-WALENTYNKI.jpg",
+      "SourceId": "ChatApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
+      "BasePath": "_content/ChatApp",
+      "RelativePath": "lib/room_avatar/TABLICZKA-NA-SLODYCZE-PREZENT-NA-WALENTYNKI.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\room_avatar\\TABLICZKA-NA-SLODYCZE-PREZENT-NA-WALENTYNKI.jpg"
     },
     {
       "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\fghgfh.jpg",

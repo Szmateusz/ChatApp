@@ -30,7 +30,7 @@ namespace Blog.Controllers
             _userManager = userManager;
             _hostingEnvironment = hostingEnvironment;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             
@@ -60,6 +60,7 @@ namespace Blog.Controllers
               return RedirectToAction("CreateRoom","Chat");
             }
             var currentUser = await _userManager.GetUserAsync(User);
+
             if (User.Identity.IsAuthenticated)
             {
                 ViewBag.CurrentUserName = currentUser.UserName;
@@ -67,16 +68,22 @@ namespace Blog.Controllers
 
             
             
-           IEnumerable<Room> roomsList =  _context.Rooms.ToList();
+           Room room =  _context.Rooms.Include(m=>m.Messages).FirstOrDefault(r => r.Id.Equals(currentRoom));
 
-           var room = roomsList.FirstOrDefault(r=>r.Id==currentRoom);
-           room.Messages = await _context.GroupMessages.Where(m=>m.RoomId==room.Id).ToListAsync();
+           List<GroupMessage> messages = room.Messages.ToList();
+
+            
 
             ViewData["currentRoom"] = currentRoom;
 
-            IEnumerable<ConnectingToGroups> usersInGroupList = await _context.ConnectingToRooms.Where(x=>x.RoomId.Equals(currentRoom)).ToListAsync();
+            var usersInGroupList = await _context.ConnectingToRooms.Where(x=>x.RoomId.Equals(currentRoom)).Include(c=>c.UserSender).ToListAsync();
+            var usersInGroupIds = usersInGroupList.Select(u => u.UserSender.Id).ToList();
 
-            IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
+            var usersList = await _context.Users
+                .Where(u => !usersInGroupIds.Contains(u.Id))
+                .ToListAsync();
+
+            var connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).Include(c=>c.Roomsender).ToListAsync();
 
             /*
             string? role = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)&& u.Roomsender.Equals(currentRoom)).Role;
@@ -84,17 +91,13 @@ namespace Blog.Controllers
             if (role!= null) { ViewData["role"] = role; } 
             else {  ViewData["role"] = "none"; }
             */
-            IList<UserModel> usersList = await _context.Users.ToListAsync();
 
-            foreach (var x in usersInGroupList)
-            {
-                usersList.Remove(x.UserSender);
+           
 
-            }
 
             ChatView model = new ChatView();
 
-                model.Rooms = roomsList;
+                model.GroupMessages = messages;
                 model.Connecting = connectingGroups;
                 model.Users = usersList;
                 model.UsersInGroup = usersInGroupList;
@@ -174,7 +177,7 @@ namespace Blog.Controllers
             int id = newRoom.Id;
 
             currentRoom = id;
-            var newConnect = new ConnectingToGroups
+            var newConnect = new ConnectingToRooms
             {
                 Roomsender = newRoom,
                 UserSender = sender
@@ -200,7 +203,7 @@ namespace Blog.Controllers
             var roomSender = _context.Rooms.FirstOrDefault(x => x.Id.Equals(currentRoom));
 
 
-            var newConnect = new ConnectingToGroups
+            var newConnect = new ConnectingToRooms
             {
                 UserSender = usrSender,
                 Roomsender = roomSender

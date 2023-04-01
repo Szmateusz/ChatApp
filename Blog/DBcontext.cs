@@ -14,7 +14,7 @@ namespace Blog
 
         public DbSet<PrivateMessage> PrivateMessages { get; set; }
 
-        public DbSet<ConnectingToGroups> ConnectingToRooms { get; set; }
+        public DbSet<ConnectingToRooms> ConnectingToRooms { get; set; }
 
 
         public DbSet<Room> Rooms { get; set;}
@@ -35,10 +35,10 @@ namespace Blog
            
            
 
-            builder.Entity<ConnectingToGroups>()
+            builder.Entity<ConnectingToRooms>()
               .HasOne<Room>(a => a.Roomsender);
 
-            builder.Entity<ConnectingToGroups>()
+            builder.Entity<ConnectingToRooms>()
              .HasOne<UserModel>(a => a.UserSender);
 
 

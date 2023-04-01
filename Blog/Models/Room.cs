@@ -13,5 +13,7 @@ namespace Blog.Models
         public string ImgUrl { get; set; }
 
         public virtual ICollection<GroupMessage> Messages { get; set; }
+
+        
     }
 }

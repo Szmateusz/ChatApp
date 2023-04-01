@@ -1,41 +1,44 @@
 ﻿@using ChatApp.Models;
 
-@model SettingsView;
+@model SettingsIndexView;
 @{
     Layout = "_Layout-Settings";
 
     
 }
+<div class="flex">
+    <div id="profil">
+        <img src="~/lib/user_avatar/@Model.User.ImgUrl" alt="User Avatar" />
+        <p>@Model.User.UserName</p>
+    </div>
 
-<div id="profil">
-    <img src="~/lib/user_avatar/@Model.User.ImgUrl" alt="User Avatar"/>
-    <p>@Model.User.UserName</p>
-</div>
-
-<div id="form">
-    @using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.ValidationSummary() ;
+    <div id="form">
+        @using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary()
+            ;
 
 
-        <label asp-for="User.UserName">Nazwa użytkownika:</label>
-        @Html.TextBoxFor(x => x.User.UserName)
-        <br />
+            <label asp-for="User.UserName">Nazwa użytkownika:</label>
+            @Html.TextBoxFor(x => x.User.UserName)
+            <br />
 
-        <label asp-for="Password">Hasło:</label>
-        @Html.PasswordFor(x => x.Password)
+            <label asp-for="Password">Hasło:</label>
+            @Html.PasswordFor(x => x.Password)
 
-        <br />
-        <label asp-for="User.Email">Email:</label>
-        @Html.TextBoxFor(x => x.User.Email)
-        <br />
+            <br />
+            <label asp-for="User.Email">Email:</label>
+            @Html.TextBoxFor(x => x.User.Email)
+            <br />
 
-        <label asp-for="User.PhoneNumber">Numer telefonu:</label>
-        @Html.TextBoxFor(x => x.User.PhoneNumber)
-        <br />
+            <label asp-for="User.PhoneNumber">Numer telefonu:</label>
+            @Html.TextBoxFor(x => x.User.PhoneNumber)
+            <br />
 
-        <input type="file" name="file" />
+            <input type="file" name="file" />
 
-        <input type="submit" value="Zapisz" />
-    }
+            <input type="submit" value="Zapisz" />
+        }
+    </div>
+
 </div>
