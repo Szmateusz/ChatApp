@@ -12,7 +12,7 @@ function Invite() {
 
 	$.ajax({
 		type: 'POST',
-		url: "/Blog/Invite",
+		url: "/Chat/Invite",
 		data: {
 			usrId: userList.value
 		},
@@ -54,7 +54,7 @@ function addGroupToList(groupName,groupId) {
 	var li = document.createElement("li");
 	var a = document.createElement("a");
 	
-	a.href = "/Blog/SelectGroup?roomId="+groupId;
+	a.href = "/Chat/SelectGroup?roomId="+groupId;
 	a.innerHTML = groupName;
 	//li.innerHTML = group;
 	li.className = "nav-link";

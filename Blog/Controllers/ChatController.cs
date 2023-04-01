@@ -16,6 +16,7 @@ namespace Blog.Controllers
     {
         public readonly DBcontext _context;
         public readonly UserManager<UserModel> _userManager;
+        public readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
 
 
         public static int currentRoom=-1;
@@ -23,11 +24,11 @@ namespace Blog.Controllers
 
        
 
-        public ChatController(DBcontext context, UserManager<UserModel> userManager)
+        public ChatController(DBcontext context, UserManager<UserModel> userManager, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
-
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -56,7 +57,7 @@ namespace Blog.Controllers
 
             if (currentRoom == -1)
             {
-              return RedirectToAction("CreateRoom","Blog");
+              return RedirectToAction("CreateRoom","Chat");
             }
             var currentUser = await _userManager.GetUserAsync(User);
             if (User.Identity.IsAuthenticated)
@@ -77,19 +78,12 @@ namespace Blog.Controllers
 
             IEnumerable<ConnectingToGroups> connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).ToListAsync();
 
-
+            /*
             string? role = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)&& u.Roomsender.Equals(currentRoom)).Role;
 
-            if (role!= null)
-            {
-                ViewData["role"] = role;
-
-            }
-            else
-            {
-                ViewData["role"] = "none";
-
-            }
+            if (role!= null) { ViewData["role"] = role; } 
+            else {  ViewData["role"] = "none"; }
+            */
             IList<UserModel> usersList = await _context.Users.ToListAsync();
 
             foreach (var x in usersInGroupList)
@@ -136,7 +130,7 @@ namespace Blog.Controllers
         {
             currentRoom = roomId;
 
-            return RedirectToAction("Index","Blog");
+            return RedirectToAction("Index","Chat");
         }
 
         [HttpGet]
@@ -147,7 +141,7 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRoom(CreateRoom cr)
+        public async Task<IActionResult> CreateRoom(CreateRoom cr, IFormFile file)
         {
             if (_context.Rooms.Any(r => r.Name == cr.Name))
             {
@@ -161,6 +155,18 @@ namespace Blog.Controllers
                 
                 Name = cr.Name
             };
+
+            if (file != null && file.Length > 0)
+            {
+                var fileName = Path.GetFileName(file.FileName);
+                var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "lib/room_avatar", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                // Zapisz nazwę pliku w modelu
+                newRoom.ImgUrl = fileName;
+            }
 
             _context.Rooms.Add(newRoom);
             _context.SaveChanges();
@@ -178,14 +184,14 @@ namespace Blog.Controllers
             _context.ConnectingToRooms.Add(newConnect);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Blog");
+            return RedirectToAction("Index", "Chat");
         }
         
         public IActionResult Invite(string usrId)
         {
             if(_context.ConnectingToRooms.Any(c=>c.UserSender.Id==usrId && c.Roomsender.Id == currentRoom))
             {
-                return RedirectToAction("Index", "Blog");
+                return RedirectToAction("Index", "Chat");
 
             }
 

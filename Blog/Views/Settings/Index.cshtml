@@ -8,15 +8,15 @@
 }
 
 <div id="profil">
-    <img src="~/lib/room_avatar/@Model.User.ImgUrl" alt="User Avatar" />
+    <img src="~/lib/user_avatar/@Model.User.ImgUrl" alt="User Avatar"/>
     <p>@Model.User.UserName</p>
 </div>
 
 <div id="form">
-    @using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post))
+    @using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        @Html.ValidationSummary();
-        
+        @Html.ValidationSummary() ;
+
 
         <label asp-for="User.UserName">Nazwa użytkownika:</label>
         @Html.TextBoxFor(x => x.User.UserName)
@@ -34,9 +34,7 @@
         @Html.TextBoxFor(x => x.User.PhoneNumber)
         <br />
 
-       @* <label for="File">Image:</label>
-
-        <input type="file" name="File" asp-for="File" accept="image" />*@
+        <input type="file" name="file" />
 
         <input type="submit" value="Zapisz" />
     }

@@ -3689,11 +3689,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\ASP.NET-App\\Blog\\Blog\\ChatApp.csproj",
+      "projectUniqueName": "E:\\ASP.NET-App\\ChatApp\\Blog\\ChatApp.csproj",
       "projectName": "ChatApp",
-      "projectPath": "E:\\ASP.NET-App\\Blog\\Blog\\ChatApp.csproj",
+      "projectPath": "E:\\ASP.NET-App\\ChatApp\\Blog\\ChatApp.csproj",
       "packagesPath": "C:\\Users\\Mati\\.nuget\\packages\\",
-      "outputPath": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\",
+      "outputPath": "E:\\ASP.NET-App\\ChatApp\\Blog\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mati\\AppData\\Roaming\\NuGet\\NuGet.Config",

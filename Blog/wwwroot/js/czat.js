@@ -55,7 +55,7 @@ function addMessageToChat(message,imgUrl) {
 		+ currentdate.getFullYear() + " "
 		+ currentdate.toLocaleString('pl-PL', { hour: 'numeric', minute: 'numeric', hour12: false })
 	let img = document.createElement('img');
-	img.src = "/lib/user_avatar/" + imgUrl;
+	img.src = "/uploads/user_avatar/" + imgUrl;
 	img.alt = "user avatar";
 	img.classList.add("avatar_user");
 	container.appendChild(img);

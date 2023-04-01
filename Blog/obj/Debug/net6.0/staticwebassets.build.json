@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "GGvyLVWwEyglHv4qWdlWXjzFxuuo4UWv+hfqx+kft8w=",
+  "Hash": "saGN/S6JrBSKT+8vg4WgleBZzhX3RBMaryE+h9HWOo0=",
   "Source": "ChatApp",
   "BasePath": "_content/ChatApp",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "ChatApp\\wwwroot",
       "Source": "ChatApp",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\Debug\\net6.0\\scopedcss\\bundle\\ChatApp.styles.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\obj\\Debug\\net6.0\\scopedcss\\bundle\\ChatApp.styles.css",
       "SourceId": "ChatApp",
       "SourceType": "Computed",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\Debug\\net6.0\\scopedcss\\bundle\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\obj\\Debug\\net6.0\\scopedcss\\bundle\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "ChatApp.styles.css",
       "AssetKind": "All",
@@ -31,13 +31,13 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\Debug\\net6.0\\scopedcss\\bundle\\ChatApp.styles.css"
+      "OriginalItemSpec": "E:\\ASP.NET-App\\ChatApp\\Blog\\obj\\Debug\\net6.0\\scopedcss\\bundle\\ChatApp.styles.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\ChatApp.bundle.scp.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\ChatApp.bundle.scp.css",
       "SourceId": "ChatApp",
       "SourceType": "Computed",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "ChatApp.bundle.scp.css",
       "AssetKind": "All",
@@ -48,13 +48,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "E:\\ASP.NET-App\\Blog\\Blog\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\ChatApp.bundle.scp.css"
+      "OriginalItemSpec": "E:\\ASP.NET-App\\ChatApp\\Blog\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\ChatApp.bundle.scp.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\chat.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\css\\chat.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "css/chat.css",
       "AssetKind": "All",
@@ -68,10 +68,10 @@
       "OriginalItemSpec": "wwwroot\\css\\chat.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\login.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\css\\login.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "css/login.css",
       "AssetKind": "All",
@@ -85,10 +85,10 @@
       "OriginalItemSpec": "wwwroot\\css\\login.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\css\\settings.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\css\\settings.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "css/settings.css",
       "AssetKind": "All",
@@ -102,10 +102,10 @@
       "OriginalItemSpec": "wwwroot\\css\\settings.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\favicon.ico",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\favicon.ico",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "favicon.ico",
       "AssetKind": "All",
@@ -119,10 +119,10 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\js\\connect.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\connect.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "js/connect.js",
       "AssetKind": "All",
@@ -136,10 +136,10 @@
       "OriginalItemSpec": "wwwroot\\js\\connect.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\js\\czat.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\czat.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "js/czat.js",
       "AssetKind": "All",
@@ -153,10 +153,10 @@
       "OriginalItemSpec": "wwwroot\\js\\czat.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\js\\site.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\site.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "js/site.js",
       "AssetKind": "All",
@@ -170,10 +170,10 @@
       "OriginalItemSpec": "wwwroot\\js\\site.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap.css",
       "AssetKind": "All",
@@ -187,10 +187,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap.css.map",
       "AssetKind": "All",
@@ -204,10 +204,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap.min.css",
       "AssetKind": "All",
@@ -221,10 +221,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -238,10 +238,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-grid.css",
       "AssetKind": "All",
@@ -255,10 +255,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-grid.css.map",
       "AssetKind": "All",
@@ -272,10 +272,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-grid.min.css",
       "AssetKind": "All",
@@ -289,10 +289,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-grid.min.css.map",
       "AssetKind": "All",
@@ -306,10 +306,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-reboot.css",
       "AssetKind": "All",
@@ -323,10 +323,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-reboot.css.map",
       "AssetKind": "All",
@@ -340,10 +340,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-reboot.min.css",
       "AssetKind": "All",
@@ -357,10 +357,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/css/bootstrap-reboot.min.css.map",
       "AssetKind": "All",
@@ -374,10 +374,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.bundle.js",
       "AssetKind": "All",
@@ -391,10 +391,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.bundle.js.map",
       "AssetKind": "All",
@@ -408,10 +408,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.bundle.min.js",
       "AssetKind": "All",
@@ -425,10 +425,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.bundle.min.js.map",
       "AssetKind": "All",
@@ -442,10 +442,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.js",
       "AssetKind": "All",
@@ -459,10 +459,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.js.map",
       "AssetKind": "All",
@@ -476,10 +476,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.min.js",
       "AssetKind": "All",
@@ -493,10 +493,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/dist/js/bootstrap.min.js.map",
       "AssetKind": "All",
@@ -510,10 +510,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\bootstrap\\LICENSE",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/bootstrap/LICENSE",
       "AssetKind": "All",
@@ -527,10 +527,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\LICENSE"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery/dist/jquery.js",
       "AssetKind": "All",
@@ -544,10 +544,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery/dist/jquery.min.js",
       "AssetKind": "All",
@@ -561,10 +561,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery/dist/jquery.min.map",
       "AssetKind": "All",
@@ -578,10 +578,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.unobtrusive-ajax.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery\\dist\\jquery.unobtrusive-ajax.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery/dist/jquery.unobtrusive-ajax.min.js",
       "AssetKind": "All",
@@ -595,10 +595,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery.unobtrusive-ajax.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery\\LICENSE.txt",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery/LICENSE.txt",
       "AssetKind": "All",
@@ -612,10 +612,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation/dist/additional-methods.js",
       "AssetKind": "All",
@@ -629,10 +629,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation/dist/additional-methods.min.js",
       "AssetKind": "All",
@@ -646,10 +646,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation/dist/jquery.validate.js",
       "AssetKind": "All",
@@ -663,10 +663,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation/dist/jquery.validate.min.js",
       "AssetKind": "All",
@@ -680,10 +680,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation/LICENSE.md",
       "AssetKind": "All",
@@ -697,10 +697,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\LICENSE.md"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
       "AssetKind": "All",
@@ -714,10 +714,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
       "AssetKind": "All",
@@ -731,10 +731,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/jquery-validation-unobtrusive/LICENSE.txt",
       "AssetKind": "All",
@@ -748,10 +748,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\microsoft-signalr\\signalr.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\microsoft-signalr\\signalr.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/microsoft-signalr/signalr.js",
       "AssetKind": "All",
@@ -765,10 +765,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\microsoft-signalr\\signalr.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\microsoft-signalr\\signalr.min.js",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\microsoft-signalr\\signalr.min.js",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/microsoft-signalr/signalr.min.js",
       "AssetKind": "All",
@@ -782,10 +782,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\microsoft-signalr\\signalr.min.js"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\room_avatar\\obraz1.png",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\obraz1.png",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/room_avatar/obraz1.png",
       "AssetKind": "All",
@@ -799,10 +799,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\room_avatar\\obraz1.png"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\room_avatar\\obraz2.png",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\obraz2.png",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/room_avatar/obraz2.png",
       "AssetKind": "All",
@@ -816,10 +816,27 @@
       "OriginalItemSpec": "wwwroot\\lib\\room_avatar\\obraz2.png"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\user_avatar\\obraz1.png",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\fghgfh.jpg",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
+      "BasePath": "_content/ChatApp",
+      "RelativePath": "lib/user_avatar/fghgfh.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\user_avatar\\fghgfh.jpg"
+    },
+    {
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\obraz1.png",
+      "SourceId": "ChatApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/user_avatar/obraz1.png",
       "AssetKind": "All",
@@ -833,10 +850,10 @@
       "OriginalItemSpec": "wwwroot\\lib\\user_avatar\\obraz1.png"
     },
     {
-      "Identity": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\lib\\user_avatar\\obraz2.png",
+      "Identity": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\obraz2.png",
       "SourceId": "ChatApp",
       "SourceType": "Discovered",
-      "ContentRoot": "E:\\ASP.NET-App\\Blog\\Blog\\wwwroot\\",
+      "ContentRoot": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\",
       "BasePath": "_content/ChatApp",
       "RelativePath": "lib/user_avatar/obraz2.png",
       "AssetKind": "All",

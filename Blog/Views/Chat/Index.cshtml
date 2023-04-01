@@ -3,7 +3,7 @@
 	var userName = User.Identity.Name;
 	var RoomId = ViewData["currentRoom"];
 
-    var Role= ViewData["role"].ToString();
+   
 
 	Room room = Model.Rooms.FirstOrDefault(x => x.Id.Equals(RoomId));
 
@@ -16,7 +16,7 @@
     <div class="customScroll " id="sidebar">
         <hr />
 
-        <input type="button" value="+" onclick="location.href='@Url.Action("CreateRoom", "Blog")'" />
+        <input type="button" value="+" onclick="location.href='@Url.Action("CreateRoom", "Chat")'" />
 
 
         <ul class="list-unstyled components" id="groupList">
@@ -158,10 +158,6 @@
 
                     @r.UserSender.UserName
 
-                    if (Role == "admin")
-                    {
-                        <button onclick="leaveFromGroup(@r.UserSender.UserName)"></button>
-                    }
                 </li>
                 
                 

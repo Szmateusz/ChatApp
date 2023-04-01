@@ -5,9 +5,12 @@
     <h1>Stwórz Grupę</h1>
 
 <centre>
-    @using(@Html.BeginForm("CreateRoom","Blog",FormMethod.Post)){
+    @using (@Html.BeginForm("CreateRoom", "Chat", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
 
         <span>Nazwa: </span> @Html.TextBoxFor(x => x.Name)
+        <br />
+        <span>Dodaj zdjęcie:</span> <input type="file" name="file" />
          <input type="submit" value="Stwórz" />
 
     }
