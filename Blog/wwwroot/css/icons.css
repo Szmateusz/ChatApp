@@ -1,0 +1,28 @@
+.icon {
+    height: 20px;
+    width: 20px;
+}
+.icon_pointer {
+    cursor: pointer;
+    
+}
+.icon_pointer:hover {
+    border: 2px solid white;
+    padding: 3px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+}
+.icon_medium{
+    height:30px;
+    width:30px;
+}
+.icon_big {
+    height: 50px;
+    width: 50px;
+    
+}
+.data {
+    color: red;
+    font-size: 24px;
+    font-family: Arial;
+}

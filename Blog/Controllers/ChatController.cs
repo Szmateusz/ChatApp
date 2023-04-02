@@ -46,9 +46,9 @@ namespace Blog.Controllers
 
                     currentRoom = firstRoom;
                 }
-                catch
+                catch(Exception ex)
                 {
-
+                    Console.WriteLine(ex);
                 }
                 
 
@@ -69,8 +69,12 @@ namespace Blog.Controllers
             
             
            Room room =  _context.Rooms.Include(m=>m.Messages).FirstOrDefault(r => r.Id.Equals(currentRoom));
+            if (room == null)
+            {
+                return RedirectToAction("CreateRoom", "Chat");
 
-           List<GroupMessage> messages = room.Messages.ToList();
+            }
+            List<GroupMessage> messages = room.Messages.ToList();
 
             
 
@@ -131,6 +135,13 @@ namespace Blog.Controllers
         
         public IActionResult SelectGroup(int roomId)
         {
+            // set group after leave from current group
+            if(roomId == -1)
+            {
+                firstStart = true;
+                return RedirectToAction("Index", "Chat");
+
+            }
             currentRoom = roomId;
 
             return RedirectToAction("Index","Chat");
@@ -144,19 +155,30 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRoom(CreateRoom cr, IFormFile file)
+        public async Task<IActionResult> CreateRoom(CreateRoomView model, IFormFile file)
         {
-            if (_context.Rooms.Any(r => r.Name == cr.Name))
+            if (_context.Rooms.Any(r => r.Name == model.Room.Name))
             {
-                ViewData["isCreated"]=true;
-                return View();
+                model.ValidateData = "Pokój o tej nazwie już istnieje!";
+                return View(model);
             }
+            if (model.Room.Name.Length>12)
+            {
+                model.ValidateData = "Pokój ma zbyt długą nazwę!";
+                return View(model);
+            }
+            if (model.Room.Name.Length < 3)
+            {
+                model.ValidateData = "Pokój ma zbyt krótką nazwę!";
+                return View(model);
+            }
+
             var sender = await _userManager.GetUserAsync(User);
 
             var newRoom = new Room
             {   
                 
-                Name = cr.Name
+                Name = model.Room.Name
             };
 
             if (file != null && file.Length > 0)
@@ -169,7 +191,7 @@ namespace Blog.Controllers
                 }
                 // Zapisz nazwę pliku w modelu
                 newRoom.ImgUrl = fileName;
-            }
+            }else { newRoom.ImgUrl = "default.png"; }
 
             _context.Rooms.Add(newRoom);
             _context.SaveChanges();
@@ -180,7 +202,8 @@ namespace Blog.Controllers
             var newConnect = new ConnectingToRooms
             {
                 Roomsender = newRoom,
-                UserSender = sender
+                UserSender = sender,
+                Role = "admin"
 
         };
 
@@ -213,7 +236,9 @@ namespace Blog.Controllers
             _context.SaveChanges();
 
             string name = usrSender.UserName;
-            return Json(new { success = true, name });
+            string imgUrl = usrSender.ImgUrl; 
+
+            return Json(new { success = true, name, imgUrl});
 
         }
 

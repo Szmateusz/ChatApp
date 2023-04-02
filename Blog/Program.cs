@@ -1,9 +1,11 @@
 using Blog;
 using Blog.Hubs;
 using Blog.Models;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,15 @@ builder.Services.AddDbContext<DBcontext>(options =>
 
 
 builder.Services.AddSignalR();
+
+builder.Services.AddSignalR().AddHubOptions<ChatHub>(options =>
+{
+    options.EnableDetailedErrors = true;
+}).AddJsonProtocol();
+
+
+
+
 
 builder.Services.AddIdentity<UserModel, IdentityRole>(options =>
 {
@@ -56,7 +67,12 @@ app.UseAuthentication();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<ChatHub>("/messageHub");
+    endpoints.MapHub<ChatHub>("/messageHub", options =>
+    {
+        options.Transports =
+                 HttpTransportType.WebSockets |
+                 HttpTransportType.LongPolling;
+    });
 });
 
 app.MapControllerRoute(

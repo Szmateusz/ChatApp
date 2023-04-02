@@ -4,11 +4,16 @@ function Invite() {
 	let SelectUser = document.getElementById('userList');
 
 	let user = SelectUser.value;
-	let name = "";
 
 	let list = document.getElementById("usersInGroupList");
 
 	let element = document.createElement('li');
+	element.className = "userListBlock userOnUserList";
+	let span = document.createElement('span');
+	
+	let img = document.createElement('img');
+	img.alt = "user avatar";
+	img.classList.add("avatar_user");
 
 	$.ajax({
 		type: 'POST',
@@ -17,13 +22,16 @@ function Invite() {
 			usrId: userList.value
 		},
 		success: function (data) {
-			name = data.name;
 			console.log("sukces");
-			element.innerHTML = name;
+
+			img.src = "/lib/user_avatar/" + data.imgUrl;
+			span.innerHTML = data.name;
+
+			element.appendChild(img);
+			element.appendChild(span);
+
 			list.appendChild(element);
 			
-
-
 		},
 		error: function () {
 			console.log("niepowodzenie");
@@ -43,7 +51,7 @@ function Invite() {
 
 }
 
-function addGroupToList(groupName,groupId) {
+function addGroupToList(groupName,groupId,imgUrl) {
 
 	console.log("sukces-lista");
 
@@ -53,13 +61,17 @@ function addGroupToList(groupName,groupId) {
 
 	var li = document.createElement("li");
 	var a = document.createElement("a");
+	let img = document.createElement('img');
+	img.src = "/lib/room_avatar/" + imgUrl;
+	img.alt = "room avatar";
+	img.classList.add("avatar_room");
 	
 	a.href = "/Chat/SelectGroup?roomId="+groupId;
 	a.innerHTML = groupName;
 	//li.innerHTML = group;
 	li.className = "nav-link";
 
-	
+	li.appendChild(img);
 	li.appendChild(a);
 	list.appendChild(li);
 
@@ -72,7 +84,8 @@ function leaveFromGroup(userName) {
 	
 	connection.invoke("DeleteUserFromGroup",userName,RoomId.toString());
 
-	window.location.reload();
+	window.location.href ="/Chat/SelectGroup?roomId=-1";
+
 
 }
 

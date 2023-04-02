@@ -58,13 +58,13 @@ body {
     font-size:120%;
     background-color:aliceblue;
 }
-    #messagesBox {
+#messagesBox {
         height: auto;
         padding: 20px;
         border: 1px solid grey;
         width: 70%;
         float: left;
-    }
+}
 #box {
     overflow-y: scroll;
     height: 300px;
@@ -81,6 +81,7 @@ body {
     
    
 }
+
 
 .avatar_user,
 .avatar_room {

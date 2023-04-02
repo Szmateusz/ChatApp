@@ -1,21 +1,37 @@
-﻿@model CreateRoom;
+﻿@model CreateRoomView;
 @{
     Layout = "_LayoutEmpty";
 }
-    <h1>Stwórz Grupę</h1>
+    
 
-<centre>
-    @using (@Html.BeginForm("CreateRoom", "Chat", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
 
-        <span>Nazwa: </span> @Html.TextBoxFor(x => x.Name)
-        <br />
-        <span>Dodaj zdjęcie:</span> <input type="file" name="file" />
-         <input type="submit" value="Stwórz" />
+<div class="ml-auto mr-auto mt-3" style="display: flex; justify-content: center; align-items: center;">
+    <div style="">
+        <h1>Stwórz Grupę</h1>
 
-    }
-    @if (ViewData["isCreated"] != null)
-    {
-        <span>Pokój o danej nazwie już istnieje, wybierz inną!</span>
-    }
-</centre>
+        @using (@Html.BeginForm("CreateRoom", "Chat", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+
+            <span>Nazwa: </span> @Html.TextBoxFor(x => x.Room.Name)
+
+            <br />
+            <br />
+
+            <span>Dodaj zdjęcie:  </span> <input type="file" name="file" />
+            <br />
+            <br />
+
+
+            <input type="submit" value="Stwórz" />
+
+        }
+        @if (Model != null)
+        {
+            <p class="data">@Model.ValidateData</p>
+
+        }
+    </div>
+   
+
+</div>
+  

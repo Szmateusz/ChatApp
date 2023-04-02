@@ -14,7 +14,8 @@
     <div class="customScroll " id="sidebar">
         <hr />
 
-        <input type="button" value="+" onclick="location.href='@Url.Action("CreateRoom", "Chat")'" />
+        
+        <img class="icon_big icon_pointer" src="~/lib/icons/add.png" alt="" onclick="location.href='@Url.Action("CreateRoom", "Chat")'" />
 
 
         <ul class="list-unstyled components" id="groupList">
@@ -50,6 +51,8 @@
                 </select>
 
                 <input type="button" onclick="Invite()" value="Zaproś" />
+                <img class="icon icon_medium"src="~/lib/icons/add_user.png" alt="" />
+
             
         </div>
 
@@ -154,7 +157,7 @@
 
                     <img class="avatar_user" src="~/lib/user_avatar/@r.UserSender.ImgUrl" alt="avatar" />
 
-                    @r.UserSender.UserName
+                    <span>@r.UserSender.UserName</span>
 
                 </li>
                 
@@ -178,16 +181,18 @@
 }
 
 	@section scripts{
-		
-       
-		<script src="~/lib/microsoft-signalr/signalr.js"></script>
-		
-		<script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
-		
-		<script src="~/js/czat.js"></script>
-        <script src="~/js/site.js"></script>
 
-		<script src="~/js/connect.js"></script>
+
+    <script src="~/lib/microsoft-signalr/signalr.js"></script>
+
+    <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script src="~/js/czat.js"></script>
+
+    <script src="~/js/site.js"></script>
+
+    <script src="~/js/connect.js"></script>
+
 		
 
 		

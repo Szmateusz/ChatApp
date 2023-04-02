@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] -Evalon</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/settings.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/icons.css" asp-append-version="true" />
 
 </head>
 <body class="bg-dark">
@@ -47,15 +48,16 @@
 
     <div id="container">
         <aside>
+          
             <ul>
-                <li>
-                    <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Index">Profil</a>
+                <li class="flex">                 
+                    <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Index"> <img class="icon_medium mr-3" src="~/lib/icons/profil.png" alt="" />Profil</a>
                 </li>
-                <li>
-                    <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Groups">Grupy</a>
+                <li class="flex">                   
+                    <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Groups"><img class="icon_medium mr-3" src="~/lib/icons/group.png" alt="" />Grupy</a>
                 </li>
-                <li>
-                    <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Preference">Preferencje</a>
+                <li class="flex">                  
+                    <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Settings" asp-action="Preference"><img class="icon_medium mr-3" src="~/lib/icons/save.png" alt="" />Preferencje</a>
                 </li>
             </ul>
         </aside>
@@ -79,6 +81,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/settings.js"></script>
+    <script src="~/js/icons.js"></script>
 
 
 

@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] -Evalon</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    
+    <link rel="stylesheet" href="~/css/icons.css" asp-append-version="true" />
+
 </head>
 <body class="bg-dark">
     
@@ -25,10 +26,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Blog" asp-action="Index">Główna</a>
+                            <a class="nav-link nav-hover text-white " asp-area="" asp-controller="Chat" asp-action="Index">Główna</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Account" asp-action="LogOut">Wyloguj</a>
+                           <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Account" asp-action="LogOut"> <img class="icon" src="~/lib/icons/logout.png" alt="" />Wyloguj</a>
                         </li>
                     </ul>
                 </div>
@@ -36,11 +37,11 @@
         </nav>
     </header>
         
-        <div id="main">
+        
             <main role="main">
                 @RenderBody()
             </main>
-        </div>
+       
     
        
     

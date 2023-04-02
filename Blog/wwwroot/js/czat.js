@@ -40,6 +40,10 @@ function addMessageToChat(message,imgUrl) {
 	let container = document.createElement('div');
 	container.className = isCurrentUserMessage ? "container darker text-right text-white" : "container text-left ";
 
+	let offset = document.createElement('div');
+	offset.className =  "col-md-6 offset-md-6";
+
+
 	let sender = document.createElement('p');
 	sender.className = "sender";
 	sender.innerHTML = message.userName;
@@ -55,13 +59,19 @@ function addMessageToChat(message,imgUrl) {
 		+ currentdate.getFullYear() + " "
 		+ currentdate.toLocaleString('pl-PL', { hour: 'numeric', minute: 'numeric', hour12: false })
 	let img = document.createElement('img');
-	img.src = "/uploads/user_avatar/" + imgUrl;
+	img.src = "/lib/user_avatar/" + imgUrl;
 	img.alt = "user avatar";
 	img.classList.add("avatar_user");
+
+
 	container.appendChild(img);
 	container.appendChild(sender);
 	container.appendChild(text);
 	container.appendChild(when);
-	row.appendChild(container);
-	chat.appendChild(container);
+
+	offset.appendChild(container);
+
+	row.appendChild(offset);
+
+	chat.appendChild(row);
 }

@@ -17,7 +17,8 @@
     <title>@ViewData["Title"] -Evalon</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
-    
+    <link rel="stylesheet" href="~/css/icons.css" asp-append-version="true" />
+
     <script>
         let RoomId = @currentId.ToString();
     </script>
@@ -49,10 +50,12 @@
                            
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Settings" asp-action="Index">Ustawienia</a>
+
+                            <a class="nav-link nav-hover text-white" asp-area="" asp-controller="Settings" asp-action="Index"> <img class="icon" src="~/lib/icons/settings.png" alt="" /> Ustawienia</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Account" asp-action="LogOut">Wyloguj</a>
+
+                            <a class="nav-link nav-hover text-white" asp-area=" " asp-controller="Account" asp-action="LogOut"> <img class="icon" src="~/lib/icons/logout.png" alt="" />Wyloguj</a>
                         </li>
                     </ul>
                 </div>
@@ -77,7 +80,8 @@
     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="~/js/icons.js"></script>
+
 
 
     @await RenderSectionAsync("Scripts", required: false)

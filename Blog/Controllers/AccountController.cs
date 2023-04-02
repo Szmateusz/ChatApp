@@ -91,7 +91,8 @@ namespace Blog.Controllers
 
             var newUser = new UserModel
             {
-                UserName = userRegisterData.UserName
+                UserName = userRegisterData.UserName,
+                ImgUrl = "default.png"
             };
 
            await _usermanager.CreateAsync(newUser,userRegisterData.Password);
@@ -99,12 +100,6 @@ namespace Blog.Controllers
 
 
             return RedirectToAction("Index", "Account");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

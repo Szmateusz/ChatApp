@@ -11,7 +11,7 @@
     <h2>Modyfikuj grupę</h2>
     <br />
     <div class="flex">
-        <img src="~/lib/room_avatar/@Model.Room.ImgUrl" alt="Room Avatar" />
+        <img style="height:250px;width:auto;margin-right:20px;" src="~/lib/room_avatar/@Model.Room.ImgUrl" alt="Room Avatar" />
 
         @using (Html.BeginForm("EditGroup", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
@@ -42,7 +42,7 @@
         @foreach(var u in Model.Users){
             i++;
             <tr id="@i">
-                <td> <img class="avatar_room"  src="~/lib/user_avatar/@u.UserSender.ImgUrl" alt="User Avatar" /></td>
+                <td> <img class="avatar_room" src="~/lib/user_avatar/@u.UserSender.ImgUrl" alt="User Avatar" /></td>
                 <td>@u.UserSender.UserName</td>
                 <td>@u.UserSender.PhoneNumber</td>
                 <td>@u.Role</td>

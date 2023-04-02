@@ -1,9 +1,13 @@
 ﻿using Blog;
+using Blog.Hubs;
 using Blog.Models;
 using ChatApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
+
 
 namespace ChatApp.Controllers
 {
@@ -20,6 +24,7 @@ namespace ChatApp.Controllers
             _context = context;
             _userManager = userManager;
             _hostingEnvironment = hosting;
+         
 
 
 
@@ -39,8 +44,10 @@ namespace ChatApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeUserData(SettingsIndexView model, IFormFile file)
+        public async Task<IActionResult> Index(SettingsIndexView model, IFormFile file)
         {
+            string userId = _userManager.GetUserId(User);
+            var user = _context.Users.FirstOrDefault(u => u.Id.Equals(userId));
 
             // Pobierz i zapisz plik na dysku
             if (file != null && file.Length > 0)
@@ -53,18 +60,55 @@ namespace ChatApp.Controllers
                 }
                 // Zapisz nazwę pliku w modelu
                 model.User.ImgUrl = fileName;
+            } else { model.User.ImgUrl = user.ImgUrl; }
+
+
+
+           
+
+            // if User dont make changes
+
+            if (model.User.ImgUrl == null &&
+                model.User.ImgUrl == user.ImgUrl &&
+               user.UserName == model.User.UserName &&
+               user.Email == model.User.Email &&
+               user.PhoneNumber == model.User.PhoneNumber &&
+               (model.Password == null ||
+               !new PasswordHasher<UserModel>().VerifyHashedPassword(user, user.PasswordHash, model.Password)
+               .Equals(PasswordVerificationResult.Success)))
+            {
+                
+                model.ValidateData = "Nie wprowadzono żadnych zmian!";
+                return View(model);
             }
 
-            // Zapisz dane użytkownika w bazie danych
-            string userId =  _userManager.GetUserId(User);
-            var user = _context.Users.FirstOrDefault(u => u.Id.Equals(userId));
+                
 
-            user.ImgUrl = model.User.ImgUrl;
+            if (!string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.NewPassword))
+            {
 
-            if(user.UserName!=model.User.UserName && model.User.UserName.Length> 5) { 
+                string password = model.Password;
+                string userhash = user.PasswordHash;
+
+                var passwordHasher = new PasswordHasher<UserModel>();
+
+                if (!new PasswordHasher<UserModel>().VerifyHashedPassword(user, user.PasswordHash, model.Password)
+                     .Equals(PasswordVerificationResult.Success))
+                {
+                    model.ValidateData = "Stare hasło jest niepoprawne!";
+                    return View(model);
+                }
+
+            }
+
+            if (user.ImgUrl != model.User.ImgUrl && model.User.ImgUrl!=null)
+            {
+                user.ImgUrl = model.User.ImgUrl;
+            }
+            if (user.UserName!=model.User.UserName && model.User.UserName.Length> 5) { 
                 user.UserName = model.User.UserName;
              }
-            if (user.Email != model.User.Email)
+            if (user.Email != model.User.Email && model.User.Email != null)
             {
                 user.Email = model.User.Email;
             }
@@ -73,10 +117,11 @@ namespace ChatApp.Controllers
                 user.PhoneNumber = model.User.PhoneNumber;
             }
 
+
             _context.Users.Update(user);         
             _context.SaveChanges();
             
-            return RedirectToAction("Index", "Settings");
+            return View(model);
 
 
         }
@@ -87,22 +132,24 @@ namespace ChatApp.Controllers
 
             string userId = _userManager.GetUserId(User);
 
-            var belongRooms = _context.ConnectingToRooms.Where(x => x.UserSender.Id.Equals(userId)).Include(c => c.Roomsender).Include(b=>b.UserSender).ToList();
+            var userRooms = _context.ConnectingToRooms.Where(x => x.UserSender.Id.Equals(userId)).Include(c => c.Roomsender).Include(b=>b.UserSender).ToList();
           
-            var adminRooms = belongRooms.Where(x => x.Role == "admin").ToList();
+            var adminRooms = userRooms.Where(x => x.Role == "admin").ToList();
 
-            model.Connectings = belongRooms;
+            model.Connectings = userRooms;
             model.ConnectingsWhereAdmin = adminRooms;
 
             return View(model);
         }
 
-        public IActionResult EditGroup([FromQuery] int id)
+        public IActionResult EditGroup(int id)
         {
             int _id = id;
 
+            string usrId = _userManager.GetUserId(User);
+
             var room = _context.Rooms.FirstOrDefault(x => x.Id==_id);
-            var users = _context.ConnectingToRooms.Where(x => x.Roomsender.Id.Equals(room.Id)).Include(c=>c.UserSender).ToList();
+            var users = _context.ConnectingToRooms.Where(x => x.Roomsender.Id.Equals(room.Id) && x.UserSender.Id!=usrId).Include(c=>c.UserSender).ToList();
 
             EditGroupView model = new EditGroupView();
             model.Room = room;
@@ -112,12 +159,19 @@ namespace ChatApp.Controllers
         }
         public async Task<IActionResult> DeleteUser(string userId, int groupId)
         {
-           var connecting = await _context.ConnectingToRooms.FirstOrDefaultAsync(x => x.UserSender.Id.Equals(userId) && x.Roomsender.Id==groupId);
+           var connecting = await _context.ConnectingToRooms
+                .FirstOrDefaultAsync(x => x.UserSender.Id.Equals(userId)
+                && x.Roomsender.Id==groupId);
+
+            if (connecting == null) { return NotFound(); }
 
             _context.ConnectingToRooms.Remove(connecting);
             await _context.SaveChangesAsync();
             int id = groupId;
-            return RedirectToAction("EditGroup","Settings",id);
+            return RedirectToAction("EditGroup","Settings", new { id = id });
         }
+     
+
+
     }
 }

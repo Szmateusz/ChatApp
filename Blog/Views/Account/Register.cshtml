@@ -30,6 +30,8 @@
     <span>Login: </span> @Html.TextBoxFor(x => x.UserName)
 
     <span>Hasło: </span> @Html.PasswordFor(x => x.Password)
+    <img id="img" class="icon icon_pointer" src="~/lib/icons/unvisible.png" alt="toggle visible" onclick="togglePassword()" />
+
 
 
     <input type="submit" value="Zarejestruj" />

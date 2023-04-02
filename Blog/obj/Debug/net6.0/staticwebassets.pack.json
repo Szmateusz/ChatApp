@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\css\\chat.css"
     },
     {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\css\\icons.css",
+      "PackagePath": "staticwebassets\\css\\icons.css"
+    },
+    {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\css\\login.css",
       "PackagePath": "staticwebassets\\css\\login.css"
     },
@@ -27,6 +31,10 @@
     {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\czat.js",
       "PackagePath": "staticwebassets\\js\\czat.js"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\icons.js",
+      "PackagePath": "staticwebassets\\js\\icons.js"
     },
     {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\js\\settings.js",
@@ -121,6 +129,50 @@
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\add.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\add.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\add_user.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\add_user.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\group.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\group.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\list.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\list.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\logout.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\logout.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\profil.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\profil.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\save.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\save.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\settings.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\settings.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\trash.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\trash.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\unvisible.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\unvisible.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\icons\\visible.png",
+      "PackagePath": "staticwebassets\\lib\\icons\\visible.png"
+    },
+    {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
     },
@@ -181,8 +233,28 @@
       "PackagePath": "staticwebassets\\lib\\microsoft-signalr\\signalr.min.js"
     },
     {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\IMG_20190929_184309.jpg",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\IMG_20190929_184309.jpg"
+    },
+    {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\TABLICZKA-NA-SLODYCZE-PREZENT-NA-WALENTYNKI.jpg",
       "PackagePath": "staticwebassets\\lib\\room_avatar\\TABLICZKA-NA-SLODYCZE-PREZENT-NA-WALENTYNKI.jpg"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\Warframe0000.jpg",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\Warframe0000.jpg"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\default.png",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\default.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\euro.png",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\euro.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\fghgfh.jpg",
+      "PackagePath": "staticwebassets\\lib\\room_avatar\\fghgfh.jpg"
     },
     {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\obraz1.png",
@@ -191,6 +263,18 @@
     {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\room_avatar\\obraz2.png",
       "PackagePath": "staticwebassets\\lib\\room_avatar\\obraz2.png"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\Warframe0000.jpg",
+      "PackagePath": "staticwebassets\\lib\\user_avatar\\Warframe0000.jpg"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\dd 001.jpg",
+      "PackagePath": "staticwebassets\\lib\\user_avatar\\dd 001.jpg"
+    },
+    {
+      "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\default.png",
+      "PackagePath": "staticwebassets\\lib\\user_avatar\\default.png"
     },
     {
       "Id": "E:\\ASP.NET-App\\ChatApp\\Blog\\wwwroot\\lib\\user_avatar\\fghgfh.jpg",

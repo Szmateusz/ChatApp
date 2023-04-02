@@ -13,7 +13,7 @@
     </div>
 
     <div id="form">
-        @using (Html.BeginForm("ChangeUserData", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.ValidationSummary()
             ;
@@ -25,7 +25,11 @@
 
             <label asp-for="Password">Hasło:</label>
             @Html.PasswordFor(x => x.Password)
-
+            <img id="img" class="icon icon_pointer" src="~/lib/icons/unvisible.png" alt="toggle visible" onclick="togglePassword()" />
+            <br />
+            <label asp-for="NewPassword">Powtórz hasło:</label>
+            @Html.PasswordFor(x => x.NewPassword)
+            <img id="img" class="icon icon_pointer" src="~/lib/icons/unvisible.png" alt="toggle visible" onclick="togglePassword()" />
             <br />
             <label asp-for="User.Email">Email:</label>
             @Html.TextBoxFor(x => x.User.Email)
@@ -39,6 +43,7 @@
 
             <input type="submit" value="Zapisz" />
         }
+        <p class="data">@Model.ValidateData</p>
     </div>
 
 </div>
