@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ChatApp.Controllers
 {
+[Authorize(AuthenticationSchemes = "Identity.Application")]
     public class SettingsController : Controller
     {
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Controllers
 {
+[Authorize(AuthenticationSchemes = "Identity.Application")]
     public class PrivateController : Controller
     {
         public readonly DBcontext _context;

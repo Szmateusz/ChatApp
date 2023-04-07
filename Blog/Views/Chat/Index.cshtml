@@ -1,9 +1,9 @@
 ﻿@model ChatView;
 @{
-	var userName = User.Identity.Name;
-	var RoomId = ViewData["currentRoom"];
+    var userName = User.Identity.Name;
+    var RoomId = ViewData["currentRoom"];
 
-   
+    
 
 	var messageList = Model.GroupMessages;
 	
@@ -146,19 +146,21 @@
             @foreach (var r in Model.UsersInGroup)
             {
                 string klasa = "userListBlock ";
-
                 
+
                     @if (r.UserSender.UserName == User.Identity.Name)
                     {
                     klasa += "userOnUserList";
                     }
-
-                <li class="@klasa">
+             
+                <li class="@klasa" >
 
                     <img class="avatar_user" src="~/lib/user_avatar/@r.UserSender.ImgUrl" alt="avatar" />
 
                     <span>@r.UserSender.UserName</span>
 
+                    
+                   
                 </li>
                 
                 

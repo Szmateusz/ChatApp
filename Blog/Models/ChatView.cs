@@ -4,6 +4,7 @@ namespace Blog.Models
 {
     public class ChatView
     {
+       
         public IEnumerable<GroupMessage> GroupMessages  { get; set; }
 
 

@@ -75,3 +75,4 @@ function addMessageToChat(message,imgUrl) {
 
 	chat.appendChild(row);
 }
+

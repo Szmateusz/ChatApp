@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Blog.Controllers
 {
-  //  [Authorize]
+  [Authorize(AuthenticationSchemes = "Identity.Application")]
     public class ChatController : Controller
     {
         public readonly DBcontext _context;
@@ -36,7 +36,7 @@ namespace Blog.Controllers
             
             string usrId = _userManager.GetUserId(User);
            
-      
+     
             
             if (firstStart == true)
             {
@@ -89,12 +89,10 @@ namespace Blog.Controllers
 
             var connectingGroups = await _context.ConnectingToRooms.Where(x=>x.UserSender.Id==currentUser.Id).Include(c=>c.Roomsender).ToListAsync();
 
-            /*
-            string? role = _context.ConnectingToRooms.FirstOrDefault(u => u.UserSender.Id.Equals(usrId)&& u.Roomsender.Equals(currentRoom)).Role;
+            
+          
 
-            if (role!= null) { ViewData["role"] = role; } 
-            else {  ViewData["role"] = "none"; }
-            */
+            
 
            
 
@@ -105,7 +103,7 @@ namespace Blog.Controllers
                 model.Connecting = connectingGroups;
                 model.Users = usersList;
                 model.UsersInGroup = usersInGroupList;
-
+                
 
             return View(model);
 
