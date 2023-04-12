@@ -17,13 +17,28 @@
     
 @using (Html.BeginForm("LogIn", "Account", FormMethod.Post))
 {
-    @Html.ValidationSummary()
-    ;
-    <span>Login: </span> @Html.TextBoxFor(x => x.UserName)
+    @Html.ValidationSummary();
+    
 
-    <span>Hasło: </span> @Html.PasswordFor(x => x.Password)
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName)
+        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password)
+        @Html.TextBoxFor(m => m.Password, new { @class = "form-control",@type="password" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+
     <img id="img" class="icon icon_pointer" src="~/lib/icons/unvisible.png" alt="toggle visible" onclick="togglePassword()"/>
 
 
     <input type="submit" value="Zaloguj" />
+}
+@if (TempData.ContainsKey("SuccessMessage"))
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }

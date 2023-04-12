@@ -12,23 +12,24 @@
         @using (@Html.BeginForm("CreateRoom", "Chat", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
 
-            <span>Nazwa: </span> @Html.TextBoxFor(x => x.Room.Name)
-
-            <br />
+            <div class="form-group">
+                @Html.LabelFor(m => m.Name)
+                @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+         
             <br />
 
             <span>Dodaj zdjęcie:  </span> <input type="file" name="file" />
             <br />
-            <br />
-
-
+            
             <input type="submit" value="Stwórz" />
 
         }
-        @if (Model != null)
+     
+        @if (TempData.ContainsKey("ErrorMessage"))
         {
-            <p class="data">@Model.ValidateData</p>
-
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
         }
     </div>
    

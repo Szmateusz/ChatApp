@@ -17,10 +17,11 @@ namespace ChatApp.Controllers
 
         public readonly DBcontext _context;
         public readonly UserManager<UserModel> _userManager;
-        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
 
-        public SettingsController(DBcontext context, UserManager<UserModel> userManager, Microsoft.AspNetCore.Hosting.IHostingEnvironment hosting)
+
+        public SettingsController(DBcontext context, UserManager<UserModel> userManager, IWebHostEnvironment hosting)
         {
             _context = context;
             _userManager = userManager;

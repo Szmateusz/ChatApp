@@ -136,28 +136,21 @@ namespace Blog.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRoom(CreateRoomView model, IFormFile file)
         {
-            if (_context.Rooms.Any(r => r.Name == model.Room.Name))
+           
+           
+            if (_context.Rooms.Any(r => r.Name == model.Name))
             {
-                model.ValidateData = "Pokój o tej nazwie już istnieje!";
-                return View(model);
-            }
-            if (model.Room.Name.Length>12)
-            {
-                model.ValidateData = "Pokój ma zbyt długą nazwę!";
-                return View(model);
-            }
-            if (model.Room.Name.Length < 3)
-            {
-                model.ValidateData = "Pokój ma zbyt krótką nazwę!";
-                return View(model);
-            }
+                TempData["ErrorMessage"] = "Pokój o takiej nazwie już istnieje";
 
+                return View(model);
+            }
+           
             var sender = await _userManager.GetUserAsync(User);
 
             var newRoom = new Room
             {   
                 
-                Name = model.Room.Name
+                Name = model.Name
             };
 
             if (file != null && file.Length > 0)

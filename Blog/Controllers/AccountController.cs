@@ -27,7 +27,8 @@ namespace Blog.Controllers
             {
                 return RedirectToAction("Index", "Chat");
             }
-            
+
+            TempData["ErrorMessage"] = "Podaj poprawne dane logowania";
             return View();
         }
 
@@ -57,49 +58,37 @@ namespace Blog.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            ViewData["isRegistered"] = false;
-            ViewData["isPasswordLenght"] = true;
-
-
+        
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Register(Register userRegisterData)
         {
-            ViewData["isPasswordLenght"] = true;
-            ViewData["isRegistered"] = false;
-
+          
 
             if (!ModelState.IsValid)
             {
                 return View(userRegisterData);
             }
             if (_context.Users.Any(x => x.UserName.Equals(userRegisterData.UserName))){
-                ViewData["isRegistered"] = true;
-                
+
+                TempData["ErrorMessage"] = "Taki użytkownik już istnieje";
                 return View(userRegisterData);
             }
-            if (userRegisterData.Password.Length < 5)
-            {
-                ViewData["isPasswordLenght"] = false;
-                return View(userRegisterData);
-
-            }
-
-
-
-
+         
             var newUser = new UserModel
             {
                 UserName = userRegisterData.UserName,
+                Email = userRegisterData.Email,
                 ImgUrl = "default.png"
+
             };
 
            await _usermanager.CreateAsync(newUser,userRegisterData.Password);
 
+            TempData["SuccessMessage"] = "Konto zostało utworzone pomyślnie.";
 
-
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Login", "Account");
         }
     }
 }
